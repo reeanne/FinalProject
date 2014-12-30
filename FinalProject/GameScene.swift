@@ -33,8 +33,36 @@ class GameScene: SKScene {
         
         self.addChild(sprite)
     }
-    
+    override func keyDown(theEvent: NSEvent) {
+        var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+        switch theEvent.keyCode {
+            case 0:
+                println("a");
+                location = CGPoint(x:CGRectGetMidX(self.frame) / 2, y:CGRectGetMidY(self.frame));
+            case 1:
+                println("s");
+                location = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+            case 2:
+                println("d");
+                location = CGPoint(x:CGRectGetMidX(self.frame) * 3 / 2, y:CGRectGetMidY(self.frame));
+            case 3:
+                println("f");
+                location = CGPoint(x:CGRectGetMidX(self.frame) * 2, y:CGRectGetMidY(self.frame));
+            default:
+                break;
+        }
+        let sprite = SKSpriteNode(imageNamed:"Spaceship")
+        sprite.position = location;
+        sprite.setScale(0.5)
+        
+        let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
+        sprite.runAction(SKAction.repeatActionForever(action))
+        
+        self.addChild(sprite)
+    }
+
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }
+        
 }
