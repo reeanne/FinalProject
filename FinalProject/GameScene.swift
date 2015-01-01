@@ -33,6 +33,7 @@ class GameScene: SKScene {
         
         self.addChild(sprite)
     }
+    
     override func keyDown(theEvent: NSEvent) {
         var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         switch theEvent.keyCode {
