@@ -12,7 +12,7 @@ class MusicButton {
     let id: Int;
     let colour: ButtonColour;
     var pressed = false;
- 
+    
     init(identification: Int, buttonColour: ButtonColour) {
         id = identification;
         colour = buttonColour;

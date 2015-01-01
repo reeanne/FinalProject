@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		425D5B461A54D5D500B2230B /* ButtonColour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D5B451A54D5D500B2230B /* ButtonColour.swift */; };
+		426CDCD81A54D74F006A19A6 /* Melody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* Melody.swift */; };
+		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
 		42A67D391A52DCE50094808D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D381A52DCE50094808D /* AppDelegate.swift */; };
 		42A67D3B1A52DCE50094808D /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D3A1A52DCE50094808D /* GameScene.swift */; };
 		42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D3C1A52DCE50094808D /* GameScene.sks */; };
 		42A67D3F1A52DCE60094808D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D3E1A52DCE60094808D /* Images.xcassets */; };
 		42A67D421A52DCE60094808D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
 		42A67D4E1A52DCE60094808D /* FinalProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D4D1A52DCE60094808D /* FinalProjectTests.swift */; };
+		42EBB4D31A54A9460038845F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EBB4D21A54A9460038845F /* User.swift */; };
+		42EBB4D51A54AB980038845F /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EBB4D41A54AB980038845F /* Level.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +31,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		425D5B451A54D5D500B2230B /* ButtonColour.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonColour.swift; sourceTree = "<group>"; };
+		426CDCD71A54D74F006A19A6 /* Melody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Melody.swift; sourceTree = "<group>"; };
+		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
 		42A67D331A52DCE50094808D /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42A67D371A52DCE50094808D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A67D381A52DCE50094808D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -36,6 +44,8 @@
 		42A67D471A52DCE60094808D /* FinalProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinalProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42A67D4C1A52DCE60094808D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A67D4D1A52DCE60094808D /* FinalProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalProjectTests.swift; sourceTree = "<group>"; };
+		42EBB4D21A54A9460038845F /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		42EBB4D41A54AB980038845F /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +89,11 @@
 			children = (
 				42A67D381A52DCE50094808D /* AppDelegate.swift */,
 				42A67D3A1A52DCE50094808D /* GameScene.swift */,
+				425D5B451A54D5D500B2230B /* ButtonColour.swift */,
+				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
+				42EBB4D41A54AB980038845F /* Level.swift */,
+				426CDCD71A54D74F006A19A6 /* Melody.swift */,
+				42EBB4D21A54A9460038845F /* User.swift */,
 				42A67D3C1A52DCE50094808D /* GameScene.sks */,
 				42A67D3E1A52DCE60094808D /* Images.xcassets */,
 				42A67D401A52DCE60094808D /* MainMenu.xib */,
@@ -212,8 +227,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				425D5B461A54D5D500B2230B /* ButtonColour.swift in Sources */,
+				426CDCD81A54D74F006A19A6 /* Melody.swift in Sources */,
 				42A67D3B1A52DCE50094808D /* GameScene.swift in Sources */,
 				42A67D391A52DCE50094808D /* AppDelegate.swift in Sources */,
+				426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */,
+				42EBB4D51A54AB980038845F /* Level.swift in Sources */,
+				42EBB4D31A54A9460038845F /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +421,7 @@
 				42A67D531A52DCE60094808D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42A67D541A52DCE60094808D /* Build configuration list for PBXNativeTarget "FinalProjectTests" */ = {
 			isa = XCConfigurationList;
@@ -409,6 +430,7 @@
 				42A67D561A52DCE60094808D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

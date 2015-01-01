@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+class Melody {
+    
+    func determineMood() -> Mood? {
+        return nil;
+    }
+}
