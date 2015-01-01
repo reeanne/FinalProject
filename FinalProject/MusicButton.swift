@@ -7,15 +7,19 @@
 //
 
 import Foundation
+import SpriteKit
 
 class MusicButton {
     let id: Int;
     let colour: ButtonColour;
     var pressed = false;
+    var node: SKSpriteNode;
     
-    init(identification: Int, buttonColour: ButtonColour) {
+    init(identification: Int, buttonColour: ButtonColour, location: CGPoint) {
         id = identification;
         colour = buttonColour;
         pressed = false;
+        node = SKSpriteNode(imageNamed: buttonColour.idleURL());
+        node.position = location;
     }
 }

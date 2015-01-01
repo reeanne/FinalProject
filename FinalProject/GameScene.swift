@@ -9,19 +9,34 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    
     override func didMoveToView(view: SKView) {
+        let height = CGRectGetMidX(self.frame) *  3 / 4;
+        let width = CGRectGetMidY(self.frame) * 2 / 4;
+
         /* Setup your scene here */
+        /*
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Hello, World!";
         myLabel.fontSize = 65;
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
         self.addChild(myLabel)
+        */
+        var locationRed = CGPoint(x:width / 2, y:height);
+        var locationBlue = CGPoint(x:width * 3 / 2, y:height);
+        var currentLevel = Level(levelName:"Level", locationList:[locationRed, locationBlue]);
+        for child in currentLevel.buttons {
+            self.addChild(child.node);
+        }
+        
     }
     
     override func mouseDown(theEvent: NSEvent) {
         /* Called when a mouse click occurs */
         
+        /*
         let location = theEvent.locationInNode(self)
         
         let sprite = SKSpriteNode(imageNamed:"Spaceship")
@@ -32,6 +47,7 @@ class GameScene: SKScene {
         sprite.runAction(SKAction.repeatActionForever(action))
         
         self.addChild(sprite)
+        */
     }
     
     override func keyDown(theEvent: NSEvent) {

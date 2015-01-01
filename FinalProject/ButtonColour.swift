@@ -8,10 +8,10 @@
 
 import Foundation
 
-enum ButtonColour {
-    case Unknown, Red, Green, Yellow, Blue;
+enum ButtonColour: Int {
+    case Unknown = 0, Red, Blue, Yellow, Green;
     
-    func pressedURL() -> NSString? {
+    func pressedURL() -> NSString {
         switch self {
         case Red:
             return "red_in";
@@ -22,11 +22,11 @@ enum ButtonColour {
         case Blue:
             return "blue_in";
         default:
-            return nil;
+            return "";
         }
     }
     
-    func idleURL() -> NSString? {
+    func idleURL() -> NSString {
         switch self {
         case Red:
             return "red_out";
@@ -37,7 +37,7 @@ enum ButtonColour {
         case Blue:
             return "blue_out";
         default:
-            return nil;
+            return "";
         }
     }
 }

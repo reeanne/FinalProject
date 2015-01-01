@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import SpriteKit
+
 
 enum Mood: Int {
     case Unknown = 0, Excited, Happy, Pleased, Relaxed, Peaceful, Calm, Sleepy, Bored, Sad, Nervous, Angry, Annoying;
@@ -16,9 +18,17 @@ class Level {
     var name: String;
     var mood: Mood?;
     var melody: Melody?;
+    var buttons: [MusicButton];
     
-    init(levelName:String) {
+    init(levelName:String, locationList:[CGPoint]) {
         name = levelName;
+        var initialButtons: [MusicButton] = []
+        for (var i = 0; i < locationList.count; i++) {
+            var a = i+1;
+            initialButtons.append(MusicButton(identification: i, buttonColour:ButtonColour(rawValue: (i+1))!,
+                location: locationList[i]))
+        }
+        buttons = initialButtons;
     }
     
     func determineMood() {
