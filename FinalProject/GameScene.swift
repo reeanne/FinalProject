@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Paulina Koch. All rights reserved.
 //
 
+import AudioToolbox
 import SpriteKit
 
 class GameScene: SKScene {
-    
     
     override func didMoveToView(view: SKView) {
         let height = CGRectGetMidX(self.frame) *  3 / 4;
@@ -24,13 +24,19 @@ class GameScene: SKScene {
         
         self.addChild(myLabel)
         */
+        let audioURL = NSURL.fileURLWithPath("/Users/paulinakoch/Music/iTunes/iTunes Media/Music/Compilations/The Hobbit_ The Battle Of The Five Armies (Limited Deluxe)/2-21 The Last Goodbye.mp3")
+        
+        var melody = Melody(audioURL: audioURL!)
+
         var locationRed = CGPoint(x:width / 2, y:height);
         var locationBlue = CGPoint(x:width * 3 / 2, y:height);
-        var currentLevel = Level(levelName:"Level", locationList:[locationRed, locationBlue]);
+        var currentLevel = Level(levelName:"Level", locationList:[locationRed, locationBlue], melody: melody);
         for child in currentLevel.buttons {
             self.addChild(child.node);
         }
         
+        
+        // AudioFileClose(audioFile);
     }
     
     override func mouseDown(theEvent: NSEvent) {

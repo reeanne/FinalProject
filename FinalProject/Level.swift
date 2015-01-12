@@ -17,18 +17,19 @@ enum Mood: Int {
 class Level {
     var name: String;
     var mood: Mood?;
-    var melody: Melody?;
+    var melody: Melody;
     var buttons: [MusicButton];
     
-    init(levelName:String, locationList:[CGPoint]) {
-        name = levelName;
+    init(levelName:String, locationList:[CGPoint], melody: Melody) {
+        self.name = levelName;
+        self.melody = melody;
         var initialButtons: [MusicButton] = []
         for (var i = 0; i < locationList.count; i++) {
             var a = i+1;
             initialButtons.append(MusicButton(identification: i, buttonColour:ButtonColour(rawValue: (i+1))!,
                 location: locationList[i]))
         }
-        buttons = initialButtons;
+        self.buttons = initialButtons;
     }
     
     func determineMood() {
