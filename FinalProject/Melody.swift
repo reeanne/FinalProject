@@ -19,8 +19,7 @@ class Melody {
         audioFile = nil
         let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
         println(status);
-        println(audioFile);
-
+        printData();
     }
     
     func determineMood() -> Mood? {

@@ -17,10 +17,26 @@ DerivedData
 *.ipa
 *.xcuserstate
 
+
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However
 # you should judge for yourself, the pros and cons are mentioned at:
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
 #
-# Pods/
+# Pods/i
+
+# Latex Reports
+#
+
+Interim/*.aux
+Interim/*.dvi
+Interim/*.sty
+Interim/*.log
+Interim/*.toc
+Interim/*.lot
+Interim/*.lof
+Interim/*.synctex.gz
+Interim/*.out
+
+
