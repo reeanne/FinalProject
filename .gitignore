@@ -39,5 +39,4 @@ Interim/*.lof
 Interim/*.synctex.gz
 Interim/*.out
 Interim/Missing Packages/*.sty
-Interim/Chapters/*.log	
-
+Interim/Chapters/*.log
