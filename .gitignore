@@ -40,3 +40,7 @@ Interim/*.synctex.gz
 Interim/*.out
 Interim/Missing Packages/*.sty
 Interim/Chapters/*.log
+Interim/main-blx.bib
+Interim/main.bbl
+Interim/main.blg
+Interim/main.run.xml
