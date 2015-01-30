@@ -1,6 +1,6 @@
 % Background
 
-\chapter{Background (10-20)} % Main chapter title
+\chapter{Background} % Main chapter title
 
 \label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter2} 
 
@@ -8,7 +8,7 @@
 
 %----------------------------------------------------------------------------------------
 
-In this section, we go investigate different types of music games, along with a deeper look into Guitar Hero, on which we base our main concept for the gameplay. This is followed by a discussion of the most applicable publications in music analysis, for both defining the mood and finding the main melody in a musical track.
+In this section, we go investigate different types of music games, along with a deeper look into Guitar Hero, on which we base our main concept for the gameplay. This is followed by a discussion of the most applicable publications in music analysis, on finding the main melody in a musical track in particular.
 
 
 \section{Music Video Games }
@@ -25,7 +25,7 @@ Below we will briefly go over different types of music video games that can be f
 The goal of the music memory game is to score player on their musical memory. Music track is presented to the user who then has to provide an appropriate response to each prompt from the game. Games may be based on different primary musical aspect (whether it is the rhythm, pitch or volume). However, a vast majority of the releases available on the market are rhythm-based.
 
 \begin{wrapfigure}{r}{0.45\textwidth}
-  \vspace{-40pt}
+  \vspace{-10pt}
 
   \begin{center}
     \includegraphics[width=0.43\textwidth]{Figures/dancedancerevolution}
@@ -72,7 +72,7 @@ Reactive music games, in contrast to generative one, employ music to determine t
 
 \section{Case Study - Guitar Hero}
 
-Guitar Hero is one of the most popular franchise in the history of music games. The first of the series was published in 2005 by RedOctane and Harmonix. In the games, players instrument-shaped game controllers to simulate playing the instruments across numerous rock music songs. It is widely considered a highly entertaining game fully embracing the rhythm-based music game.
+Guitar Hero is one of the most popular franchises in the history of music games. The first of the series was published in 2005 by RedOctane and Harmonix. In the games, players instrument-shaped game controllers to simulate playing the instruments across numerous rock music songs. It is widely considered a highly entertaining game fully embracing the rhythm-based music game.
 
 
 \subsection{The Controller}
@@ -94,7 +94,7 @@ Without a doubt, Guitar Hero features a great selection of music. However, there
 
 Some more advanced users familiar with Computer Science attempted to transcribe songs and to create new levels. However, this process is really difficult, especially for non computer scientists, discouraging an average user from fully making use of game’s capabilities. The producers, seeing the tendency, started releasing the in-app purchases to enable the players to extend their library and thus, keep the users. 
 
-Implementing a feature of uploading some music preferred by the player would definitely improve user satisfaction. However, might have not been implemented yet as the task itself is quite complex. Moreover, enabling the users to load in some music would deprive the company of their income sources.
+Implementing a feature of uploading some music preferred by the player would definitely improve user satisfaction. However, this might have not been achieved yet as the task itself is quite complex. Moreover, enabling the users to load in some music would deprive the company of their income sources.
 
 
 \section{Introduction to Melody Extraction}
@@ -109,7 +109,7 @@ The concept of “melody” ultimately relies on the judgement of people listeni
 
 In order to have a clear framework to work within, the Music Information Retrieval (MIR) community has adopted in recent years the definition proposed by [4], “...the melody is the single (monophonic) pitch sequence that a listener might reproduce if asked to whistle or hum a piece of polyphonic music, and that a listener would recognise as being the ‘essence’ of that music when heard in comparison”.
 
-In practice, research has focused on “single source predominant fundamental frequency estimation” — which means a search for a main melody coming from a single sound source throughout the song analysed. As we can see, the subjective element is still present in this description of a melody as there might not be a definite way of deciding what is predominant. However, it fits well with our project’s objective — generating a game level based on changes in the pitch.
+In practice, research has focused on “single source predominant fundamental frequency estimation” — which means a search for a main melody coming from a single sound source throughout the song analysed. As we can see, the subjective element is still present in this description of a melody as there might not be a definite way of deciding what predominant is. However, it fits well with our project’s objective — generating a game level based on changes in the pitch.
 
 
 \subsection{Polyphonic Music}
@@ -134,7 +134,7 @@ Fundamental frequency can be thought of as the physical property most closely re
 
 Any medium through which the music signal passes, whatever its form, can be regarded as a filter. However, we do not usually think of something as a filter unless it can modify the sound in some way. 
 
-A digital filter is a filter that operates on digital signals, such as sound represented inside a computer. It is a computation which takes one sequence of numbers (the input signal) and produces a new sequence of numbers (the filtered output signal). 
+A digital filter is a filter that operates on digital signals, such as sound represented inside a computer. It is a computation which takes one sequence of numbers (the input signal) and produces a new sequence of numbers (the filtered output signal). [15]
 
 
 \subsection{Short Time Fourier Transform}
@@ -195,7 +195,7 @@ This together with STFT and an amplitude coefficient associated with each source
 
 Once the parameters are estimated using the maximum likelihood criterion for each of the model, the Viterbi smoothing of the melody line is applied, obtaining a trade-off between the smoothness of the melody and its global energy in the signal. The Viterbi algorithm is a dynamic programming algorithm for finding the most likely sequence of hidden states – called the Viterbi path – that results in a sequence of observed events. [12]
  
-The authors then parametrise the transitions between the possible main melody without disabling jumps from one note to the other. The source separation framework used by them allows, through Wiener filtering, to obtain the separated signals. Computing the energy for each frame of the separated main melody and thereafter thresholding allowed to discriminate between spurious notes and true positives.
+The authors then parametrise the transitions between the possible main melody without disabling jumps from one note to the other.Usign Wiener filtering - digital signal processing reducing the noise, using an statistical estimate of the signal using a desired data without such noise, a framework is implemented to separate the source. This way separated signals are obtained. Computing the energy for each frame of the separated main melody and thereafter thresholding allowed to discriminate between spurious notes and true positives.
 
 
 \subsection{Salience Based Approaches}
@@ -206,12 +206,12 @@ The authors then parametrise the transitions between the possible main melody wi
   \begin{center}
     \includegraphics[width=0.48\textwidth]{Figures/salienceoveralldiagram}
   \end{center}
-  \caption{Block diagram of four main blocks of the system by Salamon and Gomez: sinusoid extraction, salience function computation, pitch contour creaton and melody selection}
+  \caption{Block diagram of four main blocks of the system by Salamon and G\'{o}mez: sinusoid extraction, salience function computation, pitch contour creaton and melody selection}
 \end{wrapfigure}
 
-This approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it and can be split into several smaller stages. In particular, a method implemented in paper [9] seems to be quite promising.
+This approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it. It and can be split into several smaller stages, as seen in Figure 2.5. In particular, a method implemented in paper [9] seems to be quite promising.
 
-As a first step, some sort of preprocessing is applied to the audio signal, usually to enhance the frequency content where we expect to find the melody. In particular, Salamon and Gomez apply an equal loudness filter, which enhances the frequencies to which the human ear is more perceptually sensitive by taking a representative average of the equal loudness curves and filtering the signal by its inverse. 
+Usually as a first step, some sort of preprocessing is applied to the audio signal, usually to enhance the frequency content where we expect to find the melody. In particular, Salamon and G\'{o}mez apply an equal loudness filter, which enhances the frequencies to which the human ear is more perceptually sensitive by taking a representative average of the equal loudness curves and filtering the signal by its inverse. 
 
 This stage is followed by spectral transform — the signal is chopped into time frames and a transform function is applied to obtain a spectral representation of each frame.
 This is achieved by applying the Short-Time Fourier Transform given by:
@@ -224,7 +224,7 @@ with a window length of 46.4ms. Here, $x(n)$ is the time signal, $w(n)$ the wind
 
 Having done this, we move to frequency/amplitude correction, where the spectral peaks are detected and used to construct a salience function. To avoid a relatively large error in the estimation of the peak frequency caused by binning them in the process of FFT, peak’s instantaneous frequency and amplitude are calculated. 
 
-Those three steps constitute the spectral processing. But at the core of the salience based algorithms lies the multi pitch representation, i.e. the salience function — a representation of pitch salience over time. The peaks of this function form the $f_{0}$ candidates for the main melody. In the algorithm described by Salamon and Gomez, this computation is based on harmonic summation, where the salience of  a given frequency is computed as a sum of the weighted energies found at harmonics (integer multiples) of that frequency. Using only the peaks for the summation allows us to discard less reliable values and apply further frequency corrections. 
+Those three steps constitute the spectral processing. But at the core of the salience based algorithms lies the multi pitch representation, i.e. the salience function — a representation of pitch salience over time. The peaks of this function form the $f_{0}$ candidates for the main melody. In the algorithm described by Salamon and G\'{o}mez, this computation is based on harmonic summation, where the salience of  a given frequency is computed as a sum of the weighted energies found at harmonics (integer multiples) of that frequency. Using only the peaks for the summation allows us to discard less reliable values and apply further frequency corrections. 
 
 
 \begin{wrapfigure}{l}{0.5\textwidth}
@@ -233,12 +233,12 @@ Those three steps constitute the spectral processing. But at the core of the sal
   \begin{center}
     \includegraphics[width=0.48\textwidth]{Figures/salamon4blocksdiagram}
   \end{center}
-  \caption{Block diagram of four main blocks of the system by Salamon and Gomez: sinusoid extraction, salience function computation, pitch contour creaton and melody selection}
+  \caption{Block diagram of four main blocks of the system by Salamon and G\'{o}mez: sinusoid extraction, salience function computation, pitch contour creaton and melody selection}
 \end{wrapfigure}
 
 The salience function presented in the paper covers a pitch range of nearly five octaves from 55Hz to 1.76kHz.
 
-Peaks of the salience function at each frame are now potential $f_{0}$ of the main melody. At this point some methods for melody extraction attempt to track the melody. However, Salamon and Gomez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Now the peaks are grouped into pitch contours - time and pitch continuous sequences of salience peaks as shown in fFgure 2.7.
+Peaks of the salience function at each frame are now potential $f_{0}$ of the main melody. At this point some methods for melody extraction attempt to track the melody. However, Salamon and G\'{o}mez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Now the peaks are grouped into pitch contours - time and pitch continuous sequences of salience peaks as shown in fFgure 2.7.
 
 Having created the pitch contours, we are faced with the task of determining which one belongs to the main melody. The authors define features based on contour pitch, length and salience.
 
@@ -265,7 +265,7 @@ The parameter $v$ determines the lenience of the filtering - a high $v$ value mi
 
 It is also important to note that detecting certain characteristics in the contour increases a probability of it being the melody contour, for example in case of detecting a vibrato -  a regular, pulsating change of pitch, used to add expression to vocal and instrumental music. [13]
 
-Next step in the melody selection described by Salamon and Gomez in their paper is octave errors and pitch outliers removal.  
+Next step in the melody selection described by Salamon and G\'{o}mez in their paper is octave errors and pitch outliers removal.  
 
 In particular, the octave errors are the main sources of errors in melody extraction systems, when a multiple or sub-multiple of $f_{0}$ is reported as the main melody. 
 
@@ -306,11 +306,10 @@ We can also notice that the raw pitch accuracy gradually improved from 2005 to 2
 
 On the other hand, when it comes to overall accuracy, the performance goes down compared to the raw pitch accuracy for all algorithms due to voicing detection being factored into the results. The importance of this step depends on the intended use of the algorithm. Generally, the overall accuracy results lie between 65-70%.
 
-Finally, an important factor in assessment of an algorithm is its complexity. While deriving O-notation is too complex for some of the algorithms, generally it is observed that algorithms involving source separation are significantly more computationally complex than salience based approaches, however there is no specific data provided by Salamon and Gomez [9] or by Durrieu [5] on their algorithms.
+Finally, an important factor in assessment of an algorithm is its complexity. While deriving O-notation is too complex for some of the algorithms, generally it is observed that algorithms involving source separation are significantly more computationally complex than salience based approaches, however there is no specific data provided by Salamon and G\'{o}mez [9] or by Durrieu [5] on their algorithms.
 
-In conclusion, I believe the solution proposed by Salamon and Gomez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game designing as we do not want to keep the user waiting for a long time for his level to generate and load.
+In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game designing as we do not want to keep the user waiting for a long time for his level to generate and load.
 
-\section{Mood Detection}
-
-
-One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan. They employ Computational Media Aesthetics to detect mood for music information retrieval tasks [16]. The two dimensions of tempo and articulation are extracted from the audio signal and are mapped to one of four emotional categories; happiness, sadness, anger, and fear. This categorization is based on both Thayer's model [51] and Juslin's theory [24], where the two elements of slow or fast tempo and staccato or legato articulation adequately convey emotional information from the performer to the audience. The time domain energy of the audio signal is used to determine articulation while tempo is determined using Dixon's beat detection algorithm [10].
+\section{Level Generation}
+It is not really surprising that there is no current literature on the problem of automatically generating Guitar Hero buttons given an arbitrary piece of music.
+However, we believe an algorithm can be developed where the buttons can be mapped to the $f_{0}$ in the main melody extracted by main melody extraction algorithm.
