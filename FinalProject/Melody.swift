@@ -25,7 +25,9 @@ class Melody {
     func determineMood() -> Mood? {
         return nil;
     }
-    
+    /**
+        Temporary method for 
+     */
     func printData() {
         var id3DataSize:UInt32 = 0
         var err = AudioFileGetPropertyInfo(audioFile, UInt32(kAudioFilePropertyID3Tag), &id3DataSize, nil)

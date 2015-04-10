@@ -23,7 +23,7 @@ Initially we hoped that the project could train a neural network to produce the 
 
 Much thought should be given to the implementation of the actual game. In particular, one of the challenges we will be facing is synchronising the visuals of the game, audio track and the reaction of the player. There are two issues to consider here. The most important one is how to make sure we interpret the player's input correctly, so that they feel like they are being rewarded accurately. In addition to this we should make sure that our graphics match the music, so that it looks like the actions are happening in sync with the music.
 
-Potential problems could be caused by the fact that the playhead/position of an audio file tendt to update in steps. This is why we will possibly need to interpolate between those steps by keeping track of the playhead position with your own variable, and automatically adding time to that variable every frame. 
+Potential problems could be caused by the fact that the playhead/position of an audio file tend to update in steps. This is why we will possibly need to interpolate between those steps by keeping track of the playhead position with your own variable, and automatically adding time to that variable every frame. 
 In order to take our song time and keep it consistent with the actual playhead position of the audio file, we would like to implement an algorithm to apply corrections every time I get a fresh playhead position
 
 In addition to this, we must take into consideration the delays in the rendering pipelines, as well as the delay that happens between the user hitting a key and the keystroke making it back to the program. In most games, this delay is completely negligible, but as we are implementing a rhythm-based video game, perfect accuracy is a must. That is why a visual delay test must be implemented and ran to calibrate the game before a user starts playing it.
@@ -38,18 +38,18 @@ We would also like to implement some additional features to the game to make it 
     2 & 9.02 & Start developing the front end for the game. \\ \hline
     3 & 16.02 & Continue implementing the front end of the game, ask a few people to initially test the look and feel of the game. \\ \hline
     4 & 23.02 & Start implementing the melody detection algorithm -  sinusoid extraction.\\ \hline
-    5 & 2.03 & Finish implementing the Sinusoid extraction and start to implement the salience function.\\ \hline
+    5 & 2.03 & Finish implementing the sinusoid extraction and start to implement the salience function.\\ \hline
     6 & 9.03 & Continue implementing the salience function. Revision for the exams.\\ \hline
     7 & 16.03 & Revision for the exams. \\ \hline
     8 & 23.03 & Exams. \\ \hline
     9 & 30.03 & Implementing pitch contour creation. \\ \hline
     10 & 6.04 & Finish pitch contour creation, implement the melody selection. \\ \hline
     11 & 13.04 & Finish the melody selection, further develop the game to fit the retrieved data on, designing the button mapping algorithm. \\ \hline
-    12 & 20.04 & Further work on integration melody into the game, implementing and testing the button mapping algorithm, testing on a small group of users. \\ \hline
-    13 & 27.04 & Work on integration melody into the gameplay, adjusting the game to take the delays into consideration. \\ \hline
-    14 & 4.05 & Work on the final report. Implementing bonuses, achievements and other user centered features. \\ \hline
+    12 & 20.04 & Further work on integration melody into the game, implementing and testing the button mapping algorithm, testing on a small group of users, implementation of the mood detection. \\ \hline
+    13 & 27.04 & Work on integration melody into the gameplay, adjusting the game to take the delays into consideration, work on the mood detection. \\ \hline
+    14 & 4.05 & Work on the final report. Implementing bonuses, achievements and other user centered features, work on the mood detection. \\ \hline
     15 & 11.05 & Further work on the final report. \\ \hline
-    16 & 18.05 & Do shits \\ \hline
+    16 & 18.05 & Evaluation and work on the report. \\ \hline
     17 & 25.05 & Evaluation - testing with users filling in questionnaires, writing the final report. \\ \hline
     18 & 8.06 & Polishing up the final report. \\ \hline
     19 & 15.06 & Final Report Due on 16.06 - submission, review and last touches to the code base.\\ \hline

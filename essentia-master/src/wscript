@@ -1,0 +1,330 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+import os.path
+
+dependencies_list = ['libav', 'libsamplerate', 'taglib', 'yaml', 'fftw']
+
+def options(ctx):
+    ctx.add_option('--with-python', action='store_true',
+                   dest='WITH_PYTHON', default=False,
+                   help='build the python bindings')
+    ctx.add_option('--with-examples', action='store_true',
+                   dest='WITH_EXAMPLES', default=False,
+                   help='build the example programs')
+    ctx.add_option('--with-example', action='store',
+                   dest='EXAMPLES', default=False,
+                   help='example programs to build (comma separated, without .cpp)')
+    ctx.add_option('--with-static-examples', action='store_true',
+                   dest='WITH_STATIC_EXAMPLES', default=False,
+                   help='build the example programs as static executables (WARNING: only works on debian wheezy with custom-compiled ffmpeg)')
+    ctx.add_option('--with-vamp', action='store_true',
+                   dest='WITH_VAMP', default=False,
+                   help='build the vamp plugin wrapper')
+    ctx.add_option('--with-gaia', action='store_true',
+                   dest='WITH_GAIA', default=False,
+                   help='build with Gaia support')  
+    ctx.add_option('--lightweight', action='store',
+                   dest='WITH_LIBS', default=False,
+                   help='build lightweight version with specified dependencies (comma separated: =' + ','.join(dependencies_list) + ')')
+    ctx.add_option('--ignore-algos', action='store',
+                   dest='IGNORE_ALGOS', default=False,
+                   help='algorithms to ignore (comma separated)')
+
+
+def debian_version():
+    try:
+        v = open('/etc/debian_version').read().strip()
+        return [ int(n) for n in v.split('.') ]
+    except IOError:
+        return []
+    except ValueError:
+        # string version instead of numeric
+        if 'wheezy' in v or 'sid' in v:
+            return [7, 0]
+        else:
+            return [6, 0]
+
+
+def configure(ctx):
+    ctx.env.WITH_EXAMPLES = ctx.options.WITH_EXAMPLES
+    ctx.env.WITH_PYTHON   = ctx.options.WITH_PYTHON
+    ctx.env.WITH_VAMP     = ctx.options.WITH_VAMP
+    ctx.env.WITH_STATIC_EXAMPLES = ctx.options.WITH_STATIC_EXAMPLES
+    ctx.env.WITH_GAIA      = ctx.options.WITH_GAIA
+    ctx.env.WITH_LIBS    = ctx.options.WITH_LIBS    
+    ctx.env.EXAMPLES       = ctx.options.EXAMPLES
+    ctx.env.EXAMPLE_LIST   = []
+    ctx.env.ALGOIGNORE = []
+    ctx.env.IGNORE_ALGOS  = ctx.options.IGNORE_ALGOS
+
+    if ctx.env.WITH_STATIC_EXAMPLES and not ctx.env.EXAMPLES:
+        ctx.env.WITH_EXAMPLES = True
+
+    if ctx.env.WITH_LIBS:
+        ctx.env.WITH_LIBS_LIST = ['fftw']   # FFTW is still mandatory
+        for e in ctx.env.WITH_LIBS.split(","):
+            e = e.strip()
+            if e not in dependencies_list:
+                raise ctx.errors.ConfigurationError("Specified dependency [%s] does not exist" % e)
+            ctx.env.WITH_LIBS_LIST.append(e)
+        ctx.env.WITH_LIBS_LIST = list(set(ctx.env.WITH_LIBS_LIST))
+        print("\n=======================Lightweight Mode : Ignoring ALL libraries except %s =======================\n" % ctx.env.WITH_LIBS_LIST)
+    else:
+        ctx.env.WITH_LIBS_LIST = dependencies_list
+  
+    if ctx.env.IGNORE_ALGOS:
+        for a in ctx.env.IGNORE_ALGOS.split(","):
+            a = a.strip()
+            ctx.env.ALGOIGNORE.append(a)
+
+
+    if 'libav' in ctx.env.WITH_LIBS_LIST:
+        ctx.check_cfg(package='libavcodec', uselib_store='AVCODEC',
+                      args=['libavcodec >= 53.25.0', '--cflags', '--libs', '--modversion'],
+                      msg='Checking for \'libavcodec\' >= 53.25.0',
+                      mandatory=False)
+        
+        ctx.check_cfg(package='libavformat', uselib_store='AVFORMAT',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+
+        ctx.check_cfg(package='libavutil', uselib_store='AVUTIL',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+        ctx.check_cfg(package='libavresample', uselib_store='AVRESAMPLE',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+        ctx.check_cfg(package='libswresample', uselib_store='SWRESAMPLE',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+    if 'libsamplerate' in ctx.env.WITH_LIBS_LIST:
+        ctx.check_cfg(package='samplerate', uselib_store='SAMPLERATE',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+    if 'taglib' in ctx.env.WITH_LIBS_LIST:
+        ctx.check_cfg(package='taglib', uselib_store='TAGLIB',
+                      args=['taglib >= 1.9', '--cflags', '--libs', '--modversion'],
+                      msg='Checking for \'taglib\' >= 1.9',
+                      mandatory=False)
+    
+    if 'yaml' in ctx.env.WITH_LIBS_LIST:
+        ctx.check_cfg(package='yaml-0.1', uselib_store='YAML',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=False)
+
+    if 'fftw' in ctx.env.WITH_LIBS_LIST:
+        ctx.check_cfg(package='fftw3f', uselib_store='FFTW',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=True)    
+
+    if ctx.env.WITH_GAIA:
+        ctx.check_cfg(package='gaia2', uselib_store='GAIA2',
+                      args=['--cflags', '--libs', '--modversion'], mandatory=True)
+
+    # needed by ffmpeg for the INT64_C macros
+    ctx.env.DEFINES += [ '__STDC_CONSTANT_MACROS' ]
+
+    if ctx.env.WITH_EXAMPLES or ctx.env.EXAMPLES or ctx.env.WITH_VAMP:
+        ctx.recurse('examples')
+
+    if ctx.env.WITH_PYTHON:
+        ctx.recurse('python')
+
+
+    # prepare the compilation environment using the detected libraries
+    print
+    print('================================ CONFIGURATION SUMMARY ================================')
+
+    ctx.env.USES = ''
+
+    def has(name):
+        return ('HAVE_%s' % name.upper()) in ctx.env['define_key']
+
+    # FFTW is the only mandatory dependency
+    algos = ['FFT', 'IFFT']
+    if has('fftw'):
+        print('- fftw detected!')
+        ctx.env.USES += ' FFTW'
+    else:
+        print('- fftw seems to be missing.')
+        print('  The following algorithms will be ignored: %s\n' % algos)
+        ctx.env.ALGOIGNORE += algos
+        print('  IMPORTANT NOTE: You will encounter compilation errors, because some other algorithms rely on FFT.')
+        print('                  We are about to implement a generic FFT that does not rely exclusively on fftw.\n')
+
+    # MonoLoader, EqloudLoader, and EasyLoader are dependent on Resample
+    algos = [ 'AudioLoader', 'MonoLoader', 'EqloudLoader', 'EasyLoader', 'MonoWriter', 'AudioWriter' ]
+    if has('avcodec') and has('avformat') and has('avutil') and ( has('avresample') or has('swresample') ):
+        print('- FFmpeg / libav detected!')       
+        ctx.env.USES += ' AVFORMAT AVCODEC AVUTIL'
+    
+        # NOTE: always use libavresample if found, otherwise check for swresample
+        if has('avresample'):
+            ctx.env.USES += ' AVRESAMPLE'
+            print('- Using LibAV/FFmpeg install with libavresample support')     
+
+        elif has('swresample'):
+            ctx.env.USES += ' SWRESAMPLE'
+            print('- Using LibAV/FFmpeg install with swresample support')
+    else:
+        print('- FFmpeg (or LibAv on debian/ubuntu) seems to be missing.')
+        print('  The following algorithms will be ignored: %s\n' % algos)
+        ctx.env.ALGOIGNORE += algos
+
+    algos = [ 'Resample', 'MonoLoader', 'EqloudLoader', 'EasyLoader']
+    if has('samplerate'):
+        print('- libsamplerate (SRC) detected!')
+        ctx.env.USES += ' SAMPLERATE'
+    else:
+        print('- libsamplerate seems to be missing.')
+        print('  The following algorithms will be ignored: %s\n' % algos)
+        ctx.env.ALGOIGNORE += algos
+
+    algos = [ 'AudioLoader', 'MonoLoader', 'EqloudLoader', 'EasyLoader', 'MonoWriter', 'AudioWriter', 'Resample' ]
+    algos_include = list(set(algos) - set(ctx.env.ALGOIGNORE))
+    if algos_include:
+        print('  The following algorithms will be included: %s\n' % algos_include)
+    else:
+        print('  Examples requiring FFmpeg / libav and libsamplerate will be ignored\n')    
+
+    algos = [ 'MetadataReader' ]
+    if has('taglib'):
+        print('- TagLib detected!')
+        print('  The following algorithms will be included: %s\n' % algos)
+        ctx.env.USES += ' TAGLIB'
+    else:
+        print('- TagLib seems to be missing.')
+        print('  The following algorithms will be ignored: %s\n' % algos)
+        ctx.env.ALGOIGNORE += algos
+
+    algos = ['YamlInput', 'YamlOutput']
+    if has('yaml'):
+        print('- libyaml detected!')
+        print('  The following algorithms will be included: %s\n' % algos)
+        ctx.env.USES += ' YAML'
+    else:
+        print('- libyaml seems to be missing.')
+        print('  The following algorithms will be ignored: %s\n' % algos)
+        ctx.env.ALGOIGNORE += algos      
+
+    algos = [ 'GaiaTransform' ]
+    if ctx.env.WITH_GAIA:
+        if has('gaia2'):
+            print('- Gaia2 detected!')
+            print('  The following algorithms will be included: %s\n' % algos)
+            ctx.env.USES += ' GAIA2'
+    else:
+        print('- Essentia is configured without Gaia2.')
+        print('  The following algorithms will be ignored: %s' % algos)
+        print('  Examples requiring Gaia2 will be ignored\n')
+        ctx.env.ALGOIGNORE += algos
+
+    lel = len(ctx.env.EXAMPLE_LIST)
+    if lel:
+        print('- Compiling %s example%s' % (lel, "" if lel == 1 else "s"))
+        print('  %s' % ", ".join(ctx.env.EXAMPLE_LIST))
+
+
+    print('=======================================================================================')
+
+        
+from waflib.Task import Task
+class BuildAlgoReg(Task):
+    def run(self):
+        return self.exec_command('cp %s %s' % (self.inputs[0].abspath(),
+                                               self.outputs[0].abspath()))
+
+def build(ctx):
+    print('→ building from ' + ctx.path.abspath())
+    #print('  BUILD ENV:\n%s' % ctx.env)
+
+    # add essentia root folder to path to be able to import utils.algorithms_info
+    sys.path = [ctx.path.find_dir('..')] + sys.path
+
+    # get list of available algorithms
+    from utils.algorithms_info import get_all_algorithms, create_registration_cpp, create_version_h
+
+    algos = get_all_algorithms(ctx.path.find_dir('algorithms').abspath(),
+                               root_dir = ctx.path.abspath())
+
+    # select the algorithms we want to build
+    if ctx.env['ALGOINCLUDE']:
+        print('Building the following algorithms: %s' % ', '.join(ctx.env['ALGOINCLUDE']))
+    else:
+        print('Building all the algorithms')
+
+    if ctx.env['ALGOIGNORE']:
+        ctx.env['ALGOIGNORE'] = list(set(ctx.env['ALGOIGNORE']))
+        print('Ignoring the following algorithms: %s' % ', '.join(ctx.env['ALGOIGNORE']))
+        for algoname in ctx.env['ALGOIGNORE']:
+            del algos[algoname]
+
+    # create version.h header file
+    create_version_h('src/version.h', ctx.env.VERSION, ctx.env.GIT_SHA)
+
+    # create algorithms registration file
+    algoreg_path = 'src/algorithms/essentia_algorithms_reg.cpp'
+    create_registration_cpp(algos, algoreg_path, use_streaming=True)
+
+    sources = ctx.path.ant_glob('essentia/**/*.cpp')
+
+    # do not compile audiocontext.cpp if we're compiling without libav
+    if 'AVCODEC' not in ctx.env.USES:
+        sources = [ s for s in sources if 'audiocontext' not in str(s) ]
+
+    # do not compile anything with yaml if we are compiling without libyaml
+    if 'YAML' not in ctx.env.USES:
+        sources = [ s for s in sources if 'yaml' not in str(s) ]
+        sources = [ s for s in sources if 'jsonconvert' not in str(s) ]
+
+    # add all algorithms found in the algorithms/ folder
+    sources += [ ctx.path.find_resource('algorithms/essentia_algorithms_reg.cpp') ]
+    sources += [ ctx.path.find_resource(algo['source']) for algo in algos.values() ]
+
+    # TODO: recursive includes are needed only for the algorithms, not for the base
+    #       library. See if there's no way to split them.
+    ctx.env.INCLUDES = [ '.', 'essentia', 'essentia/scheduler', 'essentia/streaming',
+                         'essentia/streaming/algorithms', 'essentia/utils',
+                         '3rdparty']
+
+    # do not complie splineutil.cpp if we are not compiling Spline and CubicSpline
+    if 'Spline' not in ctx.env.ALGOIGNORE or 'CubicSpline' not in ctx.env.ALGOIGNORE:
+        ctx.env.INCLUDES += ['3rdparty/spline' ]
+        sources += [ ctx.path.find_resource('3rdparty/spline/splineutil.cpp') ]
+    else:
+        print ('Building without 3rdparty spline library code because Spline and CubicSpline algorithms are ignored')
+
+    ctx.stlib(
+        source   = sources,
+        target   = 'essentia',
+        use      = ctx.env.USES,
+        install_path = '${PREFIX}/lib',
+        #includes = ctx.env.includes
+    )
+
+    def write_pcfile(task):
+        open('build/essentia.pc', 'w').write(ctx.env.pcfile)
+
+    ctx(rule=write_pcfile,  name='write_pcfile', target='../essentia.pc')
+    ctx.add_group()
+
+
+    # install headers if asked to
+    headers = ctx.path.ant_glob('essentia/**/*.h')
+    for h in headers:
+        install_dir = os.path.split(h.srcpath())[0][4:]
+        ctx.install_files('${PREFIX}/include/' + install_dir, h)
+    # version.h
+    ctx.install_files('${PREFIX}/include/essentia', 'version.h')
+
+    # install pkgconfig file
+    #pc = ctx.path.ant_glob('essentia/build/essentia.pc') #TODO remove
+    #ctx.install_files('${PREFIX}/lib/pkgconfig', pc)     #TODO remove
+    ctx.install_files('${PREFIX}/lib/pkgconfig', '../essentia.pc')
+
+
+    if ctx.env.EXAMPLE_LIST or ctx.env.WITH_VAMP:
+        ctx.recurse('examples')
+
+    if ctx.env.WITH_PYTHON:
+        ctx.recurse('python')
