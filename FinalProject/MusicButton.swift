@@ -19,7 +19,7 @@ class MusicButton {
         id = identification;
         colour = buttonColour;
         pressed = false;
-        node = SKSpriteNode(imageNamed: buttonColour.idleURL());
+        node = SKSpriteNode(imageNamed: buttonColour.idleURL() as String);
         node.position = location;
     }
 }

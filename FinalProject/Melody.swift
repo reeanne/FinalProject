@@ -13,6 +13,7 @@ class Melody {
     
     var audioFile: AudioFileID;
     var mood: Mood?;
+    var pitch: [Int]?;
     
     
     init(audioURL: CFURL) {
@@ -26,7 +27,7 @@ class Melody {
         return nil;
     }
     /**
-        Temporary method for 
+        Temporary method for printing data of the audiofile.
      */
     func printData() {
         var id3DataSize:UInt32 = 0
@@ -42,9 +43,9 @@ class Melody {
             NSLog("AudioFileGetProperty failed for property info dictionary")
         }
         
-        let albumString :NSString = piDict[NSString(string: kAFInfoDictionary_Album)] as NSString
-        let artistString : NSString = piDict[NSString(string: kAFInfoDictionary_Artist)] as NSString
-        let titleString : NSString = piDict[NSString(string:kAFInfoDictionary_Title)] as NSString
+        let albumString :NSString = piDict[NSString(string: kAFInfoDictionary_Album)] as! NSString
+        let artistString : NSString = piDict[NSString(string: kAFInfoDictionary_Artist)] as! NSString
+        let titleString : NSString = piDict[NSString(string:kAFInfoDictionary_Title)] as! NSString
         NSLog("\(albumString)   \(artistString)  \(titleString)")
         
     }

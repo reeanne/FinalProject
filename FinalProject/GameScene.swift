@@ -24,8 +24,13 @@ class GameScene: SKScene {
         
         self.addChild(myLabel)
         */
-        let audioURL = NSURL.fileURLWithPath("/Users/paulinakoch/Music/iTunes/iTunes Media/Music/Compilations/The Hobbit_ The Battle Of The Five Armies (Limited Deluxe)/2-21 The Last Goodbye.mp3")
         
+        var path = openfiledlg("Open file",  message:"Open file");
+        //        let audioURL = NSURL.fileURLWithPath("/Users/paulinakoch/Music/iTunes/iTunes Media/Music/Compilations/The Hobbit_ The Battle Of The Five Armies (Limited Deluxe)/2-21 The Last Goodbye.mp3");
+        let audioURL = NSURL.fileURLWithPath(path);
+        
+        NSLog("Siabadabadu  \(path)")
+
         var melody = Melody(audioURL: audioURL!)
 
         var locationRed = CGPoint(x:width / 2, y:height);
@@ -86,6 +91,26 @@ class GameScene: SKScene {
 
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    func openfiledlg (title: String, message: String) -> String {
+        var myFiledialog: NSOpenPanel = NSOpenPanel()
+        
+        myFiledialog.prompt = "Open"
+        myFiledialog.worksWhenModal = true
+        myFiledialog.allowsMultipleSelection = false
+        myFiledialog.canChooseDirectories = false
+        myFiledialog.resolvesAliases = true
+        myFiledialog.title = title
+        myFiledialog.message = message
+        myFiledialog.runModal()
+        var chosenfile = myFiledialog.URL
+        if (chosenfile != nil) {
+            var TheFile = chosenfile!.path!
+            return (TheFile)
+        } else {
+            return ("")
+        }
     }
         
 }
