@@ -6,10 +6,13 @@
 //  Copyright (c) 2014 Paulina Koch. All rights reserved.
 //
 
+import AVFoundation
 import AudioToolbox
 import SpriteKit
 
 class GameScene: SKScene {
+
+    var player : AVAudioPlayer! = nil;
     
     override func didMoveToView(view: SKView) {
         let height = CGRectGetMidX(self.frame) *  3 / 4;
@@ -39,9 +42,10 @@ class GameScene: SKScene {
         for child in currentLevel.buttons {
             self.addChild(child.node);
         }
-        
-        
-        // AudioFileClose(audioFile);
+        if (audioURL != nil) {
+            startPlaying(audioURL!);
+        }
+        //AudioFileClose(audioFile);
     }
     
     override func mouseDown(theEvent: NSEvent) {
@@ -93,6 +97,10 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
+    
+    /**
+        Opens a dialog window allowing the user to choose a file to open.
+    */
     func openfiledlg (title: String, message: String) -> String {
         var myFiledialog: NSOpenPanel = NSOpenPanel()
         
@@ -112,5 +120,15 @@ class GameScene: SKScene {
             return ("")
         }
     }
+    
+    /**
+        Function for playing the music file.
+    */
+    func startPlaying (audioURL: NSURL) {
+        player = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
+        player.prepareToPlay();
+        player.play();
+    }
+
         
 }
