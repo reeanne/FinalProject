@@ -33,7 +33,8 @@ class GameScene: SKScene {
         let audioURL = NSURL.fileURLWithPath(path);
         
         NSLog("Siabadabadu  \(path)")
-
+        
+        getPredominantMelody(audioURL!);
         var melody = Melody(audioURL: audioURL!)
 
         var locationRed = CGPoint(x:width / 2, y:height);
@@ -83,18 +84,34 @@ class GameScene: SKScene {
             default:
                 break;
         }
-        let sprite = SKSpriteNode(imageNamed:"Spaceship")
+        let sprite = SKSpriteNode(imageNamed:"Spaceship");
         sprite.position = location;
-        sprite.setScale(0.5)
+        sprite.setScale(0.5);
         
-        let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-        sprite.runAction(SKAction.repeatActionForever(action))
+        let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1);
+        sprite.runAction(SKAction.repeatActionForever(action));
         
-        self.addChild(sprite)
+        self.addChild(sprite);
     }
 
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    func getPredominantMelody(audioURL: NSURL) {
+        var task = NSTask();
+        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
+        task.arguments = [audioURL, "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.yaml"];
+        task.launch();
+        println("started");
+        task.waitUntilExit();
+        var status = task.terminationStatus;
+        println("finished");
+        if (status == 0) {
+            NSLog("Task succeeded.");
+        } else {
+            NSLog("Task failed.");
+        }
     }
     
     
@@ -102,22 +119,22 @@ class GameScene: SKScene {
         Opens a dialog window allowing the user to choose a file to open.
     */
     func openfiledlg (title: String, message: String) -> String {
-        var myFiledialog: NSOpenPanel = NSOpenPanel()
+        var myFiledialog: NSOpenPanel = NSOpenPanel();
         
-        myFiledialog.prompt = "Open"
-        myFiledialog.worksWhenModal = true
-        myFiledialog.allowsMultipleSelection = false
-        myFiledialog.canChooseDirectories = false
-        myFiledialog.resolvesAliases = true
-        myFiledialog.title = title
-        myFiledialog.message = message
-        myFiledialog.runModal()
-        var chosenfile = myFiledialog.URL
+        myFiledialog.prompt = "Open";
+        myFiledialog.worksWhenModal = true;
+        myFiledialog.allowsMultipleSelection = false;
+        myFiledialog.canChooseDirectories = false;
+        myFiledialog.resolvesAliases = true;
+        myFiledialog.title = title;
+        myFiledialog.message = message;
+        myFiledialog.runModal();
+        var chosenfile = myFiledialog.URL;
         if (chosenfile != nil) {
-            var TheFile = chosenfile!.path!
-            return (TheFile)
+            var TheFile = chosenfile!.path!;
+            return (TheFile);
         } else {
-            return ("")
+            return ("");
         }
     }
     
