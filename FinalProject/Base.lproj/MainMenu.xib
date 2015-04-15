@@ -162,6 +162,37 @@
                                             <action selector="quickGame:" target="494" id="jOE-23-UPu"/>
                                         </connections>
                                     </button>
+                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WT5-bj-W4m">
+                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Back" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sTR-W4-xI6">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="backToMenuAction:" target="494" id="6Uk-qn-PSX"/>
+                                        </connections>
+                                    </button>
+                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NZu-yW-Acr">
+                                        <rect key="frame" x="316" y="115" width="176" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Create" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fPH-at-DmD">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="submitCreate:" target="494" id="QII-k2-aGA"/>
+                                        </connections>
+                                    </button>
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Asa-yP-hHV">
+                                        <rect key="frame" x="322" y="283" width="164" height="22"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="User Name" drawsBackground="YES" id="JPk-hw-9Wo">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="usernameEntered:" target="494" id="jvG-B7-oor"/>
+                                        </connections>
+                                    </textField>
                                 </subviews>
                             </visualEffectView>
                         </subviews>
@@ -174,15 +205,19 @@
                     <constraint firstItem="539" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="544"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="262" y="312"/>
         </window>
         <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target">
             <connections>
+                <outlet property="backToMenuButton" destination="WT5-bj-W4m" id="JFS-3y-Nv7"/>
                 <outlet property="chooseUserButton" destination="nlD-BJ-5OC" id="Lra-od-hWf"/>
                 <outlet property="coverView" destination="GQ2-BB-qB0" id="7TD-1b-PRa"/>
                 <outlet property="createUserButton" destination="SdJ-Sh-M2y" id="tqO-NH-Slq"/>
                 <outlet property="quickGameButton" destination="hAw-Mb-MNh" id="7zZ-aV-n5i"/>
                 <outlet property="quitGameButton" destination="EWO-yf-1bc" id="uyj-Yx-UCN"/>
                 <outlet property="skView" destination="539" id="540"/>
+                <outlet property="submitCreateButton" destination="NZu-yW-Acr" id="E2d-MO-rIa"/>
+                <outlet property="usernameTextField" destination="Asa-yP-hHV" id="Bcb-tf-t6c"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>
