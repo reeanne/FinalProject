@@ -29,10 +29,15 @@ extension SKNode {
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
+    @IBOutlet weak var coverView: NSVisualEffectView!
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var skView: SKView!
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
 
+    @IBOutlet weak var quickGameButton: NSButton!
+    @IBOutlet weak var chooseUserButton: NSButton!
+    @IBOutlet weak var createUserButton: NSButton!
+    @IBOutlet weak var quitGameButton: NSButton!
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
@@ -45,8 +50,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             self.skView!.ignoresSiblingOrder = true
             
+            #if DEBUG
             self.skView!.showsFPS = true
             self.skView!.showsNodeCount = true
+            #endif
         }
     }
     

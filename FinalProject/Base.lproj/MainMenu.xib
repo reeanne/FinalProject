@@ -105,11 +105,11 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="800" height="600"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-            <view key="contentView" id="372">
+            <view key="contentView" wantsLayer="YES" id="372">
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="539" customClass="SKView">
+                    <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="539" customClass="SKView">
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                         <subviews>
                             <visualEffectView appearanceType="vibrantDark" fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="GQ2-BB-qB0">
@@ -122,7 +122,7 @@
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="choosePlayer:" target="494" id="w75-Kk-cfX"/>
+                                            <action selector="chooseUser:" target="494" id="UxA-IV-S5J"/>
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SdJ-Sh-M2y">
@@ -177,6 +177,11 @@
         </window>
         <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target">
             <connections>
+                <outlet property="chooseUserButton" destination="nlD-BJ-5OC" id="Lra-od-hWf"/>
+                <outlet property="coverView" destination="GQ2-BB-qB0" id="7TD-1b-PRa"/>
+                <outlet property="createUserButton" destination="SdJ-Sh-M2y" id="tqO-NH-Slq"/>
+                <outlet property="quickGameButton" destination="hAw-Mb-MNh" id="7zZ-aV-n5i"/>
+                <outlet property="quitGameButton" destination="EWO-yf-1bc" id="uyj-Yx-UCN"/>
                 <outlet property="skView" destination="539" id="540"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
