@@ -27,7 +27,7 @@ class GameScene: SKScene {
         
         self.addChild(myLabel)
         */
-        
+     /*
         var path = openfiledlg("Open file",  message:"Open file");
         //        let audioURL = NSURL.fileURLWithPath("/Users/paulinakoch/Music/iTunes/iTunes Media/Music/Compilations/The Hobbit_ The Battle Of The Five Armies (Limited Deluxe)/2-21 The Last Goodbye.mp3");
         let audioURL = NSURL.fileURLWithPath(path);
@@ -47,6 +47,7 @@ class GameScene: SKScene {
             startPlaying(audioURL!);
         }
         //AudioFileClose(audioFile);
+*/
     }
     
     override func mouseDown(theEvent: NSEvent) {

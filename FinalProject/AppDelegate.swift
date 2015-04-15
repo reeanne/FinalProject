@@ -31,6 +31,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var skView: SKView!
+    @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
+
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
@@ -50,5 +52,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true
+    }
+    
+    
+    @IBAction func quickGame(sender: AnyObject) {
+        println("thispress");
+    }
+    
+    @IBAction func chooseUser(sender: AnyObject) {
+    }
+    
+    @IBAction func createUser(sender: AnyObject) {
+    }
+    
+    @IBAction func quitGame(sender: AnyObject) {
     }
 }
