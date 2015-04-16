@@ -11,7 +11,9 @@ import CoreData
 
 class Melody: NSManagedObject {
 
-    @NSManaged var attribute: AnyObject
+    @NSManaged var file: String
+    @NSManaged var pitch: String
     @NSManaged var level: Level
+    @NSManaged var mood: Mood
 
 }

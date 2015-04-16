@@ -9,7 +9,7 @@
 import Foundation
 import AudioToolbox
 
-class Melody {
+class MelodyObject {
     
     var audioFile: AudioFileID;
     var mood: Mood?;

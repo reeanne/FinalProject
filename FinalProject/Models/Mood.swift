@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  Mood.swift
 //  FinalProject
 //
 //  Created by Paulina Koch on 16/04/2015.
@@ -9,9 +9,9 @@
 import Foundation
 import CoreData
 
-class User: NSManagedObject {
+class Mood: NSManagedObject {
 
-    @NSManaged var username: String
+    @NSManaged var name: String
+    @NSManaged var melodies: Melody
 
-    
 }

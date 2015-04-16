@@ -10,17 +10,21 @@ import Foundation
 import SpriteKit
 
 
-enum Mood: Int {
+var CURRENT_ID: Int64 = 0;
+
+enum MoodObject: Int {
     case Unknown = 0, Excited, Happy, Pleased, Relaxed, Peaceful, Calm, Sleepy, Bored, Sad, Nervous, Angry, Annoying;
 }
 
-class Level {
+class LevelObject {
+    var id: Int64;
     var name: String;
-    var mood: Mood?;
-    var melody: Melody;
+    var melody: MelodyObject;
     var buttons: [MusicButton];
     
-    init(levelName:String, locationList:[CGPoint], melody: Melody) {
+    init(levelName:String, locationList:[CGPoint], melody: MelodyObject) {
+        CURRENT_ID++;
+        self.id = CURRENT_ID;
         self.name = levelName;
         self.melody = melody;
         var initialButtons: [MusicButton] = []

@@ -12,7 +12,9 @@ import SpriteKit
 
 class GameScene: SKScene {
 
-    var player : AVAudioPlayer! = nil;
+    var audioplayer: AVAudioPlayer! = nil;
+    var user: UserObject! = nil;
+    
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     
@@ -149,9 +151,9 @@ class GameScene: SKScene {
         Function for playing the music file.
     */
     func startPlaying (audioURL: NSURL) {
-        player = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
-        player.prepareToPlay();
-        player.play();
+        audioplayer = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
+        audioplayer.prepareToPlay();
+        audioplayer.play();
     }
 
         

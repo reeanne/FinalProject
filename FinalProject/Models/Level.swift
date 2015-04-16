@@ -11,7 +11,9 @@ import CoreData
 
 class Level: NSManagedObject {
 
-    @NSManaged var melody: Melody
+    @NSManaged var id: NSNumber
+    @NSManaged var name: String
     @NSManaged var owner: User
+    @NSManaged var melody: Melody
 
 }
