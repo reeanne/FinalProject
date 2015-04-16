@@ -14,6 +14,7 @@ class GameScene: SKScene {
 
     var audioplayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
+    var level: LevelObject! = nil;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -145,6 +146,10 @@ class GameScene: SKScene {
         } else {
             return ("");
         }
+    }
+    
+    func loadQuickGame(level: LevelObject) {
+        
     }
     
     /**

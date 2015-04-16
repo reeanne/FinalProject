@@ -44,17 +44,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var backToMenuButton: NSButton!
     @IBOutlet weak var usernameTextField: NSTextField!
 
-
+    @IBOutlet weak var createLevelButton: NSButton!
+    @IBOutlet weak var loadLevelButton: NSButton!
+    
+    @IBOutlet weak var levelSelectionPopup: NSPopUpButton!
+    @IBOutlet weak var selectLevelButton: NSButton!
+    
+    var scene: GameScene!;
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
-        if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
+        scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
+        if scene != nil {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill;
             
             self.skView!.presentScene(scene);
 
             hideCreateCharacterElements();
+            hideLoggedUserButtons();
+            hideChooseLevelButtons();
+            showMainMenuButtons();
             
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             self.skView!.ignoresSiblingOrder = true;
@@ -69,6 +79,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true;
     }
+    
+    
+    /**
+        Button arrangements.
+    */
     
     func showBackButton() {
         backToMenuButton.hidden = false;
@@ -105,54 +120,118 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         quitGameButton.hidden = false;
     }
     
+    func showLoggedUserButtons() {
+        quickGameButton.hidden = false;
+        createLevelButton.hidden = false;
+        loadLevelButton.hidden = false;
+        quitGameButton.hidden = false;
+    }
+    
+    func hideLoggedUserButtons() {
+        quickGameButton.hidden = true;
+        createLevelButton.hidden = true;
+        loadLevelButton.hidden = true;
+        quitGameButton.hidden = true;
+    }
+    
+    func showChooseLevelButtons() {
+        levelSelectionPopup.hidden = false;
+        selectLevelButton.hidden = false;
+        backToMenuButton.hidden = false;
+        
+    }
+    
+    func hideChooseLevelButtons() {
+        levelSelectionPopup.hidden = true;
+        selectLevelButton.hidden = true;
+        backToMenuButton.hidden = true;
+    }
+    
     
     /**
-        This will allow a user to play a quick predefined level with no need to be a player
-        or to preload some music.
+        Button listeners.
     */
+
     @IBAction func quickGame(sender: AnyObject) {
-        println("thispress");
+        hideMainMenuButtons();
     }
-    
-    /**
-        Will allow the user to choose a player of the list of already created players.
-    */
+
     @IBAction func chooseUser(sender: AnyObject) {
+        var users: [String] = [];
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        let sortDescriptor = NSSortDescriptor(key: "username", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
+            for user in fetchResults {
+                users.append(user.username);
+            }
+        }
+        levelSelectionPopup.addItemsWithTitles(users);
     }
-    
-    /**
-        Will allow the user to create a new player.
-    */
+
     @IBAction func createUser(sender: AnyObject) {
         hideMainMenuButtons();
+        hideChooseLevelButtons();
+        hideLoggedUserButtons();
         showCreateCharacterElements();
     }
     
-    @IBAction func usernameEntered(sender: AnyObject) {
-    }
     
+    @IBAction func selectLevelSubmit(sender: AnyObject) {
+    }
+        
     @IBAction func submitCreate(sender: AnyObject) {
         var username = usernameTextField.stringValue;
-        var user = NSEntityDescription.insertNewObjectForEntityForName("User", inManagedObjectContext: managedObjectContext!) as! User;
-        user.username = username;
-        println(user)
-        
+        scene.user = UserObject(userName: username);
+        var userEntity = NSEntityDescription.insertNewObjectForEntityForName(
+            "User", inManagedObjectContext: managedObjectContext!) as! User;
+        userEntity.username = username;
+        hideCreateCharacterElements();
+        showLoggedUserButtons();
     }
 
     @IBAction func backToMenuAction(sender: AnyObject) {
         hideCreateCharacterElements();
-        showMainMenuButtons();
+        hideChooseLevelButtons();
+        if (scene.user != nil) {
+            hideMainMenuButtons();
+            showLoggedUserButtons();
+        } else {
+            hideLoggedUserButtons();
+            showMainMenuButtons();
+        }
     }
     
-    /**
-        Allows the user to quit the game.
-    */
+    @IBAction func createLevelPressed(sender: AnyObject) {
+    }
+
+    @IBAction func loadLevelPressed(sender: AnyObject) {
+        var levels: [String] = [];
+        let fetchRequest = NSFetchRequest(entityName: "Level")
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
+            for level in fetchResults {
+                levels.append(level.name);
+            }
+        }
+        levelSelectionPopup.addItemsWithTitles(levels);
+        
+        hideMainMenuButtons();
+        hideCreateCharacterElements();
+        hideLoggedUserButtons();
+        showChooseLevelButtons();
+        
+    }
+    
+  
     @IBAction func quitGame(sender: AnyObject) {
         self.saveContext();
         NSApplication.sharedApplication().terminate(self);
     }
 
-    
     
     /** 
         Data Model code.

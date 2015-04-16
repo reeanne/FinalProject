@@ -22,7 +22,7 @@ class LevelObject {
     var melody: MelodyObject;
     var buttons: [MusicButton];
     
-    init(levelName:String, locationList:[CGPoint], melody: MelodyObject) {
+    init(levelName: String, locationList: [CGPoint], melody: MelodyObject) {
         CURRENT_ID++;
         self.id = CURRENT_ID;
         self.name = levelName;
