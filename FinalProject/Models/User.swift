@@ -13,5 +13,12 @@ class User: NSManagedObject {
 
     @NSManaged var username: String
     @NSManaged var levels: NSSet
+    
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, username: String) -> User {
+        let newItem = NSEntityDescription.insertNewObjectForEntityForName("User", inManagedObjectContext: moc) as! User
+        newItem.username = username;
+        
+        return newItem
+    }
 
 }

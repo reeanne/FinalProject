@@ -242,21 +242,29 @@
                                             <action selector="selectLevelSubmit:" target="494" id="nBV-FL-h4h"/>
                                         </connections>
                                     </button>
-                                    <popUpButton verticalHuggingPriority="750" id="klT-kY-yWx">
-                                        <rect key="frame" x="320" y="279" width="169" height="26"/>
+                                    <popUpButton verticalHuggingPriority="750" id="PGV-Fe-zVe">
+                                        <rect key="frame" x="320" y="278" width="169" height="26"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="Mqk-T4-57f">
+                                        <popUpButtonCell key="cell" type="push" alternateTitle="Popup choose" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="xrg-Lq-u8c">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
-                                            <menu key="menu" id="2Xt-oW-CQr">
-                                                <items>
-                                                    <menuItem title="Item 1" id="Cov-Bg-4eh"/>
-                                                    <menuItem title="Item 2" id="yLu-hO-5wV"/>
-                                                    <menuItem title="Item 3" id="jqj-cx-cMC"/>
-                                                </items>
-                                            </menu>
+                                            <menu key="menu" id="RDU-UK-Pf4"/>
                                         </popUpButtonCell>
+                                        <connections>
+                                            <action selector="chooseUserSelected:" target="494" id="hw0-As-Xe3"/>
+                                        </connections>
                                     </popUpButton>
+                                    <button verticalHuggingPriority="750" id="fwX-qN-yU8">
+                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Choose User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QaI-My-EcF">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="chooseUserSubmitted:" target="494" id="fWh-jC-bca"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </visualEffectView>
                         </subviews>
@@ -269,6 +277,7 @@
             <connections>
                 <outlet property="backToMenuButton" destination="WT5-bj-W4m" id="JFS-3y-Nv7"/>
                 <outlet property="chooseUserButton" destination="nlD-BJ-5OC" id="Lra-od-hWf"/>
+                <outlet property="chooseUserSubmitButton" destination="fwX-qN-yU8" id="S9J-5S-3Vm"/>
                 <outlet property="coverView" destination="GQ2-BB-qB0" id="7TD-1b-PRa"/>
                 <outlet property="createLevelButton" destination="Z3z-m6-YuN" id="nnT-5j-JEu"/>
                 <outlet property="createUserButton" destination="SdJ-Sh-M2y" id="tqO-NH-Slq"/>
@@ -279,6 +288,7 @@
                 <outlet property="selectLevelButton" destination="Og6-z2-tsE" id="mlo-fI-vx6"/>
                 <outlet property="skView" destination="539" id="540"/>
                 <outlet property="submitCreateButton" destination="NZu-yW-Acr" id="E2d-MO-rIa"/>
+                <outlet property="userSelectionPopup" destination="PGV-Fe-zVe" id="F5S-A4-A4m"/>
                 <outlet property="usernameTextField" destination="Asa-yP-hHV" id="Bcb-tf-t6c"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>

@@ -26,9 +26,9 @@
         </compoundIndexes>
     </entity>
     <elements>
-        <element name="Mood" positionX="115" positionY="93" width="128" height="73"/>
-        <element name="Melody" positionX="-234" positionY="72" width="128" height="103"/>
         <element name="Level" positionX="-261" positionY="-180" width="128" height="103"/>
+        <element name="Melody" positionX="-234" positionY="72" width="128" height="103"/>
+        <element name="Mood" positionX="115" positionY="93" width="128" height="73"/>
         <element name="User" positionX="52" positionY="-153" width="128" height="73"/>
     </elements>
 </model>

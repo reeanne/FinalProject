@@ -50,6 +50,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var levelSelectionPopup: NSPopUpButton!
     @IBOutlet weak var selectLevelButton: NSButton!
     
+    @IBOutlet weak var userSelectionPopup: NSPopUpButton!
+    @IBOutlet weak var chooseUserSubmitButton: NSButton!
+    
+    
     var scene: GameScene!;
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -64,6 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             hideCreateCharacterElements();
             hideLoggedUserButtons();
             hideChooseLevelButtons();
+            hideSelectUserButtons();
             showMainMenuButtons();
             
             /* Sprite Kit applies additional optimizations to improve rendering performance */
@@ -84,27 +89,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /**
         Button arrangements.
     */
-    
-    func showBackButton() {
-        backToMenuButton.hidden = false;
-    }
-    
-    func hideBackButton() {
-        backToMenuButton.hidden = true;
-    }
+
     
     func showCreateCharacterElements() {
-        showBackButton();
+        backToMenuButton.hidden = false;
         submitCreateButton.hidden = false;
         usernameTextField.hidden = false;
     }
     
     func hideCreateCharacterElements() {
-        hideBackButton();
+        backToMenuButton.hidden = true;
         submitCreateButton.hidden = true;
         usernameTextField.hidden = true;
     }
     
+    func showSelectUserButtons() {
+        backToMenuButton.hidden = false;
+        chooseUserSubmitButton.hidden = false;
+        userSelectionPopup.hidden = false;
+    }
+    
+    func hideSelectUserButtons() {
+        backToMenuButton.hidden = true;
+        chooseUserSubmitButton.hidden = true;
+        userSelectionPopup.hidden = true;
+    }
     
     func hideMainMenuButtons() {
         quickGameButton.hidden = true;
@@ -154,6 +163,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func quickGame(sender: AnyObject) {
         hideMainMenuButtons();
+        hideChooseLevelButtons();
+        hideCreateCharacterElements();
+        hideLoggedUserButtons();
+        hideMainMenuButtons();
+        hideSelectUserButtons();
     }
 
     @IBAction func chooseUser(sender: AnyObject) {
@@ -163,17 +177,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
+            println(fetchResults)
             for user in fetchResults {
                 users.append(user.username);
             }
         }
         levelSelectionPopup.addItemsWithTitles(users);
+        
+        hideChooseLevelButtons();
+        hideCreateCharacterElements();
+        hideLoggedUserButtons();
+        hideMainMenuButtons();
+        showSelectUserButtons();
     }
 
     @IBAction func createUser(sender: AnyObject) {
         hideMainMenuButtons();
         hideChooseLevelButtons();
         hideLoggedUserButtons();
+        hideSelectUserButtons();
         showCreateCharacterElements();
     }
     
@@ -184,9 +206,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func submitCreate(sender: AnyObject) {
         var username = usernameTextField.stringValue;
         scene.user = UserObject(userName: username);
-        var userEntity = NSEntityDescription.insertNewObjectForEntityForName(
-            "User", inManagedObjectContext: managedObjectContext!) as! User;
-        userEntity.username = username;
+        if let moc = self.managedObjectContext {
+            User.createInManagedObjectContext(moc, username: username)
+        }
+        //var userEntity = NSEntityDescription.insertNewObjectForEntityForName(
+        //    "User", inManagedObjectContext: managedObjectContext!) as! User;
+        //userEntity.username = username;
         hideCreateCharacterElements();
         showLoggedUserButtons();
     }
@@ -226,6 +251,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
     }
     
+    @IBAction func chooseUserSelected(sender: AnyObject) {
+    }
+    @IBAction func chooseUserSubmitted(sender: AnyObject) {
+    }
   
     @IBAction func quitGame(sender: AnyObject) {
         self.saveContext();
