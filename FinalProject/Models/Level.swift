@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  Level.swift
 //  FinalProject
 //
 //  Created by Paulina Koch on 16/04/2015.
@@ -9,9 +9,9 @@
 import Foundation
 import CoreData
 
-class User: NSManagedObject {
+class Level: NSManagedObject {
 
-    @NSManaged var username: String
+    @NSManaged var melody: Melody
+    @NSManaged var owner: User
 
-    
 }

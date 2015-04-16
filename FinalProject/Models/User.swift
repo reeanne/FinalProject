@@ -12,6 +12,6 @@ import CoreData
 class User: NSManagedObject {
 
     @NSManaged var username: String
+    @NSManaged var levels: NSSet
 
-    
 }
