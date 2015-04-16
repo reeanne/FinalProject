@@ -2,21 +2,15 @@
 //  User.swift
 //  FinalProject
 //
-//  Created by Paulina Koch on 31/12/2014.
-//  Copyright (c) 2014 Paulina Koch. All rights reserved.
+//  Created by Paulina Koch on 16/04/2015.
+//  Copyright (c) 2015 Paulina Koch. All rights reserved.
 //
 
 import Foundation
+import CoreData
 
-class User {
-    var username: String;
-    var scores: [Int : Level]?;
-    
-    init(userName:String){
-        username = userName;
-        scores = Dictionary<Int, Level>();
-    }
-    
-    
-    
+class User: NSManagedObject {
+
+    @NSManaged var username: String
+
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Entity" syncable="YES"/>
+    <entity name="Entity1" syncable="YES"/>
+    <entity name="Level" representedClassName="" syncable="YES"/>
+    <entity name="User" representedClassName="FinalProject.User" syncable="YES">
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="username"/>
+            </compoundIndex>
+        </compoundIndexes>
+    </entity>
+    <elements>
+        <element name="Entity" positionX="-36" positionY="9" width="128" height="45"/>
+        <element name="Level" positionX="-54" positionY="-9" width="128" height="45"/>
+        <element name="User" positionX="-63" positionY="-18" width="128" height="58"/>
+        <element name="Entity1" positionX="-45" positionY="0" width="128" height="43"/>
+    </elements>
+</model>

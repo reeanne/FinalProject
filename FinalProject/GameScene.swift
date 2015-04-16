@@ -13,6 +13,8 @@ import SpriteKit
 class GameScene: SKScene {
 
     var player : AVAudioPlayer! = nil;
+    let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+
     
     override func didMoveToView(view: SKView) {
         let height = CGRectGetMidX(self.frame) *  3 / 4;
@@ -48,6 +50,10 @@ class GameScene: SKScene {
         }
         //AudioFileClose(audioFile);
 */
+        // Retreive the managedObjectContext from AppDelegate
+        
+        // Print it to the console
+        println(managedObjectContext);
     }
     
     override func mouseDown(theEvent: NSEvent) {
