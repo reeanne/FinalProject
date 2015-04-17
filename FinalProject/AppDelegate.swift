@@ -3,7 +3,7 @@
 //  FinalProject
 //
 //  Created by Paulina Koch on 30/12/2014.
-//  Copyright (c) 2014 Paulina Koch. All rights reserved.
+//  Copyright (c) 2015 Paulina Koch. All rights reserved.
 //
 
 
