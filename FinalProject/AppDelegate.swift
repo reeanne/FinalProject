@@ -57,6 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     var scene: GameScene!;
+    var menuScene: MenuScene!;
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
@@ -66,7 +67,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             scene.scaleMode = .AspectFill;
             
             self.skView!.presentScene(scene);
-
             hideCreateCharacterElements();
             hideLoggedUserButtons();
             hideChooseLevelButtons();

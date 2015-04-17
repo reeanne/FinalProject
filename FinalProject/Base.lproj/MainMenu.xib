@@ -289,6 +289,10 @@
                                     </button>
                                 </subviews>
                             </visualEffectView>
+                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="Om1-th-siJ" userLabel="GameView">
+                                <rect key="frame" x="-25" y="236" width="489" height="355"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </visualEffectView>
                         </subviews>
                     </customView>
                 </subviews>
