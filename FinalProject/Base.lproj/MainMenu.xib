@@ -242,6 +242,17 @@
                                             <action selector="selectLevelSubmit:" target="494" id="nBV-FL-h4h"/>
                                         </connections>
                                     </button>
+                                    <button verticalHuggingPriority="750" id="OZd-Ud-asm">
+                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bnx-Eb-leG">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="deleteLevelSubmitted:" target="494" id="mRD-Lk-W5U"/>
+                                        </connections>
+                                    </button>
                                     <popUpButton verticalHuggingPriority="750" id="PGV-Fe-zVe">
                                         <rect key="frame" x="320" y="278" width="169" height="26"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -255,7 +266,7 @@
                                         </connections>
                                     </popUpButton>
                                     <button verticalHuggingPriority="750" id="fwX-qN-yU8">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                        <rect key="frame" x="316" y="223" width="176" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="push" title="Choose User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QaI-My-EcF">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -263,6 +274,17 @@
                                         </buttonCell>
                                         <connections>
                                             <action selector="chooseUserSubmitted:" target="494" id="fWh-jC-bca"/>
+                                        </connections>
+                                    </button>
+                                    <button verticalHuggingPriority="750" id="FBP-c3-pjG">
+                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Delete User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ytj-Ip-ZLT">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="deleteUserSubmitted:" target="494" id="IGk-SQ-BYS"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -281,6 +303,8 @@
                 <outlet property="coverView" destination="GQ2-BB-qB0" id="7TD-1b-PRa"/>
                 <outlet property="createLevelButton" destination="Z3z-m6-YuN" id="nnT-5j-JEu"/>
                 <outlet property="createUserButton" destination="SdJ-Sh-M2y" id="tqO-NH-Slq"/>
+                <outlet property="deleteLevelSubmitButton" destination="OZd-Ud-asm" id="8EY-JJ-aum"/>
+                <outlet property="deleteUserSubmitButton" destination="FBP-c3-pjG" id="iFz-e0-4qJ"/>
                 <outlet property="levelSelectionPopup" destination="q9E-c4-ASa" id="kw4-ff-S5i"/>
                 <outlet property="loadLevelButton" destination="6su-9T-vwE" id="GJg-jN-NpB"/>
                 <outlet property="quickGameButton" destination="hAw-Mb-MNh" id="7zZ-aV-n5i"/>

@@ -15,14 +15,15 @@ class GameScene: SKScene {
     var audioplayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
+    var height: CGFloat! = nil;
+    var width: CGFloat! = nil;
+
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     
     override func didMoveToView(view: SKView) {
-        let height = CGRectGetMidX(self.frame) *  3 / 4;
-        let width = CGRectGetMidY(self.frame) * 2 / 4;
-
+       
         /* Setup your scene here */
         /*
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
@@ -32,28 +33,10 @@ class GameScene: SKScene {
         
         self.addChild(myLabel)
         */
-     /*
-        var path = openfiledlg("Open file",  message:"Open file");
-        //        let audioURL = NSURL.fileURLWithPath("/Users/paulinakoch/Music/iTunes/iTunes Media/Music/Compilations/The Hobbit_ The Battle Of The Five Armies (Limited Deluxe)/2-21 The Last Goodbye.mp3");
-        let audioURL = NSURL.fileURLWithPath(path);
-        
-        NSLog("Siabadabadu  \(path)")
-        
-        getPredominantMelody(audioURL!);
-        var melody = Melody(audioURL: audioURL!)
-
-        var locationRed = CGPoint(x:width / 2, y:height);
-        var locationBlue = CGPoint(x:width * 3 / 2, y:height);
-        var currentLevel = Level(levelName:"Level", locationList:[locationRed, locationBlue], melody: melody);
-        for child in currentLevel.buttons {
-            self.addChild(child.node);
-        }
-        if (audioURL != nil) {
-            startPlaying(audioURL!);
-        }
-        //AudioFileClose(audioFile);
-*/
         // Retreive the managedObjectContext from AppDelegate
+        
+        height = CGRectGetMidX(self.frame) *  3 / 4;
+        width = CGRectGetMidY(self.frame) * 2 / 4;
         
         // Print it to the console
         println(managedObjectContext);
@@ -108,15 +91,40 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
+    
+    
+    
+    func chooseFile() {
+        var path = openfiledlg("Open file",  message:"Open file");
+        let audioURL = NSURL.fileURLWithPath(path);
+        
+        getPredominantMelody(audioURL!);
+        var melody = MelodyObject(audioURL: audioURL!)
+        
+        // var locationRed = CGPoint(x: width / 2, y: height);
+        // var locationBlue = CGPoint(x: width * 3 / 2, y: height);
+        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
+        // for child in currentLevel.buttons {
+        //     self.addChild(child.node);
+        // }
+        if (audioURL != nil) {
+            startPlaying(audioURL!);
+        }
+        //AudioFileClose(audioFile);
+        
+    }
+
+    /**
+        Calls an external executable determining a predominant melody.
+    */
     func getPredominantMelody(audioURL: NSURL) {
         var task = NSTask();
         task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
+        // TODO: Change the paths to adjust to different users, not just mine...
         task.arguments = [audioURL, "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.yaml"];
         task.launch();
-        println("started");
         task.waitUntilExit();
         var status = task.terminationStatus;
-        println("finished");
         if (status == 0) {
             NSLog("Task succeeded.");
         } else {
@@ -148,6 +156,9 @@ class GameScene: SKScene {
         }
     }
     
+    /**
+        Starts off a predetermined level without the ability of choosing music.
+    */
     func loadQuickGame(level: LevelObject) {
         
     }
@@ -160,6 +171,5 @@ class GameScene: SKScene {
         audioplayer.prepareToPlay();
         audioplayer.play();
     }
-
-        
+    
 }
