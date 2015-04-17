@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class MenuController: NSWindowController {
+class MenuController: NSViewController {
     
         
     @IBOutlet weak var mainQuickGameButton: NSButton!
@@ -37,8 +37,8 @@ class MenuController: NSWindowController {
     var level: LevelObject! = nil;
 
     
-    override func windowDidLoad() {
-        super.windowDidLoad()
+    override func viewDidLoad() {
+        super.viewDidLoad()
         hideCreateCharacterElements();
         hideLoggedUserButtons();
         hideChooseLevelButtons();
@@ -136,6 +136,7 @@ class MenuController: NSWindowController {
         hideLoggedUserButtons();
         hideMainMenuButtons();
         hideSelectUserButtons();
+        (NSApplication.sharedApplication().delegate as! AppDelegate).playGameWindow();
 
     }
     
@@ -184,6 +185,8 @@ class MenuController: NSWindowController {
     @IBAction func userCreateUserButtonPressed(sender: AnyObject) {
         var username = userUserNameField.stringValue;
         user = UserObject(userName: username);
+        (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
+        
         if let moc = self.managedObjectContext {
             User.createInManagedObjectContext(moc, username: username)
         }
@@ -214,6 +217,7 @@ class MenuController: NSWindowController {
     @IBAction func levelDeleteLevelButtonPressed(sender: AnyObject) {
         var name = levelSelectLevelPopup.selectedItem?.description;
         level = nil;
+        (NSApplication.sharedApplication().delegate as! AppDelegate).level = nil;
         deleteLevel(name!);
         levelSelectLevelPopup.removeItemWithTitle(name!);
     }
@@ -221,6 +225,7 @@ class MenuController: NSWindowController {
     @IBAction func userChooseUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
         user = UserObject(userName: username!);
+        (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
         hideMainMenuButtons();
         hideChooseLevelButtons();
         hideSelectUserButtons();
@@ -231,6 +236,7 @@ class MenuController: NSWindowController {
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
         user = nil;
+        (NSApplication.sharedApplication().delegate as! AppDelegate).user = nil;
         deleteUser(username!);
         userSelectUserPopup.removeItemWithTitle(username!);
 
@@ -259,10 +265,8 @@ class MenuController: NSWindowController {
         let fetchRequest = NSFetchRequest(entityName: "User")
         let sortDescriptor = NSSortDescriptor(key: "username", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
-        println(managedObjectContext);
         
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
-            println(fetchResults)
             for user in fetchResults {
                 users.append(user.username);
             }

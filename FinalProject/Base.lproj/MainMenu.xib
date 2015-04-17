@@ -109,6 +109,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="KhC-rr-XZI">
+                        <rect key="frame" x="336" y="236" width="128" height="128"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </visualEffectView>
                     <visualEffectView wantsLayer="YES" appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="GQ2-BB-qB0" userLabel="MainMenuView">
                         <rect key="frame" x="-28" y="-24" width="856" height="648"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -286,7 +290,11 @@
             </view>
             <point key="canvasLocation" x="296" y="379"/>
         </window>
-        <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target"/>
+        <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target">
+            <connections>
+                <outlet property="window" destination="371" id="Fkp-6r-7ub"/>
+            </connections>
+        </customObject>
         <viewController id="Nyw-fv-lIg" customClass="MenuController" customModule="FinalProject" customModuleProvider="target">
             <connections>
                 <outlet property="backButton" destination="WT5-bj-W4m" id="RbI-zr-ccM"/>
@@ -304,8 +312,15 @@
                 <outlet property="userLoadLevelButton" destination="6su-9T-vwE" id="Fzx-Bg-XX9"/>
                 <outlet property="userSelectUserPopup" destination="PGV-Fe-zVe" id="0Si-gp-YfA"/>
                 <outlet property="userUserNameField" destination="Asa-yP-hHV" id="0Df-2V-Qnz"/>
-                <outlet property="window" destination="371" id="NJT-sn-GFd"/>
+                <outlet property="view" destination="GQ2-BB-qB0" id="Xwn-jJ-L5b"/>
             </connections>
         </viewController>
+        <viewController title="Game Controller" id="Php-rC-xha" customClass="GameController" customModule="FinalProject/Controllers"/>
+        <menuItem title="Enter Full Screen" keyEquivalent="f" id="0DU-Jg-gcS">
+            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+            <connections>
+                <action selector="toggleFullScreen:" target="-1" id="1Id-Kg-jbx"/>
+            </connections>
+        </menuItem>
     </objects>
 </document>

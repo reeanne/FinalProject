@@ -10,6 +10,7 @@
 import Cocoa
 import SpriteKit
 import CoreData
+import AppKit
 
 extension SKNode {
     class func unarchiveFromFile(file : NSString) -> SKNode? {
@@ -35,7 +36,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var skView: SKView!;
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!;
     
+    var user: UserObject! = nil;
+    var level: LevelObject! = nil;
     var menuController: MenuController! = nil;
+    var gameController: GameController! = nil;
     
     
     var scene: GameScene!;
@@ -46,11 +50,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if scene != nil {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill;
-            
            // self.skView!.presentScene(scene);
             menuController = MenuController();
-            window = menuController.window;
-            
+            window.contentView = menuController.view;
+            window.contentViewController = menuController;
             /* Sprite Kit applies additional optimizations to improve rendering performance */
            // self.skView!.ignoresSiblingOrder = true;
             
@@ -63,6 +66,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true;
+    }
+    
+    func playGameWindow() {
+        gameController = GameController();
+        window.contentView = gameController.view;
+        window.contentViewController = gameController;
     }
 
     
