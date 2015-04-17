@@ -109,218 +109,203 @@
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView wantsLayer="YES" id="539" customClass="SKView">
-                        <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                    <visualEffectView wantsLayer="YES" appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="GQ2-BB-qB0" userLabel="MainMenuView">
+                        <rect key="frame" x="-28" y="-24" width="856" height="648"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <visualEffectView wantsLayer="YES" appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="GQ2-BB-qB0" userLabel="MainMenuView">
-                                <rect key="frame" x="-13" y="-39" width="856" height="648"/>
+                            <button verticalHuggingPriority="750" id="hAw-Mb-MNh">
+                                <rect key="frame" x="316" y="277" width="176" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <subviews>
-                                    <button verticalHuggingPriority="750" id="nlD-BJ-5OC">
-                                        <rect key="frame" x="316" y="223" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Choose a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VnX-FN-bnX">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="chooseUser:" target="494" id="UxA-IV-S5J"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="SdJ-Sh-M2y">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Create a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="K3h-4Y-k04">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="createUser:" target="494" id="yhU-Yc-ylv"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="EWO-yf-1bc">
-                                        <rect key="frame" x="316" y="115" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nGF-7i-7qE">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="quitGame:" target="494" id="61H-ai-2Y2"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="WOg-jt-ReS">
-                                        <rect key="frame" x="242" y="484" width="324" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Paulina's Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gb6-EE-dZ7">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system" size="28"/>
-                                        </buttonCell>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="hAw-Mb-MNh">
-                                        <rect key="frame" x="316" y="277" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Quick Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HQ1-iz-Fzg">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="quickGame:" target="494" id="jOE-23-UPu"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="WT5-bj-W4m">
-                                        <rect key="frame" x="316" y="115" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Back" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sTR-W4-xI6">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="backToMenuAction:" target="494" id="6Uk-qn-PSX"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="NZu-yW-Acr">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Create" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fPH-at-DmD">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="submitCreate:" target="494" id="QII-k2-aGA"/>
-                                        </connections>
-                                    </button>
-                                    <textField verticalHuggingPriority="750" id="Asa-yP-hHV">
-                                        <rect key="frame" x="322" y="283" width="164" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="User Name" id="JPk-hw-9Wo">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                    <button verticalHuggingPriority="750" id="Z3z-m6-YuN">
-                                        <rect key="frame" x="316" y="223" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Create Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FWv-kd-JoW">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="createLevelPressed:" target="494" id="HDI-1A-aDU"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="6su-9T-vwE">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Load Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SVu-w7-Jmd">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="loadLevelPressed:" target="494" id="ZAN-kR-GuI"/>
-                                        </connections>
-                                    </button>
-                                    <popUpButton verticalHuggingPriority="750" id="q9E-c4-ASa">
-                                        <rect key="frame" x="320" y="281" width="169" height="26"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="9gF-4n-EU9">
-                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="menu"/>
-                                            <menu key="menu" id="IZe-C4-okO"/>
-                                        </popUpButtonCell>
-                                    </popUpButton>
-                                    <button verticalHuggingPriority="750" id="Og6-z2-tsE">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Play Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hLu-Yr-uab">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="selectLevelSubmit:" target="494" id="nBV-FL-h4h"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="OZd-Ud-asm">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bnx-Eb-leG">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="deleteLevelSubmitted:" target="494" id="mRD-Lk-W5U"/>
-                                        </connections>
-                                    </button>
-                                    <popUpButton verticalHuggingPriority="750" id="PGV-Fe-zVe">
-                                        <rect key="frame" x="320" y="278" width="169" height="26"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <popUpButtonCell key="cell" type="push" alternateTitle="Popup choose" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="xrg-Lq-u8c">
-                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="menu"/>
-                                            <menu key="menu" id="RDU-UK-Pf4"/>
-                                        </popUpButtonCell>
-                                        <connections>
-                                            <action selector="chooseUserSelected:" target="494" id="hw0-As-Xe3"/>
-                                        </connections>
-                                    </popUpButton>
-                                    <button verticalHuggingPriority="750" id="fwX-qN-yU8">
-                                        <rect key="frame" x="316" y="223" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Choose User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QaI-My-EcF">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="chooseUserSubmitted:" target="494" id="fWh-jC-bca"/>
-                                        </connections>
-                                    </button>
-                                    <button verticalHuggingPriority="750" id="FBP-c3-pjG">
-                                        <rect key="frame" x="316" y="170" width="176" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="push" title="Delete User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ytj-Ip-ZLT">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="deleteUserSubmitted:" target="494" id="IGk-SQ-BYS"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </visualEffectView>
-                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="Om1-th-siJ" userLabel="GameView">
-                                <rect key="frame" x="-25" y="236" width="489" height="355"/>
+                                <buttonCell key="cell" type="push" title="Quick Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HQ1-iz-Fzg">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="mainQuickGamePressed:" target="Nyw-fv-lIg" id="RZ9-Hz-CoB"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="nlD-BJ-5OC">
+                                <rect key="frame" x="316" y="223" width="176" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            </visualEffectView>
+                                <buttonCell key="cell" type="push" title="Choose a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VnX-FN-bnX">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="mainChooseUserButtonPressed:" target="Nyw-fv-lIg" id="T7V-el-Sj3"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="SdJ-Sh-M2y">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Create a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="K3h-4Y-k04">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="mainCreateUserButtonPressed:" target="Nyw-fv-lIg" id="tyr-xo-osa"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="EWO-yf-1bc">
+                                <rect key="frame" x="316" y="115" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nGF-7i-7qE">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="mainQuitGameButtonPressed:" target="Nyw-fv-lIg" id="hoq-8P-RoS"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="WOg-jt-ReS">
+                                <rect key="frame" x="242" y="484" width="324" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Paulina's Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gb6-EE-dZ7">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system" size="28"/>
+                                </buttonCell>
+                            </button>
+                            <button verticalHuggingPriority="750" id="WT5-bj-W4m">
+                                <rect key="frame" x="316" y="115" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Back" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sTR-W4-xI6">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="backButtonPressed:" target="Nyw-fv-lIg" id="9rf-2z-qgw"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="NZu-yW-Acr">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Create" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fPH-at-DmD">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="userCreateUserButtonPressed:" target="Nyw-fv-lIg" id="HsV-sS-03q"/>
+                                </connections>
+                            </button>
+                            <textField verticalHuggingPriority="750" id="Asa-yP-hHV">
+                                <rect key="frame" x="322" y="283" width="164" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="User Name" id="JPk-hw-9Wo">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" id="Z3z-m6-YuN">
+                                <rect key="frame" x="316" y="223" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Create Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FWv-kd-JoW">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="loggedCreateLevelButtonPressed:" target="Nyw-fv-lIg" id="JGc-Hl-2Fw"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="6su-9T-vwE">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Load Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SVu-w7-Jmd">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="userLoadLevelButtonPressed:" target="Nyw-fv-lIg" id="NPV-TW-bod"/>
+                                </connections>
+                            </button>
+                            <popUpButton verticalHuggingPriority="750" id="q9E-c4-ASa">
+                                <rect key="frame" x="320" y="281" width="169" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="9gF-4n-EU9">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="IZe-C4-okO"/>
+                                </popUpButtonCell>
+                            </popUpButton>
+                            <button verticalHuggingPriority="750" id="Og6-z2-tsE">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Play Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hLu-Yr-uab">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="levelPlayLevelButtonPressed:" target="Nyw-fv-lIg" id="XjM-eR-hmB"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="OZd-Ud-asm">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bnx-Eb-leG">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="levelDeleteLevelButtonPressed:" target="Nyw-fv-lIg" id="Glr-Ad-Owr"/>
+                                </connections>
+                            </button>
+                            <popUpButton verticalHuggingPriority="750" id="PGV-Fe-zVe">
+                                <rect key="frame" x="320" y="278" width="169" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <popUpButtonCell key="cell" type="push" alternateTitle="Popup choose" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="xrg-Lq-u8c">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="RDU-UK-Pf4"/>
+                                </popUpButtonCell>
+                            </popUpButton>
+                            <button verticalHuggingPriority="750" id="fwX-qN-yU8">
+                                <rect key="frame" x="316" y="223" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Choose User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QaI-My-EcF">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="userChooseUserButtonPressed:" target="Nyw-fv-lIg" id="dD7-8U-W7W"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="FBP-c3-pjG">
+                                <rect key="frame" x="316" y="170" width="176" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Delete User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ytj-Ip-ZLT">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="userDeleteUserButtonPressed:" target="Nyw-fv-lIg" id="fER-rd-wlU"/>
+                                </connections>
+                            </button>
                         </subviews>
-                    </customView>
+                    </visualEffectView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="262" y="341"/>
+            <point key="canvasLocation" x="296" y="379"/>
         </window>
-        <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target">
+        <customObject id="494" customClass="AppDelegate" customModule="FinalProject" customModuleProvider="target"/>
+        <viewController id="Nyw-fv-lIg" customClass="MenuController" customModule="FinalProject" customModuleProvider="target">
             <connections>
-                <outlet property="backToMenuButton" destination="WT5-bj-W4m" id="JFS-3y-Nv7"/>
-                <outlet property="chooseUserButton" destination="nlD-BJ-5OC" id="Lra-od-hWf"/>
-                <outlet property="chooseUserSubmitButton" destination="fwX-qN-yU8" id="S9J-5S-3Vm"/>
-                <outlet property="coverView" destination="GQ2-BB-qB0" id="7TD-1b-PRa"/>
-                <outlet property="createLevelButton" destination="Z3z-m6-YuN" id="nnT-5j-JEu"/>
-                <outlet property="createUserButton" destination="SdJ-Sh-M2y" id="tqO-NH-Slq"/>
-                <outlet property="deleteLevelSubmitButton" destination="OZd-Ud-asm" id="8EY-JJ-aum"/>
-                <outlet property="deleteUserSubmitButton" destination="FBP-c3-pjG" id="iFz-e0-4qJ"/>
-                <outlet property="levelSelectionPopup" destination="q9E-c4-ASa" id="kw4-ff-S5i"/>
-                <outlet property="loadLevelButton" destination="6su-9T-vwE" id="GJg-jN-NpB"/>
-                <outlet property="quickGameButton" destination="hAw-Mb-MNh" id="7zZ-aV-n5i"/>
-                <outlet property="quitGameButton" destination="EWO-yf-1bc" id="uyj-Yx-UCN"/>
-                <outlet property="selectLevelButton" destination="Og6-z2-tsE" id="mlo-fI-vx6"/>
-                <outlet property="skView" destination="539" id="540"/>
-                <outlet property="submitCreateButton" destination="NZu-yW-Acr" id="E2d-MO-rIa"/>
-                <outlet property="userSelectionPopup" destination="PGV-Fe-zVe" id="F5S-A4-A4m"/>
-                <outlet property="usernameTextField" destination="Asa-yP-hHV" id="Bcb-tf-t6c"/>
-                <outlet property="window" destination="371" id="532"/>
+                <outlet property="backButton" destination="WT5-bj-W4m" id="RbI-zr-ccM"/>
+                <outlet property="levelDeleteLevelButton" destination="OZd-Ud-asm" id="faO-uf-rfJ"/>
+                <outlet property="levelPlayLevelButton" destination="Og6-z2-tsE" id="Lzu-tn-DZJ"/>
+                <outlet property="levelSelectLevelPopup" destination="q9E-c4-ASa" id="ADz-Pq-0xG"/>
+                <outlet property="loggedCreateLevelButton" destination="Z3z-m6-YuN" id="Tmq-rZ-TbP"/>
+                <outlet property="mainChooseUserButton" destination="nlD-BJ-5OC" id="jnw-Hg-JUH"/>
+                <outlet property="mainCreateUserButton" destination="SdJ-Sh-M2y" id="GPv-2c-DD1"/>
+                <outlet property="mainQuickGameButton" destination="hAw-Mb-MNh" id="eK9-XI-IyB"/>
+                <outlet property="mainQuitGameButton" destination="EWO-yf-1bc" id="zLB-Y3-l56"/>
+                <outlet property="userChooseUserButton" destination="fwX-qN-yU8" id="d7x-tQ-nrh"/>
+                <outlet property="userCreateUserButton" destination="NZu-yW-Acr" id="KCa-KP-MvQ"/>
+                <outlet property="userDeleteUserButton" destination="FBP-c3-pjG" id="JKq-Gr-4KZ"/>
+                <outlet property="userLoadLevelButton" destination="6su-9T-vwE" id="Fzx-Bg-XX9"/>
+                <outlet property="userSelectUserPopup" destination="PGV-Fe-zVe" id="0Si-gp-YfA"/>
+                <outlet property="userUserNameField" destination="Asa-yP-hHV" id="0Df-2V-Qnz"/>
+                <outlet property="window" destination="371" id="NJT-sn-GFd"/>
             </connections>
-        </customObject>
-        <customObject id="420" customClass="NSFontManager"/>
+        </viewController>
     </objects>
 </document>

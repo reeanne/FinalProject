@@ -35,29 +35,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var skView: SKView!;
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!;
     
-    @IBOutlet weak var quickGameButton: NSButton!;
-    @IBOutlet weak var chooseUserButton: NSButton!;
-    @IBOutlet weak var createUserButton: NSButton!;
-    @IBOutlet weak var quitGameButton: NSButton!;
-    
-    @IBOutlet weak var submitCreateButton: NSButton!
-    @IBOutlet weak var backToMenuButton: NSButton!
-    @IBOutlet weak var usernameTextField: NSTextField!
-
-    @IBOutlet weak var createLevelButton: NSButton!
-    @IBOutlet weak var loadLevelButton: NSButton!
-    
-    @IBOutlet weak var levelSelectionPopup: NSPopUpButton!
-    @IBOutlet weak var selectLevelButton: NSButton!
-    @IBOutlet weak var deleteLevelSubmitButton: NSButton!
-    
-    @IBOutlet weak var userSelectionPopup: NSPopUpButton!
-    @IBOutlet weak var chooseUserSubmitButton: NSButton!
-    @IBOutlet weak var deleteUserSubmitButton: NSButton!
+    var menuController: MenuController! = nil;
     
     
     var scene: GameScene!;
-    var menuScene: MenuScene!;
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
@@ -66,19 +47,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill;
             
-            self.skView!.presentScene(scene);
-            hideCreateCharacterElements();
-            hideLoggedUserButtons();
-            hideChooseLevelButtons();
-            hideSelectUserButtons();
-            showMainMenuButtons();
+           // self.skView!.presentScene(scene);
+            menuController = MenuController();
+            window = menuController.window;
             
             /* Sprite Kit applies additional optimizations to improve rendering performance */
-            self.skView!.ignoresSiblingOrder = true;
+           // self.skView!.ignoresSiblingOrder = true;
             
             #if DEBUG
-                self.skView!.showsFPS = true;
-                self.skView!.showsNodeCount = true;
+             //   self.skView!.showsFPS = true;
+              //  self.skView!.showsNodeCount = true;
             #endif
         }
     }
@@ -87,277 +65,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true;
     }
 
-
-    /**
-        Button arrangements.
-    */
-
-
-    func showCreateCharacterElements() {
-        backToMenuButton.hidden = false;
-        submitCreateButton.hidden = false;
-        usernameTextField.hidden = false;
-    }
-
-    func hideCreateCharacterElements() {
-        backToMenuButton.hidden = true;
-        submitCreateButton.hidden = true;
-        usernameTextField.hidden = true;
-    }
-
-    func showSelectUserButtons() {
-        backToMenuButton.hidden = false;
-        chooseUserSubmitButton.hidden = false;
-        deleteUserSubmitButton.hidden = false;
-        userSelectionPopup.hidden = false;
-    }
-
-    func hideSelectUserButtons() {
-        backToMenuButton.hidden = true;
-        chooseUserSubmitButton.hidden = true;
-        deleteUserSubmitButton.hidden = true;
-        userSelectionPopup.hidden = true;
-    }
-
-    func hideMainMenuButtons() {
-        quickGameButton.hidden = true;
-        chooseUserButton.hidden = true;
-        createUserButton.hidden = true;
-        quitGameButton.hidden = true;
-    }
-
-    func showMainMenuButtons() {
-        quickGameButton.hidden = false;
-        chooseUserButton.hidden = false;
-        createUserButton.hidden = false;
-        quitGameButton.hidden = false;
-    }
-
-    func showLoggedUserButtons() {
-        quickGameButton.hidden = false;
-        createLevelButton.hidden = false;
-        loadLevelButton.hidden = false;
-        quitGameButton.hidden = false;
-    }
-
-    func hideLoggedUserButtons() {
-        quickGameButton.hidden = true;
-        createLevelButton.hidden = true;
-        loadLevelButton.hidden = true;
-        quitGameButton.hidden = true;
-    }
-
-    func showChooseLevelButtons() {
-        levelSelectionPopup.hidden = false;
-        selectLevelButton.hidden = false;
-        deleteLevelSubmitButton.hidden = false;
-        backToMenuButton.hidden = false;
-        
-    }
-
-    func hideChooseLevelButtons() {
-        levelSelectionPopup.hidden = true;
-        selectLevelButton.hidden = true;
-        backToMenuButton.hidden = true;
-        deleteLevelSubmitButton.hidden = true;
-    }
-
-
-
-    /**
-        Button listeners.
-    */
-
-    
-    /****** Main Menu *******/
-
-    @IBAction func quickGame(sender: AnyObject) {
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideMainMenuButtons();
-        hideSelectUserButtons();
-    }
-
-    @IBAction func chooseUser(sender: AnyObject) {
-        var users: [String] = getUsers();
-        userSelectionPopup.addItemsWithTitles(users);
-        hideChooseLevelButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideMainMenuButtons();
-        showSelectUserButtons();
-    }
-    
-    @IBAction func createUser(sender: AnyObject) {
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideLoggedUserButtons();
-        hideSelectUserButtons();
-        showCreateCharacterElements();
-    }
-    
-    @IBAction func quitGame(sender: AnyObject) {
-        self.saveContext();
-        NSApplication.sharedApplication().terminate(self);
-    }
-
-
-    /****** Choose User *******/
-    
-    @IBAction func chooseUserSelected(sender: AnyObject) {}
-    
-    @IBAction func chooseUserSubmitted(sender: AnyObject) {
-        var username = userSelectionPopup.selectedItem?.title;
-        scene.user = UserObject(userName: username!);
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideSelectUserButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-    }
-    
-    @IBAction func deleteUserSubmitted(sender: AnyObject) {
-        var username = userSelectionPopup.selectedItem?.title;
-        scene.user = nil;
-        deleteUser(username!);
-        userSelectionPopup.removeItemWithTitle(username!);
-    }
-
-    
-    /****** Choose Level *******/
-    
- 
-    @IBAction func selectLevelSubmit(sender: AnyObject) {
-        var levelName = levelSelectionPopup.selectedItem?.description;
-     }
-        
-    @IBAction func submitCreate(sender: AnyObject) {
-        var username = usernameTextField.stringValue;
-        scene.user = UserObject(userName: username);
-        if let moc = self.managedObjectContext {
-            User.createInManagedObjectContext(moc, username: username)
-        }
-        hideCreateCharacterElements();
-        showLoggedUserButtons();
-    }
-
-    @IBAction func backToMenuAction(sender: AnyObject) {
-        hideCreateCharacterElements();
-        hideSelectUserButtons();
-        hideChooseLevelButtons();
-        if (scene.user != nil) {
-            hideMainMenuButtons();
-            showLoggedUserButtons();
-        } else {
-            hideLoggedUserButtons();
-            showMainMenuButtons();
-        }
-    }
-    
-    @IBAction func deleteLevelSubmitted(sender: AnyObject) {
-        var name = levelSelectionPopup.selectedItem?.description;
-        scene.level = nil;
-        deleteLevel(name!);
-        userSelectionPopup.removeItemWithTitle(name!);
-    }
-    
-    
-    /****** Logged User ********/
-
-    @IBAction func loadLevelPressed(sender: AnyObject) {
-        var levels = getLevels();
-        levelSelectionPopup.removeAllItems();
-        levelSelectionPopup.addItemsWithTitles(levels);
-        hideMainMenuButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideSelectUserButtons();
-        showChooseLevelButtons();
-    }
-    
-    @IBAction func createLevelPressed(sender: AnyObject) {
-        
-    }
-
-
-    
-    /****** Helper functions *******/
-    
-    func getLevels() -> [String] {
-        var levels: [String] = [];
-        let fetchRequest = NSFetchRequest(entityName: "Level")
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
-            for level in fetchResults {
-                levels.append(level.name);
-            }
-        }
-        return levels;
-    }
-    
-    func getUsers() -> [String] {
-        var users: [String] = [];
-        let fetchRequest = NSFetchRequest(entityName: "User")
-        let sortDescriptor = NSSortDescriptor(key: "username", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
-            println(fetchResults)
-            for user in fetchResults {
-                users.append(user.username);
-            }
-        }
-        return users;
-    }
-    
-    func deleteUser(username: String) {
-        let fetchRequest = NSFetchRequest(entityName: "User")
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
-            var users = fetchResults;
-            for usr in users {
-                if (usr.username == username) {
-                    managedObjectContext?.deleteObject(usr);
-                }
-            }
-        }
-    }
-    
-    func deleteLevel(name: String) {
-        let fetchRequest = NSFetchRequest(entityName: "Level")
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
-            var levels = fetchResults;
-            for lvl in levels {
-                if (lvl.name == name) {
-                    managedObjectContext?.deleteObject(lvl);
-                }
-            }
-        }
-        
-    }
-    
     
     /** 
         Data Model boilerplate code.
     */
-    
-    // MARK: - Core Data Saving support
-    
-    func saveContext () {
-        if let moc = self.managedObjectContext {
-            var error: NSError? = nil;
-            if moc.hasChanges && !moc.save(&error) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                NSLog("Unresolved error \(error), \(error!.userInfo)");
-                abort();
-            }
-        }
-    }
-    
     
     lazy var applicationDocumentsDirectory: NSURL = {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "Paulina-Koch.FinalProject" in the user's Application Support directory.
