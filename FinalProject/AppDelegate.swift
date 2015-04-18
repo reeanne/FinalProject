@@ -52,7 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             scene.scaleMode = .AspectFill;
            // self.skView!.presentScene(scene);
             menuController = MenuController(nibName: "MenuView", bundle: nil)
-            window.contentView = menuController.view;
+           // window.contentView = menuController.view;
             window.contentViewController = menuController;
            // playGameWindow();
             /* Sprite Kit applies additional optimizations to improve rendering performance */
@@ -70,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func playGameWindow() {
-        gameController = GameController();
+        gameController = GameController(nibName: "GameView", bundle: nil);
         window.contentView = gameController.view;
         window.contentViewController = gameController;
     }

@@ -195,6 +195,7 @@
                     </connections>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="63" y="364"/>
         </visualEffectView>
     </objects>
 </document>

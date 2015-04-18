@@ -97,7 +97,7 @@ class MenuController: NSViewController {
     func showLoggedUserButtons() {
         mainQuickGameButton.hidden = false;
         loggedCreateLevelButton.hidden = false;
-        userLoadLevelButton.hidden = false;
+        //userLoadLevelButton.hidden = false;
         mainQuitGameButton.hidden = false;
     }
     
