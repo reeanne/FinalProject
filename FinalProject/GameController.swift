@@ -13,8 +13,10 @@ import Cocoa
 
 class GameController: NSViewController {
     
+    
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
+    
     
     override func viewDidLoad() {
         super.viewDidLoad();

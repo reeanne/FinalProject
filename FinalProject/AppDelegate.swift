@@ -51,9 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill;
            // self.skView!.presentScene(scene);
-            menuController = MenuController();
+            menuController = MenuController(nibName: "MenuView", bundle: nil)
             window.contentView = menuController.view;
             window.contentViewController = menuController;
+           // playGameWindow();
             /* Sprite Kit applies additional optimizations to improve rendering performance */
            // self.skView!.ignoresSiblingOrder = true;
             

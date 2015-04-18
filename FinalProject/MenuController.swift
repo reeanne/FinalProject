@@ -7,10 +7,10 @@
 //
 
 import Cocoa
+import Foundation
 
 class MenuController: NSViewController {
     
-        
     @IBOutlet weak var mainQuickGameButton: NSButton!
     @IBOutlet weak var mainChooseUserButton: NSButton!
     @IBOutlet weak var mainCreateUserButton: NSButton!
@@ -23,7 +23,7 @@ class MenuController: NSViewController {
     
     @IBOutlet weak var loggedCreateLevelButton: NSButton!
     @IBOutlet weak var userLoadLevelButton: NSButton!
-    
+
     @IBOutlet weak var levelSelectLevelPopup: NSPopUpButton!
     @IBOutlet weak var levelPlayLevelButton: NSButton!
     @IBOutlet weak var levelDeleteLevelButton: NSButton!
@@ -32,11 +32,13 @@ class MenuController: NSViewController {
     @IBOutlet weak var userChooseUserButton: NSButton!
     @IBOutlet weak var userDeleteUserButton: NSButton!
     
+    
+    
     var managedObjectContext: NSManagedObjectContext! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
 
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         hideCreateCharacterElements();
@@ -102,7 +104,8 @@ class MenuController: NSViewController {
     func hideLoggedUserButtons() {
         mainQuickGameButton.hidden = true;
         loggedCreateLevelButton.hidden = true;
-        userLoadLevelButton.hidden = true;
+        // TODO: Find out why this is nil.
+       // userLoadLevelButton.hidden = true;
         mainQuitGameButton.hidden = true;
     }
     
@@ -137,9 +140,8 @@ class MenuController: NSViewController {
         hideMainMenuButtons();
         hideSelectUserButtons();
         (NSApplication.sharedApplication().delegate as! AppDelegate).playGameWindow();
-
     }
-    
+
     @IBAction func mainChooseUserButtonPressed(sender: AnyObject) {
         var users: [String] = getUsers();
         userSelectUserPopup.addItemsWithTitles(users);
@@ -148,7 +150,6 @@ class MenuController: NSViewController {
         hideLoggedUserButtons();
         hideMainMenuButtons();
         showSelectUserButtons();
-
     }
     
     @IBAction func mainCreateUserButtonPressed(sender: AnyObject) {
@@ -157,14 +158,13 @@ class MenuController: NSViewController {
         hideLoggedUserButtons();
         hideSelectUserButtons();
         showCreateCharacterElements();
-
     }
-    
+   
     @IBAction func mainQuitGameButtonPressed(sender: AnyObject) {
         self.saveContext();
         NSApplication.sharedApplication().terminate(self);
-
     }
+    
     
     /** Others **/
     
@@ -179,7 +179,6 @@ class MenuController: NSViewController {
             hideLoggedUserButtons();
             showMainMenuButtons();
         }
-
     }
     
     @IBAction func userCreateUserButtonPressed(sender: AnyObject) {
@@ -192,8 +191,8 @@ class MenuController: NSViewController {
         }
         hideCreateCharacterElements();
         showLoggedUserButtons();
-
     }
+    
  
     @IBAction func loggedCreateLevelButtonPressed(sender: AnyObject) {
     }
@@ -211,8 +210,8 @@ class MenuController: NSViewController {
     
     @IBAction func levelPlayLevelButtonPressed(sender: AnyObject) {
         var levelName = levelSelectLevelPopup.selectedItem?.description;
-
     }
+   
     
     @IBAction func levelDeleteLevelButtonPressed(sender: AnyObject) {
         var name = levelSelectLevelPopup.selectedItem?.description;
@@ -221,7 +220,7 @@ class MenuController: NSViewController {
         deleteLevel(name!);
         levelSelectLevelPopup.removeItemWithTitle(name!);
     }
-    
+   
     @IBAction func userChooseUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
         user = UserObject(userName: username!);
@@ -232,16 +231,15 @@ class MenuController: NSViewController {
         hideCreateCharacterElements();
         showLoggedUserButtons();
     }
-    
+ 
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
         user = nil;
         (NSApplication.sharedApplication().delegate as! AppDelegate).user = nil;
         deleteUser(username!);
         userSelectUserPopup.removeItemWithTitle(username!);
-
     }
-    
+
     
     /****** Helper functions *******/
     
