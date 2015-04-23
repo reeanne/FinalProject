@@ -22,7 +22,7 @@ class MenuController: NSViewController {
     @IBOutlet weak var userUserNameField: NSTextField!
     
     @IBOutlet weak var loggedCreateLevelButton: NSButton!
-    @IBOutlet weak var userLoadLevelButton: NSButton!
+    @IBOutlet weak var loggedLoadLevelButton: NSButton!
 
     @IBOutlet weak var levelSelectLevelPopup: NSPopUpButton!
     @IBOutlet weak var levelPlayLevelButton: NSButton!
@@ -32,6 +32,11 @@ class MenuController: NSViewController {
     @IBOutlet weak var userChooseUserButton: NSButton!
     @IBOutlet weak var userDeleteUserButton: NSButton!
     
+    @IBOutlet weak var newLevelUploadFile: NSButton!
+    @IBOutlet weak var newLevelFilePath: NSTextField!
+    @IBOutlet weak var newLevelCreateLevelButton: NSButton!
+    
+    @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
     
     
     var managedObjectContext: NSManagedObjectContext! = nil;
@@ -41,10 +46,12 @@ class MenuController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadingProgressIndicator.hidden = true;
         hideCreateCharacterElements();
         hideLoggedUserButtons();
         hideChooseLevelButtons();
         hideSelectUserButtons();
+        hideLevelLoadButtons();
         showMainMenuButtons();
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
     }
@@ -97,15 +104,14 @@ class MenuController: NSViewController {
     func showLoggedUserButtons() {
         mainQuickGameButton.hidden = false;
         loggedCreateLevelButton.hidden = false;
-        //userLoadLevelButton.hidden = false;
+        loggedLoadLevelButton.hidden = false;
         mainQuitGameButton.hidden = false;
     }
     
     func hideLoggedUserButtons() {
         mainQuickGameButton.hidden = true;
         loggedCreateLevelButton.hidden = true;
-        // TODO: Find out why this is nil.
-       // userLoadLevelButton.hidden = true;
+        loggedLoadLevelButton.hidden = true;
         mainQuitGameButton.hidden = true;
     }
     
@@ -123,6 +129,20 @@ class MenuController: NSViewController {
         backButton.hidden = true;
         levelDeleteLevelButton.hidden = true;
     }
+    
+    func showLevelLoadButtons() {
+        newLevelFilePath.hidden = false;
+        newLevelUploadFile.hidden = false;
+        newLevelCreateLevelButton.hidden = false;
+        backButton.hidden = false;
+    }
+    
+    func hideLevelLoadButtons() {
+        newLevelFilePath.hidden = true;
+        newLevelUploadFile.hidden = true;
+        newLevelCreateLevelButton.hidden = true;
+        backButton.hidden = true;
+    }
 
     
    
@@ -138,6 +158,7 @@ class MenuController: NSViewController {
         hideCreateCharacterElements();
         hideLoggedUserButtons();
         hideMainMenuButtons();
+        hideLevelLoadButtons();
         hideSelectUserButtons();
         (NSApplication.sharedApplication().delegate as! AppDelegate).playGameWindow();
     }
@@ -149,6 +170,7 @@ class MenuController: NSViewController {
         hideCreateCharacterElements();
         hideLoggedUserButtons();
         hideMainMenuButtons();
+        hideLevelLoadButtons();
         showSelectUserButtons();
     }
     
@@ -157,6 +179,7 @@ class MenuController: NSViewController {
         hideChooseLevelButtons();
         hideLoggedUserButtons();
         hideSelectUserButtons();
+        hideLevelLoadButtons();
         showCreateCharacterElements();
     }
    
@@ -172,6 +195,7 @@ class MenuController: NSViewController {
         hideCreateCharacterElements();
         hideSelectUserButtons();
         hideChooseLevelButtons();
+        hideLevelLoadButtons();
         if (user != nil) {
             hideMainMenuButtons();
             showLoggedUserButtons();
@@ -190,14 +214,24 @@ class MenuController: NSViewController {
             User.createInManagedObjectContext(moc, username: username)
         }
         hideCreateCharacterElements();
+        hideLevelLoadButtons();
+        hideMainMenuButtons();
+        hideChooseLevelButtons();
+        hideSelectUserButtons();
         showLoggedUserButtons();
     }
     
- 
     @IBAction func loggedCreateLevelButtonPressed(sender: AnyObject) {
+        hideMainMenuButtons();
+        hideCreateCharacterElements();
+        hideLoggedUserButtons();
+        hideSelectUserButtons();
+        hideChooseLevelButtons();
+        showLevelLoadButtons();
+
     }
     
-    @IBAction func userLoadLevelButtonPressed(sender: AnyObject) {
+    @IBAction func loggedLoadLevelButtonPressed(sender: AnyObject) {
         var levels = getLevels();
         levelSelectLevelPopup.removeAllItems();
         levelSelectLevelPopup.addItemsWithTitles(levels);
@@ -205,6 +239,7 @@ class MenuController: NSViewController {
         hideCreateCharacterElements();
         hideLoggedUserButtons();
         hideSelectUserButtons();
+        hideLevelLoadButtons();
         showChooseLevelButtons();
     }
     
@@ -238,6 +273,19 @@ class MenuController: NSViewController {
         (NSApplication.sharedApplication().delegate as! AppDelegate).user = nil;
         deleteUser(username!);
         userSelectUserPopup.removeItemWithTitle(username!);
+    }
+    
+    @IBAction func newLevelUoadLevelPressed(sender: AnyObject) {
+        var path = openfiledlg("Open file",  message:"Open file");
+        newLevelFilePath.stringValue = path;
+    }
+    
+    @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
+        
+        
+    }
+    
+    @IBAction func newLevelFilePathFieldPressed(sender: AnyObject) {
     }
 
     
@@ -307,7 +355,44 @@ class MenuController: NSViewController {
             }
         }
     }
-
+    
+    /**
+        Opens a dialog window allowing the user to choose a file to open.
+    */
+    func openfiledlg (title: String, message: String) -> String {
+        var myFiledialog: NSOpenPanel = NSOpenPanel();
+        
+        myFiledialog.prompt = "Open";
+        myFiledialog.worksWhenModal = true;
+        myFiledialog.allowsMultipleSelection = false;
+        myFiledialog.canChooseDirectories = false;
+        myFiledialog.resolvesAliases = true;
+        myFiledialog.title = title;
+        myFiledialog.message = message;
+        myFiledialog.runModal();
+        var chosenfile = myFiledialog.URL;
+        if (chosenfile != nil) {
+            var TheFile = chosenfile!.path!;
+            return (TheFile);
+        } else {
+            return ("");
+        }
+    }
+    
+    func createLevel(path: String) -> LevelObject {
+        let audioURL = NSURL.fileURLWithPath(path);
+        
+       // getPredominantMelody(audioURL!);
+        loadingProgressIndicator.hidden = false;
+        loadingProgressIndicator.startAnimation(self);
+        var melody = MelodyObject(audioURL: audioURL!)
+        loadingProgressIndicator.stopAnimation(self);
+        
+        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
+        if (audioURL != nil) {
+        }
+        return currentLevel;
+    }
     
 }
 

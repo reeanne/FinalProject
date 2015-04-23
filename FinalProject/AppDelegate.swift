@@ -33,7 +33,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var coverView: NSVisualEffectView!;
     @IBOutlet weak var window: NSWindow!;
-    @IBOutlet weak var skView: SKView!;
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!;
     
     var user: UserObject! = nil;
@@ -42,14 +41,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var gameController: GameController! = nil;
     
     
-    var scene: GameScene!;
-    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
-        scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
-        if scene != nil {
+       // scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
+       // if scene != nil {
             /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = .AspectFill;
+         //   scene.scaleMode = .AspectFill;
            // self.skView!.presentScene(scene);
             menuController = MenuController(nibName: "MenuView", bundle: nil)
            // window.contentView = menuController.view;
@@ -62,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
              //   self.skView!.showsFPS = true;
               //  self.skView!.showsNodeCount = true;
             #endif
-        }
+       // }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {

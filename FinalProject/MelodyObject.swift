@@ -49,4 +49,24 @@ class MelodyObject {
         NSLog("\(albumString)   \(artistString)  \(titleString)")
         
     }
+    
+    
+    /**
+    Calls an external executable determining a predominant melody.
+    */
+    func getPredominantMelody(audioURL: NSURL) {
+        var task = NSTask();
+        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
+        // TODO: Change the paths to adjust to different users, not just mine...
+        task.arguments = [audioURL, "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.yaml"];
+        task.launch();
+        task.waitUntilExit();
+        var status = task.terminationStatus;
+        if (status == 0) {
+            NSLog("Task succeeded.");
+        } else {
+            NSLog("Task failed.");
+        }
+    }
+
 }

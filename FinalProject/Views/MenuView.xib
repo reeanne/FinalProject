@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14D131" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="MenuController" customModule="FinalProject" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="MenuController" customModule="Controllers">
             <connections>
                 <outlet property="backButton" destination="hWw-qs-x5j" id="fDk-Lh-Cbc"/>
                 <outlet property="levelDeleteLevelButton" destination="bZp-7D-5Tc" id="h7u-wc-N6y"/>
                 <outlet property="levelPlayLevelButton" destination="Qfa-Qs-zMP" id="OLW-Bm-iEd"/>
                 <outlet property="levelSelectLevelPopup" destination="W0f-jh-jbM" id="dUy-Zg-1br"/>
+                <outlet property="loadingProgressIndicator" destination="OWV-Wf-f41" id="cqP-pC-QrO"/>
                 <outlet property="loggedCreateLevelButton" destination="5d9-XZ-fEY" id="I1w-Rk-tzU"/>
+                <outlet property="loggedLoadLevelButton" destination="2kw-RR-wIB" id="qUd-Ak-YQo"/>
                 <outlet property="mainChooseUserButton" destination="C8l-gf-sD1" id="m3l-7K-clR"/>
                 <outlet property="mainCreateUserButton" destination="1Nx-WW-8Wl" id="0Pi-kn-WPI"/>
                 <outlet property="mainQuickGameButton" destination="msd-yT-3cQ" id="5Bb-Hg-OXa"/>
                 <outlet property="mainQuitGameButton" destination="MSO-YT-w0T" id="ArT-4i-lZN"/>
+                <outlet property="newLevelCreateLevelButton" destination="Py0-B5-J2E" id="vMS-WG-yLt"/>
+                <outlet property="newLevelFilePath" destination="Mz8-1f-70p" id="q54-On-Utw"/>
+                <outlet property="newLevelUploadFile" destination="Cuu-vx-LXB" id="5iH-vD-hdz"/>
                 <outlet property="userChooseUserButton" destination="0hV-zj-fKu" id="8z1-DO-H7a"/>
                 <outlet property="userCreateUserButton" destination="Kwm-FZ-2WP" id="YV0-0p-GtP"/>
                 <outlet property="userDeleteUserButton" destination="sbr-rI-aXG" id="ckj-8m-EEA"/>
                 <outlet property="userSelectUserPopup" destination="YcG-fg-KBH" id="crP-xc-IGa"/>
                 <outlet property="userUserNameField" destination="4gX-Ar-6ak" id="nrL-pm-daf"/>
-                <outlet property="view" destination="tko-zO-wrf" id="JOU-HS-zal"/>
+                <outlet property="view" destination="tko-zO-wrf" id="ipK-VH-L8p"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -120,6 +125,9 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <connections>
+                        <action selector="loggedCreateLevelButtonPressed:" target="-2" id="b9k-14-4DQ"/>
+                    </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="2kw-RR-wIB">
                     <rect key="frame" x="316" y="170" width="176" height="32"/>
@@ -129,7 +137,7 @@
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="userLoadLevelButtonPressed:" target="-2" id="996-bK-9bz"/>
+                        <action selector="loggedLoadLevelButtonPressed:" target="-2" id="8JE-Ah-qdL"/>
                     </connections>
                 </button>
                 <popUpButton verticalHuggingPriority="750" id="W0f-jh-jbM">
@@ -192,6 +200,46 @@
                     </buttonCell>
                     <connections>
                         <action selector="userDeleteUserButtonPressed:" target="-2" id="dvc-To-Bvo"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" id="Cuu-vx-LXB">
+                    <rect key="frame" x="316" y="276" width="176" height="32"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="push" title="Upload a File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sdy-q9-dfs">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="newLevelUoadLevelPressed:" target="-2" id="Euy-aP-2oX"/>
+                    </connections>
+                </button>
+                <textField verticalHuggingPriority="750" id="Mz8-1f-70p" userLabel="File Path">
+                    <rect key="frame" x="322" y="229" width="164" height="22"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="GAg-mI-9yc">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <accessibility description="File Path"/>
+                    <connections>
+                        <action selector="newLevelFilePathFieldPressed:" target="-2" id="9ce-b4-Vzm"/>
+                    </connections>
+                </textField>
+                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="OWV-Wf-f41">
+                    <rect key="frame" x="396" y="374" width="16" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <accessibility description="Main Melody Processing"/>
+                </progressIndicator>
+                <button verticalHuggingPriority="750" id="Py0-B5-J2E">
+                    <rect key="frame" x="323" y="170" width="164" height="32"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="push" title="Create Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jrR-5m-KGh">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="newLevelCreateLevelSubmit:" target="-2" id="nTw-jY-ciO"/>
                     </connections>
                 </button>
             </subviews>

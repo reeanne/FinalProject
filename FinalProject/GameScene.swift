@@ -23,7 +23,24 @@ class GameScene: SKScene {
 
     
     override func didMoveToView(view: SKView) {
-       
+        
+        // Create ground
+        
+        var groundTexture = SKTexture(imageNamed: "background_wave");
+       // groundTexture.setFilteringMode(SKTextureFilteringMode.SKTextureFilteringNearest);
+        
+        var moveGroundSprite: SKAction = SKAction.moveByX(-groundTexture.size().width * 2, y: 0, duration: 0.02);
+        var resetGroundSprite: SKAction = SKAction.moveByX(groundTexture.size().width * 2, y:0, duration:0);
+        var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
+        
+        for(var i: CGFloat = 0; i < 2 + self.frame.size.width / (groundTexture.size().width * 2); ++i ) {
+            // Create the sprite
+            var sprite: SKSpriteNode = SKSpriteNode(texture: groundTexture);
+            //sprite.setScale(2.0);
+            sprite.position = CGPointMake(CGFloat(i) * sprite.size.width, sprite.size.height / 2);
+            sprite.runAction(moveGroundSpritesForever);
+            self.addChild(sprite);
+        }
         /* Setup your scene here */
         /*
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
@@ -92,10 +109,8 @@ class GameScene: SKScene {
     }
     
     
-    
-    
     func chooseFile() {
-        var path = openfiledlg("Open file",  message:"Open file");
+      /*  var path = openfiledlg("Open file",  message:"Open file");
         let audioURL = NSURL.fileURLWithPath(path);
         
         getPredominantMelody(audioURL!);
@@ -111,52 +126,13 @@ class GameScene: SKScene {
             startPlaying(audioURL!);
         }
         //AudioFileClose(audioFile);
-        
+        */
     }
 
-    /**
-        Calls an external executable determining a predominant melody.
-    */
-    func getPredominantMelody(audioURL: NSURL) {
-        var task = NSTask();
-        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
-        // TODO: Change the paths to adjust to different users, not just mine...
-        task.arguments = [audioURL, "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.yaml"];
-        task.launch();
-        task.waitUntilExit();
-        var status = task.terminationStatus;
-        if (status == 0) {
-            NSLog("Task succeeded.");
-        } else {
-            NSLog("Task failed.");
-        }
-    }
     
+     
     
-    /**
-        Opens a dialog window allowing the user to choose a file to open.
-    */
-    func openfiledlg (title: String, message: String) -> String {
-        var myFiledialog: NSOpenPanel = NSOpenPanel();
-        
-        myFiledialog.prompt = "Open";
-        myFiledialog.worksWhenModal = true;
-        myFiledialog.allowsMultipleSelection = false;
-        myFiledialog.canChooseDirectories = false;
-        myFiledialog.resolvesAliases = true;
-        myFiledialog.title = title;
-        myFiledialog.message = message;
-        myFiledialog.runModal();
-        var chosenfile = myFiledialog.URL;
-        if (chosenfile != nil) {
-            var TheFile = chosenfile!.path!;
-            return (TheFile);
-        } else {
-            return ("");
-        }
-    }
-    
-    /**
+      /**
         Starts off a predetermined level without the ability of choosing music.
     */
     func loadQuickGame(level: LevelObject) {
