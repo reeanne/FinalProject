@@ -29,14 +29,14 @@ class GameScene: SKScene {
         var groundTexture = SKTexture(imageNamed: "background_wave");
        // groundTexture.setFilteringMode(SKTextureFilteringMode.SKTextureFilteringNearest);
         
-        var moveGroundSprite: SKAction = SKAction.moveByX(-groundTexture.size().width * 2, y: 0, duration: 0.02);
-        var resetGroundSprite: SKAction = SKAction.moveByX(groundTexture.size().width * 2, y:0, duration:0);
+        var moveGroundSprite: SKAction = SKAction.moveByX(-self.frame.size.width * 2, y: 0, duration: 3);
+        var resetGroundSprite: SKAction = SKAction.moveByX(self.frame.size.width * 2, y:0, duration:0);
         var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
         
         for(var i: CGFloat = 0; i < 2 + self.frame.size.width / (groundTexture.size().width * 2); ++i ) {
             // Create the sprite
             var sprite: SKSpriteNode = SKSpriteNode(texture: groundTexture);
-            //sprite.setScale(2.0);
+            sprite.setScale(0.5);
             sprite.position = CGPointMake(CGFloat(i) * sprite.size.width, sprite.size.height / 2);
             sprite.runAction(moveGroundSpritesForever);
             self.addChild(sprite);
