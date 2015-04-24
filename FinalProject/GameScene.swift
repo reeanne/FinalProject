@@ -17,6 +17,9 @@ class GameScene: SKScene {
     var level: LevelObject! = nil;
     var height: CGFloat! = nil;
     var width: CGFloat! = nil;
+    var _pipeTexture1: SKTexture = SKTexture(imageNamed: "blue_out");
+    var _movePipesAndRemove: SKAction! = nil;
+    var _pipes: SKNode = SKNode();
 
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -24,32 +27,29 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         
-        // Create ground
         
-        var groundTexture = SKTexture(imageNamed: "background_wave");
-       // groundTexture.setFilteringMode(SKTextureFilteringMode.SKTextureFilteringNearest);
+        createBackground();
+        //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
+        NSLog("I am here ns log");
+
+
+        var distanceToMove: CGFloat = self.frame.size.width + 2 * _pipeTexture1.size().width;
+        var movePipes: SKAction = SKAction.moveByX(-distanceToMove, y: 0, duration: NSTimeInterval(0.01 * distanceToMove));
+        var removePipes: SKAction = SKAction.removeFromParent();
+        _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
+        println("1   I am here");
+        NSLog("I am here ns log");
+
+        var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
+        var delay: SKAction = SKAction.waitForDuration(2.0);
+        var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
+        var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
+        self.runAction(spawnThenDelayForever);
         
-        var moveGroundSprite: SKAction = SKAction.moveByX(-self.frame.size.width * 2, y: 0, duration: 3);
-        var resetGroundSprite: SKAction = SKAction.moveByX(self.frame.size.width * 2, y:0, duration:0);
-        var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
-        
-        for(var i: CGFloat = 0; i < 2 + self.frame.size.width / (groundTexture.size().width * 2); ++i ) {
-            // Create the sprite
-            var sprite: SKSpriteNode = SKSpriteNode(texture: groundTexture);
-            sprite.setScale(0.5);
-            sprite.position = CGPointMake(CGFloat(i) * sprite.size.width, sprite.size.height / 2);
-            sprite.runAction(moveGroundSpritesForever);
-            self.addChild(sprite);
-        }
+        self.addChild(_pipes);
+
         /* Setup your scene here */
-        /*
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!";
-        myLabel.fontSize = 65;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
-        self.addChild(myLabel)
-        */
         // Retreive the managedObjectContext from AppDelegate
         
         height = CGRectGetMidX(self.frame) *  3 / 4;
@@ -62,19 +62,94 @@ class GameScene: SKScene {
     override func mouseDown(theEvent: NSEvent) {
         /* Called when a mouse click occurs */
         
-        /*
-        let location = theEvent.locationInNode(self)
+        }
+    
+    func spawnPipes() {
+        println("2    I am here");
+
+        var pipePair: SKNode = SKNode();
+        pipePair.position = CGPointMake(self.frame.size.width + _pipeTexture1.size().width, 0);
+        //pipePair.zPosition = -10;
         
-        let sprite = SKSpriteNode(imageNamed:"Spaceship")
-        sprite.position = location;
-        sprite.setScale(0.5)
+        var y: CGFloat = self.frame.size.height / 3;
         
-        let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-        sprite.runAction(SKAction.repeatActionForever(action))
+        var pipe1: SKSpriteNode = SKSpriteNode(texture:_pipeTexture1);
+        pipe1.setScale(2);
+        pipe1.position = CGPointMake(0, y);
+        pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
+        pipe1.physicsBody!.dynamic = false;
         
-        self.addChild(sprite)
-        */
+        pipePair.addChild(pipe1);
+        
+        pipePair.runAction(_movePipesAndRemove);
+        
+        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
+        myLabel.text = "Hello, World!";
+        myLabel.fontSize = 65;
+        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+        
+        self.addChild(myLabel)
+        
+        _pipes.addChild(pipePair);
+
+        println("3   I am here");
     }
+    
+        /*
+        SKSpriteNode* pipe2 = [SKSpriteNode spriteNodeWithTexture:_pipeTexture2];
+        [pipe2 setScale:2];
+        pipe2.position = CGPointMake( 0, y + pipe1.size.height + kVerticalPipeGap );
+        pipe2.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:pipe2.size];
+        pipe2.physicsBody.dynamic = NO;
+        [pipePair addChild:pipe2];
+        */
+        
+        /*
+        var _pipeTexture1 = SKTexture(imageNamed: "blue_out");
+        //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
+        
+        var pipePair: SKNode = SKNode();
+        pipePair.position = CGPointMake(0,  self.frame.size.height + _pipeTexture1.size().height * 2);
+        pipePair.zPosition = -10;
+        
+        var x: CGFloat = CGFloat(arc4random_uniform(UInt32( self.frame.size.width / 3 )));
+        
+        var pipe1: SKSpriteNode = SKSpriteNode(texture: _pipeTexture1);
+        pipe1.setScale(2);
+        pipe1.position = CGPointMake(x,0);
+        pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
+        pipe1.physicsBody!.dynamic = false;
+        pipePair.addChild(pipe1);
+        
+        /*
+        SKSpriteNode* pipe2 = [SKSpriteNode spriteNodeWithTexture:_pipeTexture2];
+        [pipe2 setScale:2];
+        pipe2.position = CGPointMake( 0, y + pipe1.size.height + kVerticalPipeGap );
+        pipe2.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:pipe2.size];
+        pipe2.physicsBody.dynamic = NO;
+        [pipePair addChild:pipe2];
+        */
+
+        */
+    
+    func createBackground() {
+        // Create ground
+        var groundTexture = SKTexture(imageNamed: "background_wave");
+        //groundTexture.setFilteringMode(SKTextureFilteringMode.SKTextureFilteringNearest);
+        var moveGroundSprite: SKAction = SKAction.moveByX(0, y: -self.frame.size.height * 2, duration: NSTimeInterval(0.02 * groundTexture.size().height));
+        var resetGroundSprite: SKAction = SKAction.moveByX(0, y:self.frame.size.height * 2, duration: 0);
+        var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
+        
+        for(var i: CGFloat = 0; i < 2 + self.frame.size.height / (groundTexture.size().height * 2); ++i) {
+            var sprite: SKSpriteNode = SKSpriteNode(texture: groundTexture);
+            //sprite.setScale(0.5);
+            sprite.position = CGPointMake(sprite.size.width / 2, CGFloat(i) * sprite.size.height);
+            sprite.runAction(moveGroundSpritesForever);
+            self.addChild(sprite);
+        }
+
+    }
+    
     
     override func keyDown(theEvent: NSEvent) {
         var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
