@@ -33,8 +33,12 @@ class GameScene: SKScene {
         NSLog("I am here ns log");
 
 
-        var distanceToMove: CGFloat = self.frame.size.width + 2 * _pipeTexture1.size().width;
-        var movePipes: SKAction = SKAction.moveByX(-distanceToMove, y: 0, duration: NSTimeInterval(0.01 * distanceToMove));
+    //  var distanceToMove: CGFloat = self.frame.size.width + 2 * _pipeTexture1.size().width;
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * _pipeTexture1.size().height;
+        
+    //  var movePipes: SKAction = SKAction.moveByX(-distanceToMove, y: 0, duration: NSTimeInterval(0.01 * distanceToMove));
+        var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
+
         var removePipes: SKAction = SKAction.removeFromParent();
         _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
         println("1   I am here");
@@ -65,17 +69,20 @@ class GameScene: SKScene {
         }
     
     func spawnPipes() {
-        println("2    I am here");
 
         var pipePair: SKNode = SKNode();
-        pipePair.position = CGPointMake(self.frame.size.width + _pipeTexture1.size().width, 0);
+    //  pipePair.position = CGPointMake(self.frame.size.width + _pipeTexture1.size().width, 0);
+        pipePair.position = CGPointMake(0, self.frame.size.height + _pipeTexture1.size().height);
         //pipePair.zPosition = -10;
         
-        var y: CGFloat = self.frame.size.height / 3;
-        
+    //  var y: CGFloat = self.frame.size.height / 3;
+        var x: CGFloat = self.frame.size.width / 3;
+
         var pipe1: SKSpriteNode = SKSpriteNode(texture:_pipeTexture1);
         pipe1.setScale(2);
-        pipe1.position = CGPointMake(0, y);
+        
+    //  pipe1.position = CGPointMake(0, y);
+        pipe1.position = CGPointMake(x, 0);
         pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
         pipe1.physicsBody!.dynamic = false;
         
@@ -91,8 +98,6 @@ class GameScene: SKScene {
         self.addChild(myLabel)
         
         _pipes.addChild(pipePair);
-
-        println("3   I am here");
     }
     
         /*
