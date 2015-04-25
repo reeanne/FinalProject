@@ -70,29 +70,20 @@ class MelodyObject {
         
         if (status == 0) {
             NSLog("Task succeeded.");
-            //NSLog(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!);
+            
             var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
             inputStream.open();
             let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
             var tonal = json["tonal"] as! [String: AnyObject];
-            //println(tonal.debugDescription);
             var predominant = tonal["predominant_melody"] as! [String: AnyObject];
             var pitch = predominant["pitch"] as! [Int];
             
-            NSLog("Come onnnnnn");
-//            let output = Yaml.load(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!).value!;
-            
             NSLog(pitch.debugDescription);
-
-      //      println(output[1]);
-  //          var arrayYaml = output["tonal"]["predominant_melody"]["pitch"];
-    //        println(arrayYaml);
-            return [];
+            return pitch;
         } else {
             NSLog("Task failed.");
             return [];
         }
-        
     }
 
 }

@@ -349,8 +349,6 @@ class MenuController: NSViewController {
         if let moc = self.managedObjectContext {
             var error: NSError? = nil;
             if moc.hasChanges && !moc.save(&error) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 NSLog("Unresolved error \(error), \(error!.userInfo)");
                 abort();
             }
@@ -361,12 +359,9 @@ class MenuController: NSViewController {
         let audioURL = NSURL.fileURLWithPath(path);
         var melody = MelodyObject(audioURL: audioURL!)
         var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
-        
-        /* if (audioURL != nil) {
-            startPlaying(audioURL!);
-        }
-        */
-        //AudioFileClose(audioFile);
+        var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+        appDelegate.level = currentLevel;
+        appDelegate.playGameWindow();
     }
     
 
