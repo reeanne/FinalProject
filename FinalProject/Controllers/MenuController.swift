@@ -281,8 +281,9 @@ class MenuController: NSViewController {
     }
     
     @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
-        
-        
+        if (newLevelFilePath.stringValue != "") {
+            chooseFile(newLevelFilePath.stringValue);
+        }
     }
     
     @IBAction func newLevelFilePathFieldPressed(sender: AnyObject) {
@@ -355,6 +356,20 @@ class MenuController: NSViewController {
             }
         }
     }
+    
+    func chooseFile(path: String) {
+        let audioURL = NSURL.fileURLWithPath(path);
+        var melody = MelodyObject(audioURL: audioURL!)
+        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
+        
+        /* if (audioURL != nil) {
+            startPlaying(audioURL!);
+        }
+        */
+        //AudioFileClose(audioFile);
+    }
+    
+
     
     /**
         Opens a dialog window allowing the user to choose a file to open.

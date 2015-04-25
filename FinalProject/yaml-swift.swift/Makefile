@@ -6,12 +6,12 @@ flags =
 debug:   flags += -g
 release: flags += -O
 
-all: build/libyaml.dylib build/Yaml.swiftmodule
+all: build/libyamlswift.dylib build/Yaml.swiftmodule
 
 debug:   all
 release: all
 
-build/libyaml.dylib: $(sources) | build
+build/libyamlswift.dylib: $(sources) | build
 	@echo Build lib...
 	@xcrun swiftc \
 		-emit-library \
@@ -21,7 +21,7 @@ build/libyaml.dylib: $(sources) | build
 		$(flags) \
 		$^
 
-build/Yaml.swiftmodule: build/libyaml.dylib
+build/Yaml.swiftmodule: build/libyamlswift.dylib
 	@echo Build swiftmodule...
 	@xcrun swiftc \
 		-emit-module \

@@ -30,19 +30,13 @@ class GameScene: SKScene {
         
         createBackground();
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
-        NSLog("I am here ns log");
 
 
-    //  var distanceToMove: CGFloat = self.frame.size.width + 2 * _pipeTexture1.size().width;
         var distanceToMove: CGFloat = self.frame.size.height + 2 * _pipeTexture1.size().height;
-        
-    //  var movePipes: SKAction = SKAction.moveByX(-distanceToMove, y: 0, duration: NSTimeInterval(0.01 * distanceToMove));
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
 
         var removePipes: SKAction = SKAction.removeFromParent();
         _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
-        println("1   I am here");
-        NSLog("I am here ns log");
 
         var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
         var delay: SKAction = SKAction.waitForDuration(2.0);
@@ -71,17 +65,14 @@ class GameScene: SKScene {
     func spawnPipes() {
 
         var pipePair: SKNode = SKNode();
-    //  pipePair.position = CGPointMake(self.frame.size.width + _pipeTexture1.size().width, 0);
         pipePair.position = CGPointMake(0, self.frame.size.height + _pipeTexture1.size().height);
         //pipePair.zPosition = -10;
         
-    //  var y: CGFloat = self.frame.size.height / 3;
         var x: CGFloat = self.frame.size.width / 3;
 
         var pipe1: SKSpriteNode = SKSpriteNode(texture:_pipeTexture1);
         pipe1.setScale(2);
         
-    //  pipe1.position = CGPointMake(0, y);
         pipe1.position = CGPointMake(x, 0);
         pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
         pipe1.physicsBody!.dynamic = false;
@@ -99,43 +90,6 @@ class GameScene: SKScene {
         
         _pipes.addChild(pipePair);
     }
-    
-        /*
-        SKSpriteNode* pipe2 = [SKSpriteNode spriteNodeWithTexture:_pipeTexture2];
-        [pipe2 setScale:2];
-        pipe2.position = CGPointMake( 0, y + pipe1.size.height + kVerticalPipeGap );
-        pipe2.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:pipe2.size];
-        pipe2.physicsBody.dynamic = NO;
-        [pipePair addChild:pipe2];
-        */
-        
-        /*
-        var _pipeTexture1 = SKTexture(imageNamed: "blue_out");
-        //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
-        
-        var pipePair: SKNode = SKNode();
-        pipePair.position = CGPointMake(0,  self.frame.size.height + _pipeTexture1.size().height * 2);
-        pipePair.zPosition = -10;
-        
-        var x: CGFloat = CGFloat(arc4random_uniform(UInt32( self.frame.size.width / 3 )));
-        
-        var pipe1: SKSpriteNode = SKSpriteNode(texture: _pipeTexture1);
-        pipe1.setScale(2);
-        pipe1.position = CGPointMake(x,0);
-        pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
-        pipe1.physicsBody!.dynamic = false;
-        pipePair.addChild(pipe1);
-        
-        /*
-        SKSpriteNode* pipe2 = [SKSpriteNode spriteNodeWithTexture:_pipeTexture2];
-        [pipe2 setScale:2];
-        pipe2.position = CGPointMake( 0, y + pipe1.size.height + kVerticalPipeGap );
-        pipe2.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:pipe2.size];
-        pipe2.physicsBody.dynamic = NO;
-        [pipePair addChild:pipe2];
-        */
-
-        */
     
     func createBackground() {
         // Create ground
@@ -188,30 +142,7 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
-    
-    func chooseFile() {
-      /*  var path = openfiledlg("Open file",  message:"Open file");
-        let audioURL = NSURL.fileURLWithPath(path);
-        
-        getPredominantMelody(audioURL!);
-        var melody = MelodyObject(audioURL: audioURL!)
-        
-        // var locationRed = CGPoint(x: width / 2, y: height);
-        // var locationBlue = CGPoint(x: width * 3 / 2, y: height);
-        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
-        // for child in currentLevel.buttons {
-        //     self.addChild(child.node);
-        // }
-        if (audioURL != nil) {
-            startPlaying(audioURL!);
-        }
-        //AudioFileClose(audioFile);
-        */
-    }
 
-    
-     
-    
       /**
         Starts off a predetermined level without the ability of choosing music.
     */

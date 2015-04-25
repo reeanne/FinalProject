@@ -8,6 +8,7 @@
 
 import Foundation
 import AudioToolbox
+import Yaml
 
 class MelodyObject {
     
@@ -16,12 +17,14 @@ class MelodyObject {
     var pitch: [Int]?;
     
     
-    init(audioURL: CFURL) {
+    init(audioURL: NSURL) {
         audioFile = nil
+        pitch = getPredominantMelody(audioURL);
         let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
         println(status);
         printData();
     }
+    
     
     func determineMood() -> Mood? {
         return nil;
@@ -50,23 +53,38 @@ class MelodyObject {
         
     }
     
-    
     /**
     Calls an external executable determining a predominant melody.
     */
-    func getPredominantMelody(audioURL: NSURL) {
-        var task = NSTask();
-        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
+    func getPredominantMelody(audioURL: NSURL) -> [Int] {
+        var task: NSTask = NSTask();
+        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.json";
+        
         // TODO: Change the paths to adjust to different users, not just mine...
-        task.arguments = [audioURL, "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.yaml"];
+        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
+
+        task.arguments = [audioURL, outputFile];
         task.launch();
         task.waitUntilExit();
         var status = task.terminationStatus;
+        
         if (status == 0) {
             NSLog("Task succeeded.");
+            //NSLog(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!);
+            NSLog("Come onnnnnn");
+//            let output = Yaml.load(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!).value!;
+            
+            NSLog("Come onnnnnn");
+
+      //      println(output[1]);
+  //          var arrayYaml = output["tonal"]["predominant_melody"]["pitch"];
+    //        println(arrayYaml);
+            return [];
         } else {
             NSLog("Task failed.");
+            return [];
         }
+        
     }
 
 }
