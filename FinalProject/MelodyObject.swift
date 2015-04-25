@@ -8,6 +8,7 @@
 
 import Foundation
 import AudioToolbox
+import Foundation
 import Yaml
 
 class MelodyObject {
@@ -62,7 +63,6 @@ class MelodyObject {
         
         // TODO: Change the paths to adjust to different users, not just mine...
         task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
-
         task.arguments = [audioURL, outputFile];
         task.launch();
         task.waitUntilExit();
@@ -71,10 +71,18 @@ class MelodyObject {
         if (status == 0) {
             NSLog("Task succeeded.");
             //NSLog(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!);
+            var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
+            inputStream.open();
+            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
+            var tonal = json["tonal"] as! [String: AnyObject];
+            //println(tonal.debugDescription);
+            var predominant = tonal["predominant_melody"] as! [String: AnyObject];
+            var pitch = predominant["pitch"] as! [Int];
+            
             NSLog("Come onnnnnn");
 //            let output = Yaml.load(String(contentsOfFile: outputFile, encoding: NSUTF8StringEncoding, error: nil)!).value!;
             
-            NSLog("Come onnnnnn");
+            NSLog(pitch.debugDescription);
 
       //      println(output[1]);
   //          var arrayYaml = output["tonal"]["predominant_melody"]["pitch"];
