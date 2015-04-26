@@ -9,7 +9,10 @@
 import Foundation
 import AudioToolbox
 import Foundation
-import Yaml
+
+enum MoodObject: Int {
+    case Unknown = 0, Excited, Happy, Pleased, Relaxed, Peaceful, Calm, Sleepy, Bored, Sad, Nervous, Angry, Annoying;
+}
 
 class MelodyObject {
     
@@ -19,10 +22,16 @@ class MelodyObject {
     
     
     init(audioURL: NSURL) {
-        audioFile = nil
-        pitch = getPredominantMelody(audioURL);
+        self.audioFile = nil
+        self.pitch = getPredominantMelody(audioURL);
         let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
-        println(status);
+        printData();
+    }
+    
+    init(audioURL: NSURL, pitch: [Int]) {
+        self.audioFile = nil
+        self.pitch = pitch;
+        let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
         printData();
     }
     
@@ -37,7 +46,7 @@ class MelodyObject {
         var id3DataSize:UInt32 = 0
         var err = AudioFileGetPropertyInfo(audioFile, UInt32(kAudioFilePropertyID3Tag), &id3DataSize, nil)
         if err != Int32(noErr) {
-            NSLog("AudioFileGetPropertyInfo faild for id3 tag")
+            NSLog("AudioFileGetPropertyInfo failed for id3 tag")
         }
         
         var piDict:NSDictionary = NSDictionary()
@@ -55,7 +64,7 @@ class MelodyObject {
     }
     
     /**
-    Calls an external executable determining a predominant melody.
+        Calls an external executable determining a predominant melody.
     */
     func getPredominantMelody(audioURL: NSURL) -> [Int] {
         var task: NSTask = NSTask();
@@ -77,8 +86,6 @@ class MelodyObject {
             var tonal = json["tonal"] as! [String: AnyObject];
             var predominant = tonal["predominant_melody"] as! [String: AnyObject];
             var pitch = predominant["pitch"] as! [Int];
-            
-            NSLog(pitch.debugDescription);
             return pitch;
         } else {
             NSLog("Task failed.");

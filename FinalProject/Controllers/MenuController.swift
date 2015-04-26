@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  kk
+//  FinalProject
 //
 //  Created by Paulina Koch on 17/04/2015.
 //  Copyright (c) 2015 Paulina Koch. All rights reserved.
@@ -42,145 +42,55 @@ class MenuController: NSViewController {
     var managedObjectContext: NSManagedObjectContext! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
+    var userData: User! = nil;
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         loadingProgressIndicator.hidden = true;
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideChooseLevelButtons();
-        hideSelectUserButtons();
-        hideLevelLoadButtons();
-        showMainMenuButtons();
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(false);
+        showChooseLevelButtons(false);
+        showSelectUserButtons(false);
+        showLevelLoadButtons(false);
+        showMainMenuButtons(true);
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
     }
-    
-    
-    /**
-        Button arrangements.
-    */
 
-    func showCreateCharacterElements() {
-        backButton.hidden = false;
-        userCreateUserButton.hidden = false;
-        userUserNameField.hidden = false;
-    }
-    
-    func hideCreateCharacterElements() {
-        backButton.hidden = true;
-        userCreateUserButton.hidden = true;
-        userUserNameField.hidden = true;
-    }
-    
-    func showSelectUserButtons() {
-        backButton.hidden = false;
-        userChooseUserButton.hidden = false;
-        userDeleteUserButton.hidden = false;
-        userSelectUserPopup.hidden = false;
-    }
-    
-    func hideSelectUserButtons() {
-        backButton.hidden = true;
-        userChooseUserButton.hidden = true;
-        userDeleteUserButton.hidden = true;
-        userSelectUserPopup.hidden = true;
-    }
-    
-    func hideMainMenuButtons() {
-        mainQuickGameButton.hidden = true;
-        mainChooseUserButton.hidden = true;
-        mainCreateUserButton.hidden = true;
-        mainQuitGameButton.hidden = true;
-    }
-    
-    func showMainMenuButtons() {
-        mainQuickGameButton.hidden = false;
-        mainChooseUserButton.hidden = false;
-        mainCreateUserButton.hidden = false;
-        mainQuitGameButton.hidden = false;
-    }
-    
-    func showLoggedUserButtons() {
-        mainQuickGameButton.hidden = false;
-        loggedCreateLevelButton.hidden = false;
-        loggedLoadLevelButton.hidden = false;
-        mainQuitGameButton.hidden = false;
-    }
-    
-    func hideLoggedUserButtons() {
-        mainQuickGameButton.hidden = true;
-        loggedCreateLevelButton.hidden = true;
-        loggedLoadLevelButton.hidden = true;
-        mainQuitGameButton.hidden = true;
-    }
-    
-    func showChooseLevelButtons() {
-        levelSelectLevelPopup.hidden = false;
-        levelPlayLevelButton.hidden = false;
-        levelDeleteLevelButton.hidden = false;
-        backButton.hidden = false;
-        
-    }
-    
-    func hideChooseLevelButtons() {
-        levelSelectLevelPopup.hidden = true;
-        levelPlayLevelButton.hidden = true;
-        backButton.hidden = true;
-        levelDeleteLevelButton.hidden = true;
-    }
-    
-    func showLevelLoadButtons() {
-        newLevelFilePath.hidden = false;
-        newLevelUploadFile.hidden = false;
-        newLevelCreateLevelButton.hidden = false;
-        backButton.hidden = false;
-    }
-    
-    func hideLevelLoadButtons() {
-        newLevelFilePath.hidden = true;
-        newLevelUploadFile.hidden = true;
-        newLevelCreateLevelButton.hidden = true;
-        backButton.hidden = true;
-    }
 
-    
-   
-    /** 
-        Event handlers.
-    */
+
+    /********* Event handlers. ********/
     
     /** Main Menu **/
     
     @IBAction func mainQuickGamePressed(sender: AnyObject) {
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideMainMenuButtons();
-        hideLevelLoadButtons();
-        hideSelectUserButtons();
+        showMainMenuButtons(false);
+        showChooseLevelButtons(false);
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(false);
+        showLevelLoadButtons(false);
+        showSelectUserButtons(false);
         (NSApplication.sharedApplication().delegate as! AppDelegate).playGameWindow();
     }
 
     @IBAction func mainChooseUserButtonPressed(sender: AnyObject) {
         var users: [String] = getUsers();
         userSelectUserPopup.addItemsWithTitles(users);
-        hideChooseLevelButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideMainMenuButtons();
-        hideLevelLoadButtons();
-        showSelectUserButtons();
+        showChooseLevelButtons(false);
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(false);
+        showMainMenuButtons(false);
+        showLevelLoadButtons(false);
+        showSelectUserButtons(true);
     }
     
     @IBAction func mainCreateUserButtonPressed(sender: AnyObject) {
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideLoggedUserButtons();
-        hideSelectUserButtons();
-        hideLevelLoadButtons();
-        showCreateCharacterElements();
+        showMainMenuButtons(false);
+        showChooseLevelButtons(false);
+        showLoggedUserButtons(false);
+        showSelectUserButtons(false);
+        showLevelLoadButtons(false);
+        showCreateCharacterElements(true);
     }
    
     @IBAction func mainQuitGameButtonPressed(sender: AnyObject) {
@@ -188,22 +98,7 @@ class MenuController: NSViewController {
         NSApplication.sharedApplication().terminate(self);
     }
     
-    
-    /** Others **/
-    
-    @IBAction func backButtonPressed(sender: AnyObject) {
-        hideCreateCharacterElements();
-        hideSelectUserButtons();
-        hideChooseLevelButtons();
-        hideLevelLoadButtons();
-        if (user != nil) {
-            hideMainMenuButtons();
-            showLoggedUserButtons();
-        } else {
-            hideLoggedUserButtons();
-            showMainMenuButtons();
-        }
-    }
+    /** Create User **/
     
     @IBAction func userCreateUserButtonPressed(sender: AnyObject) {
         var username = userUserNameField.stringValue;
@@ -211,40 +106,50 @@ class MenuController: NSViewController {
         (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
         
         if let moc = self.managedObjectContext {
-            User.createInManagedObjectContext(moc, username: username)
+            userData = User.createInManagedObjectContext(moc, username: username)
         }
-        hideCreateCharacterElements();
-        hideLevelLoadButtons();
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideSelectUserButtons();
-        showLoggedUserButtons();
+        showCreateCharacterElements(false);
+        showLevelLoadButtons(false);
+        showMainMenuButtons(false);
+        showChooseLevelButtons(false);
+        showSelectUserButtons(false);
+        showLoggedUserButtons(true);
     }
     
+    /** Logged user main menu **/
+    
     @IBAction func loggedCreateLevelButtonPressed(sender: AnyObject) {
-        hideMainMenuButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideSelectUserButtons();
-        hideChooseLevelButtons();
-        showLevelLoadButtons();
+        showMainMenuButtons(false);
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(false);
+        showSelectUserButtons(false);
+        showChooseLevelButtons(false);
+        showLevelLoadButtons(true);
 
     }
     
     @IBAction func loggedLoadLevelButtonPressed(sender: AnyObject) {
-        var levels = getLevels();
-        levelSelectLevelPopup.removeAllItems();
+        if (userData == nil) {
+            userData = getUser(user.username);
+        }
+        var levels: [String] = getLevels(userData);
         levelSelectLevelPopup.addItemsWithTitles(levels);
-        hideMainMenuButtons();
-        hideCreateCharacterElements();
-        hideLoggedUserButtons();
-        hideSelectUserButtons();
-        hideLevelLoadButtons();
-        showChooseLevelButtons();
+        showMainMenuButtons(false);
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(false);
+        showSelectUserButtons(false);
+        showLevelLoadButtons(false);
+        showChooseLevelButtons(true);
     }
+    
+    /** Choose Level **/
     
     @IBAction func levelPlayLevelButtonPressed(sender: AnyObject) {
         var levelName = levelSelectLevelPopup.selectedItem?.description;
+        var levelData = getLevel(levelName!);
+        var melodyData = levelData!.melody;
+        var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int]);
+        var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
     }
    
     
@@ -256,15 +161,18 @@ class MenuController: NSViewController {
         levelSelectLevelPopup.removeItemWithTitle(name!);
     }
    
+    /** Choose user **/
+    
     @IBAction func userChooseUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
-        user = UserObject(userName: username!);
+        var userData :User = getUser(username!);
+        user = UserObject(userName: userData.username);
         (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
-        hideMainMenuButtons();
-        hideChooseLevelButtons();
-        hideSelectUserButtons();
-        hideCreateCharacterElements();
-        showLoggedUserButtons();
+        showMainMenuButtons(false);
+        showChooseLevelButtons(false);
+        showSelectUserButtons(false);
+        showCreateCharacterElements(false);
+        showLoggedUserButtons(true);
     }
  
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
@@ -275,6 +183,8 @@ class MenuController: NSViewController {
         userSelectUserPopup.removeItemWithTitle(username!);
     }
     
+    /** New level **/
+    
     @IBAction func newLevelUoadLevelPressed(sender: AnyObject) {
         var path = openfiledlg("Open file",  message:"Open file");
         newLevelFilePath.stringValue = path;
@@ -282,20 +192,48 @@ class MenuController: NSViewController {
     
     @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
         if (newLevelFilePath.stringValue != "") {
+            loadingProgressIndicator.hidden = false;
+            loadingProgressIndicator.startAnimation(self);
             chooseFile(newLevelFilePath.stringValue);
+            loadingProgressIndicator.stopAnimation(self);
         }
     }
     
     @IBAction func newLevelFilePathFieldPressed(sender: AnyObject) {
+        // Do nothing.
     }
+    
+    /** Universal **/
+    
+    @IBAction func backButtonPressed(sender: AnyObject) {
+        showCreateCharacterElements(false);
+        showSelectUserButtons(false);
+        showChooseLevelButtons(false);
+        showLevelLoadButtons(false);
+        if (user != nil) {
+            showMainMenuButtons(false);
+            showLoggedUserButtons(true);
+        } else {
+            showLoggedUserButtons(false);
+            showMainMenuButtons(true);
+        }
+    }
+
 
     
     /****** Helper functions *******/
     
-    func getLevels() -> [String] {
+    /**
+        Retrieves all the levels from the Core Data.
+    */
+    func getLevels(owner: User?) -> [String] {
         var levels: [String] = [];
         let fetchRequest = NSFetchRequest(entityName: "Level")
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        if ((owner) != nil) {
+            let predicate = NSPredicate(format: "owner = %@", owner!);
+            fetchRequest.predicate = predicate;
+        }
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
@@ -305,8 +243,10 @@ class MenuController: NSViewController {
         }
         return levels;
     }
-    
-   
+
+    /**
+        Retrieves all the users from the Core Data.
+    */
     func getUsers() -> [String] {
         var users: [String] = [];
         let fetchRequest = NSFetchRequest(entityName: "User")
@@ -321,6 +261,42 @@ class MenuController: NSViewController {
         return users;
     }
     
+    /**
+        Retrieves a user with specified username from the Core Data.
+    */
+    func getUser(name: String) -> User {
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        let predicate = NSPredicate(format: "username = %@", name)
+        fetchRequest.predicate = predicate;
+        var result: User! = nil;
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
+            result = fetchResults[0];
+        }
+        return result;
+    }
+    
+    /**
+        Retrieves a level with specified name from the Core Data.
+    */
+    func getLevel(name: String) -> Level? {
+        let fetchRequest = NSFetchRequest(entityName: "Level")
+        let predicate = NSPredicate(format: "name = %@", name)
+        fetchRequest.predicate = predicate;
+        var result: Level! = nil;
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
+            println("akdhja")
+            println(fetchResults.description);
+            if (fetchResults.count > 0) {
+                result = fetchResults[0];
+            }
+        }
+        return result;
+
+    }
+    
+    /**
+        Removes a user with specified username from the Core Data.
+    */
     func deleteUser(username: String) {
         let fetchRequest = NSFetchRequest(entityName: "User")
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
@@ -332,19 +308,27 @@ class MenuController: NSViewController {
             }
         }
     }
+
     
+    /**
+        Removes a level with specified name from the Core Data.
+    */
     func deleteLevel(name: String) {
         let fetchRequest = NSFetchRequest(entityName: "Level")
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
             var levels = fetchResults;
             for lvl in levels {
                 if (lvl.name == name) {
+                    managedObjectContext?.deleteObject(lvl.melody);
                     managedObjectContext?.deleteObject(lvl);
                 }
             }
         }
     }
     
+    /**
+        A function making sure all the data saved in the context is saved in the Core Data.
+    */
     func saveContext () {
         if let moc = self.managedObjectContext {
             var error: NSError? = nil;
@@ -355,11 +339,23 @@ class MenuController: NSViewController {
         }
     }
     
+    /**
+        A function called upon creation of a new level. It takes a file chosen by the user and generates a level out of it.
+    */
     func chooseFile(path: String) {
         let audioURL = NSURL.fileURLWithPath(path);
+        
         var melody = MelodyObject(audioURL: audioURL!)
-        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
+        var currentLevel = LevelObject(levelName:"Level", melody: melody);
+        
         var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+        userData = getUser(user.username);
+        
+        if let moc = self.managedObjectContext {
+            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch!);
+            Level.createInManagedObjectContext(moc, name: currentLevel.name, user: userData, melody: melodyData);
+        }
+        
         appDelegate.level = currentLevel;
         appDelegate.playGameWindow();
     }
@@ -389,20 +385,50 @@ class MenuController: NSViewController {
         }
     }
     
-    func createLevel(path: String) -> LevelObject {
-        let audioURL = NSURL.fileURLWithPath(path);
-        
-       // getPredominantMelody(audioURL!);
-        loadingProgressIndicator.hidden = false;
-        loadingProgressIndicator.startAnimation(self);
-        var melody = MelodyObject(audioURL: audioURL!)
-        loadingProgressIndicator.stopAnimation(self);
-        
-        var currentLevel = LevelObject(levelName:"Level", locationList:[], melody: melody);
-        if (audioURL != nil) {
-        }
-        return currentLevel;
+    
+    /******** Button arrangements. ********/
+    
+    func showCreateCharacterElements(value: Bool) {
+        backButton.hidden = !value;
+        userCreateUserButton.hidden = !value;
+        userUserNameField.hidden = !value;
     }
     
+    func showSelectUserButtons(value: Bool) {
+        backButton.hidden = !value;
+        userChooseUserButton.hidden = !value;
+        userDeleteUserButton.hidden = !value;
+        userSelectUserPopup.hidden = !value;
+    }
+    
+    
+    func showMainMenuButtons(value: Bool) {
+        mainQuickGameButton.hidden = !value;
+        mainChooseUserButton.hidden = !value;
+        mainCreateUserButton.hidden = !value;
+        mainQuitGameButton.hidden = !value;
+    }
+    
+    func showLoggedUserButtons(value: Bool) {
+        mainQuickGameButton.hidden = !value;
+        loggedCreateLevelButton.hidden = !value;
+        loggedLoadLevelButton.hidden = !value;
+        mainQuitGameButton.hidden = !value;
+    }
+    
+    func showChooseLevelButtons(value: Bool) {
+        levelSelectLevelPopup.hidden = !value;
+        levelPlayLevelButton.hidden = !value;
+        levelDeleteLevelButton.hidden = !value;
+        backButton.hidden = !value;
+    }
+    
+    func showLevelLoadButtons(value: Bool) {
+        newLevelFilePath.hidden = !value;
+        newLevelUploadFile.hidden = !value;
+        newLevelCreateLevelButton.hidden = !value;
+        backButton.hidden = !value;
+    }
+
 }
 

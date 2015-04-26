@@ -11,9 +11,17 @@ import CoreData
 
 class Level: NSManagedObject {
 
-    @NSManaged var id: NSNumber
     @NSManaged var name: String
     @NSManaged var owner: User
     @NSManaged var melody: Melody
+    
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, name: String, user: User, melody: Melody) -> Level {
+        let newItem = NSEntityDescription.insertNewObjectForEntityForName("Level", inManagedObjectContext: moc) as! Level
+        newItem.name = name;
+        newItem.melody = melody;
+        newItem.owner = user;
+        
+        return newItem
+    }
 
 }

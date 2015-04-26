@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Level" representedClassName="PRODUCT_MODULE_NAME.Level" syncable="YES">
-        <attribute name="id" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Level" representedClassName="FinalProject.Level" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="melody" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Melody" inverseName="level" inverseEntity="Melody" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="levels" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Melody" representedClassName="FinalProject.Melody" syncable="YES">
         <attribute name="file" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="pitch" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pitch" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="level" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Level" inverseName="melody" inverseEntity="Level" syncable="YES"/>
         <relationship name="mood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mood" inverseName="melodies" inverseEntity="Mood" syncable="YES"/>
     </entity>
@@ -26,8 +25,8 @@
         </compoundIndexes>
     </entity>
     <elements>
-        <element name="Level" positionX="-261" positionY="-180" width="128" height="103"/>
-        <element name="Melody" positionX="-234" positionY="72" width="128" height="103"/>
+        <element name="Level" positionX="-261" positionY="-180" width="128" height="90"/>
+        <element name="Melody" positionX="-234" positionY="72" width="128" height="105"/>
         <element name="Mood" positionX="115" positionY="93" width="128" height="73"/>
         <element name="User" positionX="52" positionY="-153" width="128" height="73"/>
     </elements>
