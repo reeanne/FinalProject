@@ -146,10 +146,16 @@ class MenuController: NSViewController {
     
     @IBAction func levelPlayLevelButtonPressed(sender: AnyObject) {
         var levelName = levelSelectLevelPopup.selectedItem?.title;
-        var levelData = getLevel(levelName!);
-        var melodyData = levelData!.melody;
-        var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int]);
-        var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
+        if (levelName != nil) {
+            var levelData = getLevel(levelName!);
+            var melodyData = levelData!.melody;
+            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int]);
+            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
+            var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+            appDelegate.level = levelObject;
+            println(melodyData.pitch);
+            appDelegate.playGameWindow();
+        }
     }
    
     
@@ -165,14 +171,16 @@ class MenuController: NSViewController {
     
     @IBAction func userChooseUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
-        var userData :User = getUser(username!);
-        user = UserObject(userName: userData.username);
-        (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
-        showMainMenuButtons(false);
-        showChooseLevelButtons(false);
-        showSelectUserButtons(false);
-        showCreateCharacterElements(false);
-        showLoggedUserButtons(true);
+        if (username != nil) {
+            var userData :User = getUser(username!);
+            user = UserObject(userName: userData.username);
+            (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
+            showMainMenuButtons(false);
+            showChooseLevelButtons(false);
+            showSelectUserButtons(false);
+            showCreateCharacterElements(false);
+            showLoggedUserButtons(true);
+        }
     }
  
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
