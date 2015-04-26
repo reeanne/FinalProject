@@ -145,7 +145,7 @@ class MenuController: NSViewController {
     /** Choose Level **/
     
     @IBAction func levelPlayLevelButtonPressed(sender: AnyObject) {
-        var levelName = levelSelectLevelPopup.selectedItem?.description;
+        var levelName = levelSelectLevelPopup.selectedItem?.title;
         var levelData = getLevel(levelName!);
         var melodyData = levelData!.melody;
         var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int]);
@@ -154,7 +154,7 @@ class MenuController: NSViewController {
    
     
     @IBAction func levelDeleteLevelButtonPressed(sender: AnyObject) {
-        var name = levelSelectLevelPopup.selectedItem?.description;
+        var name = levelSelectLevelPopup.selectedItem?.title;
         level = nil;
         (NSApplication.sharedApplication().delegate as! AppDelegate).level = nil;
         deleteLevel(name!);
@@ -280,6 +280,7 @@ class MenuController: NSViewController {
     */
     func getLevel(name: String) -> Level? {
         let fetchRequest = NSFetchRequest(entityName: "Level")
+        println(name)
         let predicate = NSPredicate(format: "name = %@", name)
         fetchRequest.predicate = predicate;
         var result: Level! = nil;
