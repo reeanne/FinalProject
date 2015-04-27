@@ -317,7 +317,6 @@ class MenuController: NSViewController {
             }
         }
     }
-
     
     /**
         Removes a level with specified name from the Core Data.
@@ -368,9 +367,7 @@ class MenuController: NSViewController {
         appDelegate.level = currentLevel;
         appDelegate.playGameWindow();
     }
-    
 
-    
     /**
         Opens a dialog window allowing the user to choose a file to open.
     */
@@ -393,7 +390,7 @@ class MenuController: NSViewController {
             return ("");
         }
     }
-    
+
     
     /******** Button arrangements. ********/
     

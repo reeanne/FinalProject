@@ -33,19 +33,13 @@ class GameController: NSViewController {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill;
             self.skView!.presentScene(scene);
-
-
-
-            // playGameWindow();
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-             self.skView!.ignoresSiblingOrder = true;
+            self.skView!.ignoresSiblingOrder = true;
             
             #if DEBUG
                 self.skView!.showsFPS = true;
                 self.skView!.showsNodeCount = true;
             #endif
         }
-
 
 
     }

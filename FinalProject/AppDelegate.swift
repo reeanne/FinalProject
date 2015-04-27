@@ -42,24 +42,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        /* Pick a size for the scene */
-       // scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
-       // if scene != nil {
-            /* Set the scale mode to scale to fit the window */
-         //   scene.scaleMode = .AspectFill;
-           // self.skView!.presentScene(scene);
-            menuController = MenuController(nibName: "MenuView", bundle: nil)
-           // window.contentView = menuController.view;
-            window.contentViewController = menuController;
-           // playGameWindow();
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-           // self.skView!.ignoresSiblingOrder = true;
-            
-            #if DEBUG
-             //   self.skView!.showsFPS = true;
-              //  self.skView!.showsNodeCount = true;
-            #endif
-       // }
+        menuController = MenuController(nibName: "MenuView", bundle: nil)
+        window.contentViewController = menuController;
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
