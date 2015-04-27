@@ -29,26 +29,7 @@ class GameScene: SKScene {
         
         
         createBackground();
-        //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
-
-
-        var distanceToMove: CGFloat = self.frame.size.height + 2 * _pipeTexture1.size().height;
-        var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
-
-        var removePipes: SKAction = SKAction.removeFromParent();
-        _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
-
-        var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
-        var delay: SKAction = SKAction.waitForDuration(2.0);
-        var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
-        var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
-        self.runAction(spawnThenDelayForever);
-        
-        self.addChild(_pipes);
-
-        /* Setup your scene here */
-        
-        // Retreive the managedObjectContext from AppDelegate
+       // createPipes();
         
         height = CGRectGetMidX(self.frame) *  3 / 4;
         width = CGRectGetMidY(self.frame) * 2 / 4;
@@ -109,6 +90,22 @@ class GameScene: SKScene {
 
     }
     
+    func createPipes() {
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * _pipeTexture1.size().height;
+        var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
+        //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
+        var removePipes: SKAction = SKAction.removeFromParent();
+        _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
+        
+        var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
+        var delay: SKAction = SKAction.waitForDuration(2.0);
+        var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
+        var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
+        self.runAction(spawnThenDelayForever);
+        
+        self.addChild(_pipes);
+    }
+    
     
     override func keyDown(theEvent: NSEvent) {
         var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
@@ -143,13 +140,6 @@ class GameScene: SKScene {
     }
     
 
-      /**
-        Starts off a predetermined level without the ability of choosing music.
-    */
-    func loadQuickGame(level: LevelObject) {
-        
-    }
-    
     /**
         Function for playing the music file.
     */

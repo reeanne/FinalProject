@@ -38,11 +38,11 @@ class MenuController: NSViewController {
     
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
     
-    
     var managedObjectContext: NSManagedObjectContext! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
     var userData: User! = nil;
+    var filePath: String! = nil;
 
 
     override func viewDidLoad() {
@@ -194,15 +194,15 @@ class MenuController: NSViewController {
     /** New level **/
     
     @IBAction func newLevelUoadLevelPressed(sender: AnyObject) {
-        var path = openfiledlg("Open file",  message:"Open file");
-        newLevelFilePath.stringValue = path;
+        filePath = openfiledlg("Open file",  message:"Open file");
+        newLevelFilePath.stringValue = getFileName(NSURL.fileURLWithPath(filePath)!);
     }
     
     @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
         if (newLevelFilePath.stringValue != "") {
             loadingProgressIndicator.hidden = false;
             loadingProgressIndicator.startAnimation(self);
-            chooseFile(newLevelFilePath.stringValue);
+            chooseFile(filePath);
             loadingProgressIndicator.stopAnimation(self);
         }
     }
@@ -230,6 +230,13 @@ class MenuController: NSViewController {
 
     
     /****** Helper functions *******/
+    
+    /**
+        Gets a file name from a path.
+    */
+    func getFileName(path: NSURL) -> String {
+        return path.lastPathComponent!.stringByDeletingPathExtension;
+    }
     
     /**
         Retrieves all the levels from the Core Data.
@@ -354,7 +361,7 @@ class MenuController: NSViewController {
         let audioURL = NSURL.fileURLWithPath(path);
         
         var melody = MelodyObject(audioURL: audioURL!)
-        var currentLevel = LevelObject(levelName:"Level", melody: melody);
+        var currentLevel = LevelObject(levelName: newLevelFilePath.stringValue, melody: melody);
         
         var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         userData = getUser(user.username);

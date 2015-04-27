@@ -27,10 +27,12 @@ class GameController: NSViewController {
         
         user = (NSApplication.sharedApplication().delegate as! AppDelegate).user;
         level = (NSApplication.sharedApplication().delegate as! AppDelegate).level;
-        /* Pick a size for the scene */
+        
         scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
+        
         if scene != nil {
-            /* Set the scale mode to scale to fit the window */
+            scene.user = user;
+            scene.level = level;
             scene.scaleMode = .AspectFill;
             self.skView!.presentScene(scene);
             self.skView!.ignoresSiblingOrder = true;
