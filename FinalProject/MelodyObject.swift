@@ -16,33 +16,33 @@ enum MoodObject: Int {
 
 class MelodyObject {
     
-    var audioFile: AudioFileID;
+    var audioURL: NSURL;
     var mood: Mood?;
     var pitch: [Int]?;
     
     
     init(audioURL: NSURL) {
-        self.audioFile = nil
+        self.audioURL = audioURL;
         self.pitch = getPredominantMelody(audioURL);
-        let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
-        printData();
-    }
+            }
     
     init(audioURL: NSURL, pitch: [Int]) {
-        self.audioFile = nil
+        self.audioURL = audioURL;
         self.pitch = pitch;
-        let status = AudioFileOpenURL(audioURL, Int8(kAudioFileReadPermission), AudioFileTypeID(kAudioFileMP3Type), &audioFile)
-        printData();
+       
     }
     
     
     func determineMood() -> Mood? {
         return nil;
     }
+    
     /**
         Temporary method for printing data of the audiofile.
      */
+    
     func printData() {
+        var audioFile: AudioFileID = nil;
         var id3DataSize:UInt32 = 0
         var err = AudioFileGetPropertyInfo(audioFile, UInt32(kAudioFilePropertyID3Tag), &id3DataSize, nil)
         if err != Int32(noErr) {
@@ -62,6 +62,7 @@ class MelodyObject {
         NSLog("\(albumString)   \(artistString)  \(titleString)")
         
     }
+    
     
     /**
         Calls an external executable determining a predominant melody.

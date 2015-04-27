@@ -17,20 +17,42 @@ class GameScene: SKScene {
     var level: LevelObject! = nil;
     var height: CGFloat! = nil;
     var width: CGFloat! = nil;
-    var _pipeTexture1: SKTexture = SKTexture(imageNamed: "blue_out");
+    var blue: SKTexture = SKTexture(imageNamed: "normal_blue");
+    var green: SKTexture = SKTexture(imageNamed: "normal_green");
+    var yellow: SKTexture = SKTexture(imageNamed: "normal_yellow");
+    var red: SKTexture = SKTexture(imageNamed: "normal_red");
+    var purple: SKTexture = SKTexture(imageNamed: "normal_purple");
+    var grey: SKTexture = SKTexture(imageNamed: "normal_grey");
+    var brown: SKTexture = SKTexture(imageNamed: "normal_brown");
+
+
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
-
+    var timeInterval: Double = 0;
+    var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+    var lastPitchSeen: Int = 0;
+    // The offset needed for the buttons to come up as they are sung.
+    let offsetCurrent: Double = 2;
+    let offsetPresspoint: Double = 0;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     
     override func didMoveToView(view: SKView) {
         
+        self.level = appDelegate.level;
+        self.user = appDelegate.user;
         
+        audioplayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
+        timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
+
         createBackground();
-       // createPipes();
+        createPipes();
         
+        // TODO: Fix quick Game.
+        audioplayer.prepareToPlay();
+        audioplayer.play();
+
         height = CGRectGetMidX(self.frame) *  3 / 4;
         width = CGRectGetMidY(self.frame) * 2 / 4;
         
@@ -44,32 +66,34 @@ class GameScene: SKScene {
         }
     
     func spawnPipes() {
+        var index = Int((Double(audioplayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
+        var pitch: Int = level.melody.pitch![index];
+        
+        //println(audioplayer.currentTime);
+        
+       if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
+            var (picture, x) = determineColour(pitch);
+            var pipePair: SKNode = SKNode();
+            pipePair.position = CGPointMake(0, self.frame.size.height + picture.size().height);
+            //pipePair.zPosition = -10;
+            
+            x = x *  self.frame.size.width / 8;
 
-        var pipePair: SKNode = SKNode();
-        pipePair.position = CGPointMake(0, self.frame.size.height + _pipeTexture1.size().height);
-        //pipePair.zPosition = -10;
-        
-        var x: CGFloat = self.frame.size.width / 3;
+            var pipe1: SKSpriteNode = SKSpriteNode(texture: picture);
+            pipe1.setScale(0.3);
+            
+            pipe1.position = CGPointMake(x, 0);
+            pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
+            pipe1.physicsBody!.dynamic = false;
+            
+            pipePair.addChild(pipe1);
+            
+            pipePair.runAction(_movePipesAndRemove);
+            
+            _pipes.addChild(pipePair);
+        }
+        lastPitchSeen = pitch;
 
-        var pipe1: SKSpriteNode = SKSpriteNode(texture:_pipeTexture1);
-        pipe1.setScale(2);
-        
-        pipe1.position = CGPointMake(x, 0);
-        pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
-        pipe1.physicsBody!.dynamic = false;
-        
-        pipePair.addChild(pipe1);
-        
-        pipePair.runAction(_movePipesAndRemove);
-        
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!";
-        myLabel.fontSize = 65;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        
-        self.addChild(myLabel)
-        
-        _pipes.addChild(pipePair);
     }
     
     func createBackground() {
@@ -91,14 +115,14 @@ class GameScene: SKScene {
     }
     
     func createPipes() {
-        var distanceToMove: CGFloat = self.frame.size.height + 2 * _pipeTexture1.size().height;
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * blue.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
         var removePipes: SKAction = SKAction.removeFromParent();
         _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
         
         var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
-        var delay: SKAction = SKAction.waitForDuration(2.0);
+        var delay: SKAction = SKAction.waitForDuration(0.1);
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
         self.runAction(spawnThenDelayForever);
@@ -133,6 +157,28 @@ class GameScene: SKScene {
         sprite.runAction(SKAction.repeatActionForever(action));
         
         self.addChild(sprite);
+    }
+    
+    func determineColour(pitch: Int) -> (SKTexture, CGFloat){
+        var smallPitch = Int(pitch / 50) % 8;
+        println(pitch.description + "   " + smallPitch.description);
+        switch(smallPitch) {
+            case 0:
+                return (blue, 1);
+            case 1:
+                return (green, 2);
+            case 2:
+                return (yellow, 3);
+            case 3:
+                return (red, 4)
+            case 4:
+                return (grey, 5)
+            case 5:
+                return (brown, 6)
+            default:
+                return (purple, 7)
+        }
+        
     }
 
     override func update(currentTime: CFTimeInterval) {
