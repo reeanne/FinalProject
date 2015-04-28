@@ -17,6 +17,7 @@ class GameScene: SKScene {
     var level: LevelObject! = nil;
     var height: CGFloat! = nil;
     var width: CGFloat! = nil;
+    
     var blue: SKTexture = SKTexture(imageNamed: "normal_blue");
     var green: SKTexture = SKTexture(imageNamed: "normal_green");
     var yellow: SKTexture = SKTexture(imageNamed: "normal_yellow");
@@ -34,6 +35,10 @@ class GameScene: SKScene {
     // The offset needed for the buttons to come up as they are sung.
     let offsetCurrent: Double = 2;
     let offsetPresspoint: Double = 0;
+    //let offsetPresspoint: Double = 7;
+    
+    var hits: Int = 0;
+    var misses: Int = 0;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -46,9 +51,9 @@ class GameScene: SKScene {
         audioplayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
 
-        createBackground();
+       // createBackground();
         createPipes();
-        
+        drawLine();
         // TODO: Fix quick Game.
         audioplayer.prepareToPlay();
         audioplayer.play();
@@ -63,15 +68,14 @@ class GameScene: SKScene {
     override func mouseDown(theEvent: NSEvent) {
         /* Called when a mouse click occurs */
         
-        }
+    }
     
     func spawnPipes() {
         var index = Int((Double(audioplayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         var pitch: Int = level.melody.pitch![index];
-        
-        //println(audioplayer.currentTime);
-        
-       if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
+
+      // if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
+        if (pitch > 0) {
             var (picture, x) = determineColour(pitch);
             var pipePair: SKNode = SKNode();
             pipePair.position = CGPointMake(0, self.frame.size.height + picture.size().height);
@@ -99,7 +103,6 @@ class GameScene: SKScene {
     func createBackground() {
         // Create ground
         var groundTexture = SKTexture(imageNamed: "background_wave");
-        //groundTexture.setFilteringMode(SKTextureFilteringMode.SKTextureFilteringNearest);
         var moveGroundSprite: SKAction = SKAction.moveByX(0, y: -self.frame.size.height * 2, duration: NSTimeInterval(0.02 * groundTexture.size().height));
         var resetGroundSprite: SKAction = SKAction.moveByX(0, y:self.frame.size.height * 2, duration: 0);
         var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
@@ -112,6 +115,16 @@ class GameScene: SKScene {
             self.addChild(sprite);
         }
 
+    }
+    
+    func drawLine() {
+        var line = SKShapeNode();
+        var pathToDraw: CGMutablePathRef  = CGPathCreateMutable();
+        CGPathMoveToPoint(pathToDraw, nil, 100.0, 100.0);
+        CGPathAddLineToPoint(pathToDraw, nil, 50.0, 50.0);
+        line.path = pathToDraw;
+       // line.setStrokeColor(UIColor.redColor);
+        addChild(line);
     }
     
     func createPipes() {
@@ -130,6 +143,9 @@ class GameScene: SKScene {
         self.addChild(_pipes);
     }
     
+    func initialiseButtons() {
+        
+    }
     
     override func keyDown(theEvent: NSEvent) {
         var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
@@ -146,22 +162,28 @@ class GameScene: SKScene {
             case 3:
                 println("f");
                 location = CGPoint(x:CGRectGetMidX(self.frame) * 2, y:CGRectGetMidY(self.frame));
+            case 35:
+                println("pause");
+                pause(!self.paused);
             default:
                 break;
         }
-        let sprite = SKSpriteNode(imageNamed:"Spaceship");
-        sprite.position = location;
-        sprite.setScale(0.5);
-        
-        let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1);
-        sprite.runAction(SKAction.repeatActionForever(action));
-        
-        self.addChild(sprite);
+    }
+    
+    func pause(pause: Bool) {
+        self.paused = pause;
+        self.view?.paused = pause;
+        if (pause) {
+            audioplayer.pause();
+        } else {
+            audioplayer.play();
+        }
+
     }
     
     func determineColour(pitch: Int) -> (SKTexture, CGFloat){
-        var smallPitch = Int(pitch / 50) % 8;
-        println(pitch.description + "   " + smallPitch.description);
+        var smallPitch = Int(pitch / 70) % 4;
+        // println(pitch.description + "   " + smallPitch.description);
         switch(smallPitch) {
             case 0:
                 return (blue, 1);
