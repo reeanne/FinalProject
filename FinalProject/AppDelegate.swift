@@ -54,6 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         gameController = GameController(nibName: "GameView", bundle: nil);
         window.contentView = gameController.view;
         window.contentViewController = gameController;
+        gameController.view = gameController.view;
     }
 
     

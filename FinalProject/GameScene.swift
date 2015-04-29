@@ -18,17 +18,39 @@ class GameScene: SKScene {
     var height: CGFloat! = nil;
     var width: CGFloat! = nil;
     
-    let textures: [Colour: SKTexture] = [
-        Colour.Blue: SKTexture(imageNamed: Colour.normal[Colour.Blue]!),
-        Colour.Green: SKTexture(imageNamed: Colour.normal[Colour.Green]!),
-        Colour.Yellow: SKTexture(imageNamed: Colour.normal[Colour.Yellow]!),
-        Colour.Red: SKTexture(imageNamed: Colour.normal[Colour.Red]!),
-        Colour.Purple: SKTexture(imageNamed: Colour.normal[Colour.Purple]!),
-        Colour.Grey: SKTexture(imageNamed: Colour.normal[Colour.Grey]!),
-        Colour.Brown: SKTexture(imageNamed: Colour.normal[Colour.Brown]!)
+    // Dictionary of all the textures.
+    let textures: [Colour: [String: SKTexture]] = [
+        Colour.Blue: [
+                "normal" :SKTexture(imageNamed: Colour.normal[Colour.Blue]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Blue]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Blue]!)],
+        Colour.Green: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Green]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Green]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Green]!)],
+        Colour.Yellow: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Yellow]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Yellow]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Yellow]!)],
+        Colour.Red: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Red]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Red]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Red]!)],
+        Colour.Purple: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Purple]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Purple]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Purple]!)],
+        Colour.Grey: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Grey]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Grey]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Grey]!)],
+        Colour.Brown: [
+                "normal": SKTexture(imageNamed: Colour.normal[Colour.Brown]!),
+                "hover": SKTexture(imageNamed: Colour.hover[Colour.Brown]!),
+                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Brown]!)]
     ];
     
-
+    var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
     var timeInterval: Double = 0;
@@ -57,7 +79,7 @@ class GameScene: SKScene {
         timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
 
        // createBackground();
-        initialiseButtons();
+        buttons = initialiseButtons();
         createPipes();
         drawLine();
         
@@ -134,7 +156,7 @@ class GameScene: SKScene {
     }
     
     func createPipes() {
-        var distanceToMove: CGFloat = self.frame.size.height + 2 * textures[Colour.Blue]!.size().height;
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * textures[Colour.Blue]!["normal"]!.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
         var removePipes: SKAction = SKAction.removeFromParent();
@@ -149,39 +171,50 @@ class GameScene: SKScene {
         self.addChild(_pipes);
     }
     
-    func initialiseButtons() {
+    func initialiseButtons() -> [SKSpriteNode] {
         var colour: Colour;
         var texture: SKTexture;
         var index: CGFloat;
         var button: SKSpriteNode;
+        var result = [SKSpriteNode]();
         for i in 0...limit-1 {
             colour = Colour(rawValue: i)!;
-            texture = SKTexture(imageNamed: Colour.hover[colour]!);
+            texture = textures[colour]!["hover"]!;
             index = CGFloat(i + 1);
             button = SKSpriteNode(texture: texture);
             button.setScale(0.3)
             button.position = CGPointMake(index * self.frame.size.width / overallRatio, self.frame.size.height / 6);
             self.addChild(button);
+            result.append(button)
         }
-        
-        
+        return result;
     }
     
     override func keyDown(theEvent: NSEvent) {
-        var location :CGPoint = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+        
         switch theEvent.keyCode {
             case 0:
                 println("a");
-                location = CGPoint(x:CGRectGetMidX(self.frame) / 2, y:CGRectGetMidY(self.frame));
+                var points = self.nodesAtPoint(buttons[0].position);
+                if (points.count > 1) {
+                    hits++;
+                } else {
+                    misses--;
+                }
+                var colour = Colour(rawValue: 0);
+                buttons[0].texture = textures[colour!]!["pressed"]!;
             case 1:
                 println("s");
-                location = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+                var colour = Colour(rawValue: 1);
+                buttons[1].texture = textures[colour!]!["pressed"]!;
             case 2:
                 println("d");
-                location = CGPoint(x:CGRectGetMidX(self.frame) * 3 / 2, y:CGRectGetMidY(self.frame));
+                var colour = Colour(rawValue: 2);
+                buttons[2].texture = textures[colour!]!["pressed"]!;
             case 3:
                 println("f");
-                location = CGPoint(x:CGRectGetMidX(self.frame) * 2, y:CGRectGetMidY(self.frame));
+                var colour = Colour(rawValue: 3);
+                buttons[3].texture = textures[colour!]!["pressed"]!;
             case 35:
                 println("pause");
                 pause(!self.paused);
@@ -189,6 +222,31 @@ class GameScene: SKScene {
                 break;
         }
     }
+    
+    
+    override func keyUp(theEvent: NSEvent) {
+        switch theEvent.keyCode {
+        case 0:
+            println("a");
+            var colour = Colour(rawValue: 0);
+            buttons[0].texture = textures[colour!]!["hover"]!;
+        case 1:
+            println("s");
+            var colour = Colour(rawValue: 1);
+            buttons[1].texture = textures[colour!]!["hover"]!;
+        case 2:
+            println("d");
+            var colour = Colour(rawValue: 2);
+            buttons[2].texture = textures[colour!]!["hover"]!;
+        case 3:
+            println("f");
+            var colour = Colour(rawValue: 3);
+            buttons[3].texture = textures[colour!]!["hover"]!;
+        default:
+            break;
+        }
+    }
+
     
     func pause(pause: Bool) {
         self.paused = pause;
@@ -204,7 +262,7 @@ class GameScene: SKScene {
     func determineColour(pitch: Int) -> (SKTexture, CGFloat){
         var smallPitch = Int(pitch / 70) % limit;
         var colour = Colour(rawValue: smallPitch);
-        var texture = textures[colour!];
+        var texture = textures[colour!]!["normal"];
         var index: CGFloat = CGFloat(smallPitch + 1);
         return (texture!, index * self.frame.size.width / overallRatio);
     }
