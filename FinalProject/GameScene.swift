@@ -39,6 +39,8 @@ class GameScene: SKScene {
     let offsetPresspoint: Double = 0;
     //let offsetPresspoint: Double = 7;
     
+    var limit = 4;
+    
     var hits: Int = 0;
     var misses: Int = 0;
     let overallRatio: CGFloat = 8;
@@ -55,8 +57,11 @@ class GameScene: SKScene {
         timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
 
        // createBackground();
+        initialiseButtons();
         createPipes();
         drawLine();
+        
+        
         // TODO: Fix quick Game.
         audioplayer.prepareToPlay();
         audioplayer.play();
@@ -83,8 +88,6 @@ class GameScene: SKScene {
             var pipePair: SKNode = SKNode();
             pipePair.position = CGPointMake(0, self.frame.size.height + picture.size().height);
             //pipePair.zPosition = -10;
-            
-            x = x * self.frame.size.width / overallRatio;
 
             var pipe1: SKSpriteNode = SKSpriteNode(texture: picture);
             pipe1.setScale(0.3);
@@ -147,6 +150,20 @@ class GameScene: SKScene {
     }
     
     func initialiseButtons() {
+        var colour: Colour;
+        var texture: SKTexture;
+        var index: CGFloat;
+        var button: SKSpriteNode;
+        for i in 0...limit-1 {
+            colour = Colour(rawValue: i)!;
+            texture = SKTexture(imageNamed: Colour.hover[colour]!);
+            index = CGFloat(i + 1);
+            button = SKSpriteNode(texture: texture);
+            button.setScale(0.3)
+            button.position = CGPointMake(index * self.frame.size.width / overallRatio, self.frame.size.height / 6);
+            self.addChild(button);
+        }
+        
         
     }
     
@@ -185,11 +202,11 @@ class GameScene: SKScene {
     }
     
     func determineColour(pitch: Int) -> (SKTexture, CGFloat){
-        var smallPitch = Int(pitch / 70) % 4;
+        var smallPitch = Int(pitch / 70) % limit;
         var colour = Colour(rawValue: smallPitch);
         var texture = textures[colour!];
         var index: CGFloat = CGFloat(smallPitch + 1);
-        return (texture!, index);
+        return (texture!, index * self.frame.size.width / overallRatio);
     }
 
     override func update(currentTime: CFTimeInterval) {
