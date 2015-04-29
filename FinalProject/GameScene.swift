@@ -18,14 +18,16 @@ class GameScene: SKScene {
     var height: CGFloat! = nil;
     var width: CGFloat! = nil;
     
-    var blue: SKTexture = SKTexture(imageNamed: "normal_blue");
-    var green: SKTexture = SKTexture(imageNamed: "normal_green");
-    var yellow: SKTexture = SKTexture(imageNamed: "normal_yellow");
-    var red: SKTexture = SKTexture(imageNamed: "normal_red");
-    var purple: SKTexture = SKTexture(imageNamed: "normal_purple");
-    var grey: SKTexture = SKTexture(imageNamed: "normal_grey");
-    var brown: SKTexture = SKTexture(imageNamed: "normal_brown");
-
+    let textures: [Colour: SKTexture] = [
+        Colour.Blue: SKTexture(imageNamed: Colour.normal[Colour.Blue]!),
+        Colour.Green: SKTexture(imageNamed: Colour.normal[Colour.Green]!),
+        Colour.Yellow: SKTexture(imageNamed: Colour.normal[Colour.Yellow]!),
+        Colour.Red: SKTexture(imageNamed: Colour.normal[Colour.Red]!),
+        Colour.Purple: SKTexture(imageNamed: Colour.normal[Colour.Purple]!),
+        Colour.Grey: SKTexture(imageNamed: Colour.normal[Colour.Grey]!),
+        Colour.Brown: SKTexture(imageNamed: Colour.normal[Colour.Brown]!)
+    ];
+    
 
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
@@ -39,6 +41,7 @@ class GameScene: SKScene {
     
     var hits: Int = 0;
     var misses: Int = 0;
+    let overallRatio: CGFloat = 8;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -81,7 +84,7 @@ class GameScene: SKScene {
             pipePair.position = CGPointMake(0, self.frame.size.height + picture.size().height);
             //pipePair.zPosition = -10;
             
-            x = x *  self.frame.size.width / 8;
+            x = x * self.frame.size.width / overallRatio;
 
             var pipe1: SKSpriteNode = SKSpriteNode(texture: picture);
             pipe1.setScale(0.3);
@@ -128,7 +131,7 @@ class GameScene: SKScene {
     }
     
     func createPipes() {
-        var distanceToMove: CGFloat = self.frame.size.height + 2 * blue.size().height;
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * textures[Colour.Blue]!.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
         var removePipes: SKAction = SKAction.removeFromParent();
@@ -183,24 +186,10 @@ class GameScene: SKScene {
     
     func determineColour(pitch: Int) -> (SKTexture, CGFloat){
         var smallPitch = Int(pitch / 70) % 4;
-        // println(pitch.description + "   " + smallPitch.description);
-        switch(smallPitch) {
-            case 0:
-                return (blue, 1);
-            case 1:
-                return (green, 2);
-            case 2:
-                return (yellow, 3);
-            case 3:
-                return (red, 4)
-            case 4:
-                return (grey, 5)
-            case 5:
-                return (brown, 6)
-            default:
-                return (purple, 7)
-        }
-        
+        var colour = Colour(rawValue: smallPitch);
+        var texture = textures[colour!];
+        var index: CGFloat = CGFloat(smallPitch + 1);
+        return (texture!, index);
     }
 
     override func update(currentTime: CFTimeInterval) {
