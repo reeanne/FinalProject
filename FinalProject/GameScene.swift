@@ -10,7 +10,7 @@ import AVFoundation
 import AudioToolbox
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var audioplayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
@@ -53,6 +53,8 @@ class GameScene: SKScene {
     var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
+    var missedField: SKNode! = nil;
+    
     var timeInterval: Double = 0;
     var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
     var lastPitchSeen: Int = 0;
@@ -62,6 +64,10 @@ class GameScene: SKScene {
     //let offsetPresspoint: Double = 7;
     var scored: SKLabelNode! = nil;
     var totalScore: SKLabelNode! = nil;
+    
+    // Collision Categories.
+    let noteCategory: UInt32 = 0x1 << 0;
+    let missedCategory: UInt32 = 0x1 << 1;
     
     var limit = 4;
     
@@ -77,6 +83,8 @@ class GameScene: SKScene {
         
         self.level = appDelegate.level;
         self.user = appDelegate.user;
+        self.physicsWorld.contactDelegate = self
+
         
         audioplayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
@@ -84,8 +92,6 @@ class GameScene: SKScene {
        // createBackground();
         buttons = initialiseButtons();
         createPipes();
-        drawLine();
-        println(self.children.description);
         scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode
 
@@ -98,7 +104,6 @@ class GameScene: SKScene {
         width = CGRectGetMidY(self.frame) * 2 / 4;
         
         // Print it to the console
-        println(managedObjectContext);
     }
     
     override func mouseDown(theEvent: NSEvent) {
@@ -121,7 +126,12 @@ class GameScene: SKScene {
             
             note.physicsBody = SKPhysicsBody(rectangleOfSize: note.size);
             note.physicsBody!.dynamic = false;
-            
+            note.physicsBody!.affectedByGravity = false;
+            note.physicsBody!.usesPreciseCollisionDetection = true
+            note.physicsBody!.categoryBitMask = noteCategory;
+            note.physicsBody!.contactTestBitMask = missedCategory;
+            missedField.physicsBody!.collisionBitMask = 0;
+
             note.runAction(_movePipesAndRemove);
             
             _pipes.addChild(note);
@@ -145,16 +155,6 @@ class GameScene: SKScene {
             self.addChild(sprite);
         }
 
-    }
-    
-    func drawLine() {
-        var line = SKShapeNode();
-        var pathToDraw: CGMutablePathRef  = CGPathCreateMutable();
-        CGPathMoveToPoint(pathToDraw, nil, 100.0, 100.0);
-        CGPathAddLineToPoint(pathToDraw, nil, 50.0, 50.0);
-        line.path = pathToDraw;
-       // line.setStrokeColor(UIColor.redColor);
-        addChild(line);
     }
     
     func createPipes() {
@@ -189,6 +189,19 @@ class GameScene: SKScene {
             self.addChild(button);
             result.append(button)
         }
+        
+        missedField = SKNode();
+        missedField.position = CGPointMake(0, self.frame.size.height / 6 - 1.25 * result[0].size.height);
+        missedField.physicsBody = SKPhysicsBody(
+            rectangleOfSize: CGSize(width: self.frame.size.width, height: self.frame.size.height / 6 - result[0].size.height));
+        missedField.physicsBody!.dynamic = true;
+        missedField.physicsBody!.affectedByGravity = false;
+        missedField.physicsBody!.usesPreciseCollisionDetection = true
+        missedField.physicsBody!.categoryBitMask = missedCategory;
+        missedField.physicsBody!.collisionBitMask = 0;
+        missedField.physicsBody!.pinned = true;
+        self.addChild(missedField);
+
         return result;
     }
     
@@ -242,7 +255,7 @@ class GameScene: SKScene {
                 }
             }
         } else {
-            misses++;
+            mistakes++;
         }
 
     }
@@ -308,6 +321,41 @@ class GameScene: SKScene {
         audioplayer = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
         audioplayer.prepareToPlay();
         audioplayer.play();
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        println("Contact")
+        var node: SKSpriteNode! = nil;
+        if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
+                contact.bodyB.categoryBitMask == missedCategory) {
+                node = contact.bodyA.node as! SKSpriteNode;
+                    
+        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
+            contact.bodyB.categoryBitMask == noteCategory) {
+                node = contact.bodyB.node as! SKSpriteNode;
+        }
+        println("changecolour")
+        println(node.texture!.hashValue == textures[Colour.Grey]!["normal"]!.hashValue)
+        node.texture = textures[Colour.Grey]!["normal"]!;
+        misses++;
+        updateBoard();
+    
+    }
+    func gameOver() {
+        let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
+            SKAction.fadeOutWithDuration(3.0)])
+        
+        let welcomeReturn =  SKAction.runBlock({
+            let transition = SKTransition.revealWithDirection(
+                SKTransitionDirection.Down, duration: 1.0)
+            let welcomeScene = GameScene(fileNamed: "GameScene")
+            self.scene!.view?.presentScene(welcomeScene,
+                transition: transition)
+        })
+        
+        let sequence = SKAction.sequence([fadeOut, welcomeReturn])
+        
+        self.runAction(sequence)
     }
     
 }
