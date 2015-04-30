@@ -11,6 +11,7 @@
 		42016A8A1AE1C0F40046FC15 /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42016A891AE1C0F40046FC15 /* GameController.swift */; };
 		42016A911AE1D42B0046FC15 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42016A901AE1D42B0046FC15 /* MenuView.xib */; };
 		42016A931AE1D48C0046FC15 /* GameView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42016A921AE1D48C0046FC15 /* GameView.xib */; };
+		421728591AF2DC6900AF7A55 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421728581AF2DC6900AF7A55 /* Constants.swift */; };
 		421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
 		421884A91AF1B17400E037B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4249773C1AF1A3C100B8BC27 /* Images.xcassets */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
@@ -59,6 +60,7 @@
 		42016A891AE1C0F40046FC15 /* GameController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameController.swift; path = Controllers/GameController.swift; sourceTree = "<group>"; };
 		42016A901AE1D42B0046FC15 /* MenuView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MenuView.xib; path = Views/MenuView.xib; sourceTree = "<group>"; };
 		42016A921AE1D48C0046FC15 /* GameView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameView.xib; path = Views/GameView.xib; sourceTree = "<group>"; };
+		421728581AF2DC6900AF7A55 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4249773C1AF1A3C100B8BC27 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				427BB9B81AE2E168006EB148 /* Views */,
 				42A67D381A52DCE50094808D /* AppDelegate.swift */,
 				42A67D3A1A52DCE50094808D /* GameScene.swift */,
+				421728581AF2DC6900AF7A55 /* Constants.swift */,
 				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
 				42EBB4D41A54AB980038845F /* LevelObject.swift */,
 				42F1F7781ADFA4F900731127 /* UserObject.swift */,
@@ -310,6 +313,7 @@
 				42F1F7791ADFA4F900731127 /* UserObject.swift in Sources */,
 				42F1F79C1ADFFB9F00731127 /* User.swift in Sources */,
 				42EBB4D51A54AB980038845F /* LevelObject.swift in Sources */,
+				421728591AF2DC6900AF7A55 /* Constants.swift in Sources */,
 				42F1F79E1ADFFBA000731127 /* Melody.swift in Sources */,
 				42016A8A1AE1C0F40046FC15 /* GameController.swift in Sources */,
 			);

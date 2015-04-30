@@ -19,41 +19,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var width: CGFloat! = nil;
     
     // Dictionary of all the textures.
-    let textures: [Colour: [String: SKTexture]] = [
-        Colour.Blue: [
-                "normal" :SKTexture(imageNamed: Colour.normal[Colour.Blue]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Blue]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Blue]!)],
-        Colour.Green: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Green]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Green]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Green]!)],
-        Colour.Yellow: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Yellow]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Yellow]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Yellow]!)],
-        Colour.Red: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Red]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Red]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Red]!)],
-        Colour.Purple: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Purple]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Purple]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Purple]!)],
-        Colour.Grey: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Grey]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Grey]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Grey]!)],
-        Colour.Brown: [
-                "normal": SKTexture(imageNamed: Colour.normal[Colour.Brown]!),
-                "hover": SKTexture(imageNamed: Colour.hover[Colour.Brown]!),
-                "pressed": SKTexture(imageNamed: Colour.pressed[Colour.Brown]!)]
-    ];
-    
+       
     var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
     var missedField: SKNode! = nil;
+    var constants: Constants = Constants();
     
     var timeInterval: Double = 0;
     var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
@@ -64,6 +35,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //let offsetPresspoint: Double = 7;
     var scored: SKLabelNode! = nil;
     var totalScore: SKLabelNode! = nil;
+    var middleIcon: SKSpriteNode! = nil;
     
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
@@ -92,10 +64,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        // createBackground();
         buttons = initialiseButtons();
         createPipes();
-        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode
-        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode
+        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
+        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
+        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
+        println(middleIcon.debugDescription)
+        middleIcon.hidden = true;
 
-        
+
         // TODO: Fix quick Game.
         audioplayer.prepareToPlay();
         audioplayer.play();
@@ -158,7 +133,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createPipes() {
-        var distanceToMove: CGFloat = self.frame.size.height + 2 * textures[Colour.Blue]!["normal"]!.size().height;
+        var distanceToMove: CGFloat = self.frame.size.height + 2 * constants.textures[Colour.Blue]!["normal"]!.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
         var removePipes: SKAction = SKAction.removeFromParent();
@@ -181,9 +156,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var result = [SKSpriteNode]();
         for i in 0...limit-1 {
             colour = Colour(rawValue: i)!;
-            texture = textures[colour]!["hover"]!;
+            texture = constants.textures[colour]!["hover"]!;
             index = CGFloat(i + 1);
             button = SKSpriteNode(texture: texture);
+            button.zPosition = 1;
             button.setScale(0.3)
             button.position = CGPointMake(index * self.frame.size.width / overallRatio, self.frame.size.height / 6);
             self.addChild(button);
@@ -212,26 +188,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 println("a");
                 var colour = Colour(rawValue: 0);
                 removeButtonPressed(colour!);
-                buttons[0].texture = textures[colour!]!["pressed"]!;
+                buttons[0].texture = constants.textures[colour!]!["pressed"]!;
             case 1:
                 println("s");
                 var colour = Colour(rawValue: 1);
                 removeButtonPressed(colour!);
-                buttons[1].texture = textures[colour!]!["pressed"]!;
+                buttons[1].texture = constants.textures[colour!]!["pressed"]!;
             case 2:
                 println("d");
                 var colour = Colour(rawValue: 2);
                 removeButtonPressed(colour!);
-                buttons[2].texture = textures[colour!]!["pressed"]!;
+                buttons[2].texture = constants.textures[colour!]!["pressed"]!;
             case 3:
                 println("f");
                 var colour = Colour(rawValue: 3);
                 removeButtonPressed(colour!);
-                buttons[3].texture = textures[colour!]!["pressed"]!;
+                buttons[3].texture = constants.textures[colour!]!["pressed"]!;
             case 35:
                 println("pause");
                 pause(!self.paused);
             default:
+                println(theEvent.keyCode);
                 break;
         }
     }
@@ -240,7 +217,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func removeButtonPressed(colour: Colour) {
         var points = self.nodesAtPoint(buttons[colour.rawValue].position);
         var spriteNode: SKSpriteNode;
-        var texture: SKTexture = textures[colour]!["normal"]!;
+        var texture: SKTexture = constants.textures[colour]!["normal"]!;
         
         if (points.count > 1) {
             for point in points {
@@ -271,19 +248,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case 0:
             println("a");
             var colour = Colour(rawValue: 0);
-            buttons[0].texture = textures[colour!]!["hover"]!;
+            buttons[0].texture = constants.textures[colour!]!["hover"]!;
         case 1:
             println("s");
             var colour = Colour(rawValue: 1);
-            buttons[1].texture = textures[colour!]!["hover"]!;
+            buttons[1].texture = constants.textures[colour!]!["hover"]!;
         case 2:
             println("d");
             var colour = Colour(rawValue: 2);
-            buttons[2].texture = textures[colour!]!["hover"]!;
+            buttons[2].texture = constants.textures[colour!]!["hover"]!;
         case 3:
             println("f");
             var colour = Colour(rawValue: 3);
-            buttons[3].texture = textures[colour!]!["hover"]!;
+            buttons[3].texture = constants.textures[colour!]!["hover"]!;
         default:
             break;
         }
@@ -291,6 +268,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     func pause(pause: Bool) {
+        
         self.paused = pause;
         self.view?.paused = pause;
         if (pause) {
@@ -298,13 +276,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             audioplayer.play();
         }
+        middleIcon.hidden = !pause;
 
     }
     
     func determineColour(pitch: Int) -> (SKTexture, CGFloat){
         var smallPitch = Int(pitch / 70) % limit;
         var colour = Colour(rawValue: smallPitch);
-        var texture = textures[colour!]!["normal"];
+        var texture = constants.textures[colour!]!["normal"];
         var index: CGFloat = CGFloat(smallPitch + 1);
         return (texture!, index * self.frame.size.width / overallRatio);
     }
@@ -324,7 +303,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-        println("Contact")
         var node: SKSpriteNode! = nil;
         if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
                 contact.bodyB.categoryBitMask == missedCategory) {
@@ -334,9 +312,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.categoryBitMask == noteCategory) {
                 node = contact.bodyB.node as! SKSpriteNode;
         }
-        println("changecolour")
-        println(node.texture!.hashValue == textures[Colour.Grey]!["normal"]!.hashValue)
-        node.texture = textures[Colour.Grey]!["normal"]!;
+        node.texture = constants.textures[Colour.Grey]!["normal"]!;
+        node.zPosition = -1;
         misses++;
         updateBoard();
     

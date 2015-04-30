@@ -12,6 +12,7 @@ import CoreData
 import AppKit
 import Cocoa
 
+
 class GameController: NSViewController {
     
     
@@ -24,13 +25,14 @@ class GameController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        
+    
         user = (NSApplication.sharedApplication().delegate as! AppDelegate).user;
         level = (NSApplication.sharedApplication().delegate as! AppDelegate).level;
         
         scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
         
         if scene != nil {
+            self.skView.allowsTransparency = true;
             for child in scene.children as! [SKNode] {
                 if child is SKSpriteNode {
                     let sprite = child as! SKSpriteNode

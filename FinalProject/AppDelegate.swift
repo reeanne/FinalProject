@@ -51,10 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func playGameWindow() {
+        
         gameController = GameController(nibName: "GameView", bundle: nil);
-        window.contentView = gameController.view;
+      //  window.contentView = gameController.view;
         window.contentViewController = gameController;
-        gameController.view = gameController.view;
     }
 
     
