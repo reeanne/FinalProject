@@ -107,22 +107,18 @@ class GameScene: SKScene {
       // if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
         if (pitch > 0) {
             var (picture, x) = determineColour(pitch);
-            var pipePair: SKNode = SKNode();
-            pipePair.position = CGPointMake(0, self.frame.size.height + picture.size().height);
+            var note: SKSpriteNode = SKSpriteNode(texture: picture);
+            note.position = CGPointMake(x, self.frame.size.height + picture.size().height);
             //pipePair.zPosition = -10;
 
-            var pipe1: SKSpriteNode = SKSpriteNode(texture: picture);
-            pipe1.setScale(0.3);
+            note.setScale(0.3);
             
-            pipe1.position = CGPointMake(x, 0);
-            pipe1.physicsBody = SKPhysicsBody(rectangleOfSize: pipe1.size);
-            pipe1.physicsBody!.dynamic = false;
+            note.physicsBody = SKPhysicsBody(rectangleOfSize: note.size);
+            note.physicsBody!.dynamic = false;
             
-            pipePair.addChild(pipe1);
+            note.runAction(_movePipesAndRemove);
             
-            pipePair.runAction(_movePipesAndRemove);
-            
-            _pipes.addChild(pipePair);
+            _pipes.addChild(note);
         }
         lastPitchSeen = pitch;
 
@@ -195,12 +191,24 @@ class GameScene: SKScene {
         switch theEvent.keyCode {
             case 0:
                 println("a");
+                /*
                 var points = self.nodesAtPoint(buttons[0].position);
+                var point: SKNode;
+                var texture: SKTexture;
                 if (points.count > 1) {
-                    hits++;
+                    for (var i = 0; i < points.count; i++) {
+                        point = points[i] ;
+                        texture = textures[Colour.Blue]!["normal"]!;
+                        if (point.texture?.hashValue == texture.hashValue) {
+                            hits++;
+                            points[i].removeFromParent();
+                            break;
+                        }
+                    }
                 } else {
                     misses--;
                 }
+*/
                 var colour = Colour(rawValue: 0);
                 buttons[0].texture = textures[colour!]!["pressed"]!;
             case 1:
