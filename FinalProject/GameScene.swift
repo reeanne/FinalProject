@@ -60,11 +60,14 @@ class GameScene: SKScene {
     let offsetCurrent: Double = 2;
     let offsetPresspoint: Double = 0;
     //let offsetPresspoint: Double = 7;
+    var scored: SKLabelNode! = nil;
+    var totalScore: SKLabelNode! = nil;
     
     var limit = 4;
     
     var hits: Int = 0;
     var misses: Int = 0;
+    var mistakes: Int = 0;
     let overallRatio: CGFloat = 8;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -82,7 +85,10 @@ class GameScene: SKScene {
         buttons = initialiseButtons();
         createPipes();
         drawLine();
-        
+        println(self.children.description);
+        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode
+        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode
+
         
         // TODO: Fix quick Game.
         audioplayer.prepareToPlay();
@@ -191,37 +197,23 @@ class GameScene: SKScene {
         switch theEvent.keyCode {
             case 0:
                 println("a");
-                /*
-                var points = self.nodesAtPoint(buttons[0].position);
-                var point: SKNode;
-                var texture: SKTexture;
-                if (points.count > 1) {
-                    for (var i = 0; i < points.count; i++) {
-                        point = points[i] ;
-                        texture = textures[Colour.Blue]!["normal"]!;
-                        if (point.texture?.hashValue == texture.hashValue) {
-                            hits++;
-                            points[i].removeFromParent();
-                            break;
-                        }
-                    }
-                } else {
-                    misses--;
-                }
-*/
                 var colour = Colour(rawValue: 0);
+                removeButtonPressed(colour!);
                 buttons[0].texture = textures[colour!]!["pressed"]!;
             case 1:
                 println("s");
                 var colour = Colour(rawValue: 1);
+                removeButtonPressed(colour!);
                 buttons[1].texture = textures[colour!]!["pressed"]!;
             case 2:
                 println("d");
                 var colour = Colour(rawValue: 2);
+                removeButtonPressed(colour!);
                 buttons[2].texture = textures[colour!]!["pressed"]!;
             case 3:
                 println("f");
                 var colour = Colour(rawValue: 3);
+                removeButtonPressed(colour!);
                 buttons[3].texture = textures[colour!]!["pressed"]!;
             case 35:
                 println("pause");
@@ -229,6 +221,35 @@ class GameScene: SKScene {
             default:
                 break;
         }
+    }
+    
+    
+    func removeButtonPressed(colour: Colour) {
+        var points = self.nodesAtPoint(buttons[colour.rawValue].position);
+        var spriteNode: SKSpriteNode;
+        var texture: SKTexture = textures[colour]!["normal"]!;
+        
+        if (points.count > 1) {
+            for point in points {
+                if (point is SKSpriteNode) {
+                    spriteNode = point as! SKSpriteNode;
+                    if (spriteNode.texture?.hashValue == texture.hashValue) {
+                        hits++;
+                        point.removeFromParent();
+                        updateBoard();
+                        break;
+                    }
+                }
+            }
+        } else {
+            misses++;
+        }
+
+    }
+    
+    func updateBoard() {
+        scored.text = hits.description;
+        totalScore.text = (misses + hits).description;
     }
     
     
