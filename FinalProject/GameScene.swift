@@ -36,6 +36,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scored: SKLabelNode! = nil;
     var totalScore: SKLabelNode! = nil;
     var middleIcon: SKSpriteNode! = nil;
+    var progressBar: SKSpriteNode! = nil;
     
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
@@ -60,17 +61,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         audioplayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
-
-       // createBackground();
-        buttons = initialiseButtons();
-        createPipes();
-        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
-        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
-        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
-        println(middleIcon.debugDescription)
-        middleIcon.hidden = true;
-
-
+        
+        setupSprites();
+        
         // TODO: Fix quick Game.
         audioplayer.prepareToPlay();
         audioplayer.play();
@@ -227,14 +220,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         hits++;
                         point.removeFromParent();
                         updateBoard();
-                        break;
+                        updateProgressBar();
+                        return;
                     }
                 }
             }
-        } else {
+            println("mistake")
             mistakes++;
+            updateProgressBar();
         }
-
+    }
+    
+    func updateProgressBar() {
+        var total: Int = misses + hits;
+        var ratio = 100;
+        if (total < 15) {
+            total = 15;
+        }
+        ratio = max(0, (total - mistakes) * 100 / total);
+        progressBar.texture = constants.progressBar[ratio];
     }
     
     func updateBoard() {
@@ -246,19 +250,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func keyUp(theEvent: NSEvent) {
         switch theEvent.keyCode {
         case 0:
-            println("a");
             var colour = Colour(rawValue: 0);
             buttons[0].texture = constants.textures[colour!]!["hover"]!;
         case 1:
-            println("s");
             var colour = Colour(rawValue: 1);
             buttons[1].texture = constants.textures[colour!]!["hover"]!;
         case 2:
-            println("d");
             var colour = Colour(rawValue: 2);
             buttons[2].texture = constants.textures[colour!]!["hover"]!;
         case 3:
-            println("f");
             var colour = Colour(rawValue: 3);
             buttons[3].texture = constants.textures[colour!]!["hover"]!;
         default:
@@ -292,6 +292,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Called before each frame is rendered */
     }
     
+    func setupSprites() {
+        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
+        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
+        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
+        progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
+        
+        middleIcon.hidden = true;
+        
+        // createBackground();
+        buttons = initialiseButtons();
+        createPipes();
+
+    }
+    
 
     /**
         Function for playing the music file.
@@ -316,6 +330,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         node.zPosition = -1;
         misses++;
         updateBoard();
+        updateProgressBar();
+
     
     }
     func gameOver() {
