@@ -31,6 +31,18 @@ class GameController: NSViewController {
         scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
         
         if scene != nil {
+            for child in scene.children as! [SKNode] {
+                if child is SKSpriteNode {
+                    let sprite = child as! SKSpriteNode
+                    sprite.texture?.preloadWithCompletionHandler({ })
+                }
+                for hisChild in child.children as! [SKNode] {
+                    if hisChild is SKSpriteNode {
+                        let sprite = hisChild as! SKSpriteNode
+                        sprite.texture?.preloadWithCompletionHandler({ })
+                    }
+                }
+            }
             scene.user = user;
             scene.level = level;
             scene.scaleMode = .AspectFill;

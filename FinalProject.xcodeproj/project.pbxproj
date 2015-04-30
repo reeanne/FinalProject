@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		42016A881AE19B500046FC15 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42016A871AE19B500046FC15 /* MenuController.swift */; };
 		42016A8A1AE1C0F40046FC15 /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42016A891AE1C0F40046FC15 /* GameController.swift */; };
-		42016A8B1AE1C9220046FC15 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
 		42016A911AE1D42B0046FC15 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42016A901AE1D42B0046FC15 /* MenuView.xib */; };
 		42016A931AE1D48C0046FC15 /* GameView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42016A921AE1D48C0046FC15 /* GameView.xib */; };
-		4249773D1AF1A3C100B8BC27 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4249773C1AF1A3C100B8BC27 /* Images.xcassets */; };
+		421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
+		421884A91AF1B17400E037B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4249773C1AF1A3C100B8BC27 /* Images.xcassets */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
 		426ED3D11AEC17DC00E29FCF /* libyamlswift.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 426ED3D01AEC17DC00E29FCF /* libyamlswift.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -277,8 +277,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42016A8B1AE1C9220046FC15 /* MainMenu.xib in Resources */,
-				4249773D1AF1A3C100B8BC27 /* Images.xcassets in Resources */,
+				421884A91AF1B17400E037B0 /* Images.xcassets in Resources */,
+				421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */,
 				42016A931AE1D48C0046FC15 /* GameView.xib in Resources */,
 				42016A911AE1D42B0046FC15 /* MenuView.xib in Resources */,
 				42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */,
