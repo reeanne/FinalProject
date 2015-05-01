@@ -233,12 +233,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func updateProgressBar() {
         var total: Int = misses + hits;
-        var ratio = 100;
+        var ratio: Int = 100;
         if (total < 15) {
             total = 15;
         }
-        ratio = max(0, (Int((total - mistakes) * 100 / total / 10) * 10));
+        var result: Int = (Int((total - mistakes - misses) * 100 / total / 10) * 10);
+        ratio = max(0, result);
         progressBar.texture = constants.progressBar[ratio];
+        if (result < -30) {
+            gameOver();
+        }
+        
     }
     
     func updateBoard() {
@@ -345,9 +350,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let welcomeReturn =  SKAction.runBlock({
             let transition = SKTransition.revealWithDirection(
                 SKTransitionDirection.Down, duration: 1.0)
-            let welcomeScene = GameScene(fileNamed: "GameScene")
-            self.scene!.view?.presentScene(welcomeScene,
-                transition: transition)
+            self.scene!.view?.presentScene(nil)
         })
         
         let sequence = SKAction.sequence([fadeOut, welcomeReturn])
