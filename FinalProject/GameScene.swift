@@ -12,7 +12,7 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
-    var audioplayer: AVAudioPlayer! = nil;
+    var songPlayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
     var height: CGFloat! = nil;
@@ -59,14 +59,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
 
         
-        audioplayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
-        timeInterval = Double(audioplayer.duration) / Double(level.melody.pitch!.count);
+        songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
+        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
         
         setupSprites();
         
         // TODO: Fix quick Game.
-        audioplayer.prepareToPlay();
-        audioplayer.play();
+        songPlayer.prepareToPlay();
+        songPlayer.play();
 
         height = CGRectGetMidX(self.frame) *  3 / 4;
         width = CGRectGetMidY(self.frame) * 2 / 4;
@@ -80,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnPipes() {
-        var index = Int((Double(audioplayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
+        var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         var pitch: Int = level.melody.pitch![index];
 
       // if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
@@ -237,7 +237,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (total < 15) {
             total = 15;
         }
-        ratio = max(0, (total - mistakes) * 100 / total);
+        ratio = max(0, (Int((total - mistakes) * 100 / total / 10) * 10));
         progressBar.texture = constants.progressBar[ratio];
     }
     
@@ -272,9 +272,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paused = pause;
         self.view?.paused = pause;
         if (pause) {
-            audioplayer.pause();
+            songPlayer.pause();
         } else {
-            audioplayer.play();
+            songPlayer.play();
         }
         middleIcon.hidden = !pause;
 
@@ -311,9 +311,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         Function for playing the music file.
     */
     func startPlaying (audioURL: NSURL) {
-        audioplayer = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
-        audioplayer.prepareToPlay();
-        audioplayer.play();
+        songPlayer = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
+        songPlayer.prepareToPlay();
+        songPlayer.play();
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -327,13 +327,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 node = contact.bodyB.node as! SKSpriteNode;
         }
         node.texture = constants.textures[Colour.Grey]!["normal"]!;
+        playWoosh();
         node.zPosition = -1;
         misses++;
         updateBoard();
         updateProgressBar();
-
-    
     }
+    
+    func playWoosh() {
+        AudioServicesPlaySystemSound(constants.wooshSound);
+    }
+    
     func gameOver() {
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
             SKAction.fadeOutWithDuration(3.0)])

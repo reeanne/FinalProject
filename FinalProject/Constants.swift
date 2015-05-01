@@ -8,9 +8,11 @@
 
 import Foundation
 import SpriteKit
+import AudioToolbox
 
-
-struct Constants {
+class Constants {
+    
+    let musicSubPath: String = "Assets/Sounds/";
     
     let textures: [Colour: [String: SKTexture]] = [
         Colour.Blue: [
@@ -63,5 +65,16 @@ struct Constants {
         90: SKTexture(imageNamed: "progress90.png"),
         100: SKTexture(imageNamed: "progress100.png")
     ];
+    
+    var wooshSound: SystemSoundID = 0;
+    var applauseSound: SystemSoundID = 0;
+    
+    init() {
+        let wooshURL = NSBundle.mainBundle().URLForResource(musicSubPath + "Woosh", withExtension: "mp3");
+        var osStatus = AudioServicesCreateSystemSoundID(wooshURL, &wooshSound);
+        
+        let applauseURL = NSBundle.mainBundle().URLForResource(musicSubPath + "Applause", withExtension: "mp3");
+        osStatus = AudioServicesCreateSystemSoundID(wooshURL, &applauseSound);
+    }
 
 }
