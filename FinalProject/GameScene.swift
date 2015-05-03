@@ -9,6 +9,7 @@
 import AVFoundation
 import AudioToolbox
 import SpriteKit
+import Foundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
@@ -42,12 +43,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let noteCategory: UInt32 = 0x1 << 0;
     let missedCategory: UInt32 = 0x1 << 1;
     
+    let overallRatio: CGFloat = 8;
     var limit = 4;
     
+    // Score variables.
     var hits: Int = 0;
     var misses: Int = 0;
     var mistakes: Int = 0;
-    let overallRatio: CGFloat = 8;
+    var currentNumber: Float = 10;
+    var maxCurrentNumber: Float = 20;
+
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -218,6 +223,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     spriteNode = point as! SKSpriteNode;
                     if (spriteNode.texture?.hashValue == texture.hashValue) {
                         hits++;
+                        currentNumber++;
                         point.removeFromParent();
                         updateBoard();
                         updateProgressBar();
@@ -227,23 +233,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             println("mistake")
             mistakes++;
+            currentNumber--;
             updateProgressBar();
+            updateBoard();
         }
     }
     
     func updateProgressBar() {
-        var total: Int = misses + hits;
-        var ratio: Int = 100;
-        if (total < 15) {
-            total = 15;
-        }
-        var result: Int = (Int((total - mistakes - misses) * 100 / total / 10) * 10);
-        ratio = max(0, result);
-        progressBar.texture = constants.progressBar[ratio];
-        if (result < -30) {
+        var ratio: Float = 10;
+        var total: Int = Int(currentNumber);
+        var result: Int;
+        if (total < 0) {
             gameOver();
+        } else {
+            ratio = currentNumber * ratio / maxCurrentNumber;
+            result = Int(ceil(ratio)) * 10;
+            total = max(0, result);
+            println(total);
+            progressBar.texture = constants.progressBar[total];
         }
-        
     }
     
     func updateBoard() {
@@ -275,10 +283,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func pause(pause: Bool) {
         
         self.paused = pause;
-        self.view?.paused = pause;
         if (pause) {
             songPlayer.pause();
+            middleIcon.texture = constants.middleIcons["pause"];
+            println(middleIcon.description);
         } else {
+            middleIcon.texture = constants.middleIcons["play"];
             songPlayer.play();
         }
         middleIcon.hidden = !pause;
@@ -335,6 +345,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playWoosh();
         node.zPosition = -1;
         misses++;
+        currentNumber--;
         updateBoard();
         updateProgressBar();
     }

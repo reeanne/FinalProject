@@ -46,10 +46,10 @@ class Constants {
     ];
     
     let middleIcons: [String: SKTexture] = [
-        "pause": SKTexture(imageNamed: "pause"),
-        "play": SKTexture(imageNamed: "play"),
-        "replay": SKTexture(imageNamed: "replay"),
-        "stop": SKTexture(imageNamed: "stop")
+        "pause": SKTexture(imageNamed: "pause.png"),
+        "play": SKTexture(imageNamed: "play.png"),
+        "replay": SKTexture(imageNamed: "replay.png"),
+        "stop": SKTexture(imageNamed: "stop.png")
     ];
     
     let progressBar: [Int: SKTexture] = [
@@ -66,6 +66,7 @@ class Constants {
         100: SKTexture(imageNamed: "progress100.png")
     ];
     
+
     var wooshSound: SystemSoundID = 0;
     var applauseSound: SystemSoundID = 0;
     
