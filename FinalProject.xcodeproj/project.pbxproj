@@ -16,8 +16,6 @@
 		421884A91AF1B17400E037B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4249773C1AF1A3C100B8BC27 /* Images.xcassets */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
-		426ED3D11AEC17DC00E29FCF /* libyamlswift.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 426ED3D01AEC17DC00E29FCF /* libyamlswift.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		426ED3D21AEC17EB00E29FCF /* libyamlswift.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 426ED3D01AEC17DC00E29FCF /* libyamlswift.dylib */; };
 		42A67D391A52DCE50094808D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D381A52DCE50094808D /* AppDelegate.swift */; };
 		42A67D3B1A52DCE50094808D /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D3A1A52DCE50094808D /* GameScene.swift */; };
 		42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D3C1A52DCE50094808D /* GameScene.sks */; };
@@ -48,7 +46,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				426ED3D11AEC17DC00E29FCF /* libyamlswift.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,7 +61,6 @@
 		4249773C1AF1A3C100B8BC27 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
-		426ED3D01AEC17DC00E29FCF /* libyamlswift.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libyamlswift.dylib; path = "FinalProject/yaml-swift.swift/build/libyamlswift.dylib"; sourceTree = "<group>"; };
 		42A67D331A52DCE50094808D /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42A67D371A52DCE50094808D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A67D381A52DCE50094808D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,7 +85,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				426ED3D21AEC17EB00E29FCF /* libyamlswift.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +120,6 @@
 		42A67D2A1A52DCE50094808D = {
 			isa = PBXGroup;
 			children = (
-				426ED3D01AEC17DC00E29FCF /* libyamlswift.dylib */,
 				42BED63E1ADF1CE400E6F32E /* CoreData.framework */,
 				42A67D351A52DCE50094808D /* FinalProject */,
 				42A67D4A1A52DCE60094808D /* FinalProjectTests */,

@@ -19,17 +19,19 @@ class MelodyObject {
     var audioURL: NSURL;
     var mood: Mood?;
     var pitch: [Int]?;
+    var beats: [Double]?;
     
     
     init(audioURL: NSURL) {
         self.audioURL = audioURL;
         self.pitch = getPredominantMelody(audioURL);
-            }
+        self.beats = getBeats(audioURL);
+    }
     
-    init(audioURL: NSURL, pitch: [Int]) {
+    init(audioURL: NSURL, pitch: [Int], beats: [Double]) {
         self.audioURL = audioURL;
         self.pitch = pitch;
-       
+        self.beats = beats;
     }
     
     
@@ -61,6 +63,31 @@ class MelodyObject {
         let titleString : NSString = piDict[NSString(string:kAFInfoDictionary_Title)] as! NSString
         NSLog("\(albumString)   \(artistString)  \(titleString)")
         
+    }
+    
+    func getBeats(audioURL: NSURL) -> [Double] {
+        var task: NSTask = NSTask();
+        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/beat_output.json";
+        
+        // TODO: Change the paths to adjust to different users, not just mine...
+        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_beattracker_multifeature_mirex2013";
+        task.arguments = [audioURL, outputFile];
+        task.launch();
+        task.waitUntilExit();
+        var status = task.terminationStatus;
+        
+        if (status == 0) {
+            NSLog("Task succeeded.");
+            var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
+            inputStream.open();
+            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
+            var rhythm = json["rhythm"] as! [String: AnyObject];
+            var ticks = rhythm["ticks"] as! [Double];
+            return ticks;
+        } else {
+            NSLog("Task failed.");
+            return [];
+        }
     }
     
     

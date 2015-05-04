@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
+    var _frets: SKNode = SKNode();
     var missedField: SKNode! = nil;
     var constants: Constants = Constants();
     
@@ -38,6 +39,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var totalScore: SKLabelNode! = nil;
     var middleIcon: SKSpriteNode! = nil;
     var progressBar: SKSpriteNode! = nil;
+    
+    // Beats.
+    var beats: [Double]! = nil;
+    var beatsTimer: NSTimer! = nil;
+    var beatsIndex = 0;
     
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
@@ -63,15 +69,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.user = appDelegate.user;
         self.physicsWorld.contactDelegate = self
 
+        beats = level.melody.beats;
+
         
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
+        
         
         setupSprites();
         
         // TODO: Fix quick Game.
         songPlayer.prepareToPlay();
         songPlayer.play();
+
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+        
 
         height = CGRectGetMidX(self.frame) *  3 / 4;
         width = CGRectGetMidY(self.frame) * 2 / 4;
@@ -84,6 +96,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func spawnFrets() {
+        var fret: SKSpriteNode = SKSpriteNode(texture: constants.fretTexture);
+        var tempSize = constants.fretTexture.size();
+        fret.position = CGPointMake(self.frame.size.width / overallRatio, self.frame.size.height + constants.fretTexture.size().height);
+        fret.zPosition = 0;
+        fret.size = CGSize(width: tempSize.width * 3, height: tempSize.height);
+        // fret.setScale(0.3);
+        
+        fret.runAction(_movePipesAndRemove);
+        _frets.addChild(fret);
+        beatsIndex += 2;
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[beatsIndex]  - beats[beatsIndex-2], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+
+    }
+    
     func spawnPipes() {
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         var pitch: Int = level.melody.pitch![index];
@@ -94,7 +121,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var note: SKSpriteNode = SKSpriteNode(texture: picture);
             note.position = CGPointMake(x, self.frame.size.height + picture.size().height);
             //pipePair.zPosition = -10;
-
+            
             note.setScale(0.3);
             
             note.physicsBody = SKPhysicsBody(rectangleOfSize: note.size);
@@ -104,7 +131,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             note.physicsBody!.categoryBitMask = noteCategory;
             note.physicsBody!.contactTestBitMask = missedCategory;
             missedField.physicsBody!.collisionBitMask = 0;
-
+            
             note.runAction(_movePipesAndRemove);
             
             _pipes.addChild(note);
@@ -138,12 +165,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
         
         var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
-        var delay: SKAction = SKAction.waitForDuration(0.1);
+        var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 4);
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
         self.runAction(spawnThenDelayForever);
         
         self.addChild(_pipes);
+        self.addChild(_frets)
     }
     
     func initialiseButtons() -> [SKSpriteNode] {
@@ -244,7 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var total: Int = Int(currentNumber);
         var result: Int;
         if (total < 0) {
-            gameOver();
+        //    gameOver();
         } else {
             ratio = currentNumber * ratio / maxCurrentNumber;
             result = Int(ceil(ratio)) * 10;
@@ -318,6 +346,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // createBackground();
         buttons = initialiseButtons();
         createPipes();
+        updateProgressBar();
 
     }
     

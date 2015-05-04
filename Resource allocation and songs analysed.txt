@@ -1,11 +1,11 @@
-line03 - Satisfaction
-line04 - city of new orleans
-line05 - A day in life
-line06 - where have all the flowers gone
+line03 - rock with you
+line04 - ascension
+line05 - a song for you
+line06 - 
 line07 - Anarchy in the UK
-line09 - Blowin in the wind
-line12 - if I had a hammer
-line13 - stairway to heaven
+line09 - adore
+line12 - yearning for your love
+line13 - 
 line14 - won't fool me again
 
 
@@ -44,6 +44,15 @@ Smooth
 Come out and play
 holiday in cambodia
 this is your land
+A day in life
+Blowin in the wind
+Satisfaction
+if I had a hammer
+city of new orleans
+where have all the flowers gone
+stairway to heaven
+
+
 
 
 mac - one more time
@@ -54,8 +63,11 @@ done:
 4. Pop
 5. Country
 6. Jazz
+7. Soul & RnB
+
 9. Folk
 10. Metal
+
 12. Punk
 
 

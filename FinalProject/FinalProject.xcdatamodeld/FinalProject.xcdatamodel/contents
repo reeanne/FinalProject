@@ -6,6 +6,7 @@
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="levels" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Melody" representedClassName="FinalProject.Melody" syncable="YES">
+        <attribute name="beats" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="file" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pitch" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="level" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Level" inverseName="melody" inverseEntity="Level" syncable="YES"/>
@@ -26,7 +27,7 @@
     </entity>
     <elements>
         <element name="Level" positionX="-261" positionY="-180" width="128" height="90"/>
-        <element name="Melody" positionX="-234" positionY="72" width="128" height="105"/>
+        <element name="Melody" positionX="-234" positionY="72" width="128" height="120"/>
         <element name="Mood" positionX="115" positionY="93" width="128" height="73"/>
         <element name="User" positionX="52" positionY="-153" width="128" height="73"/>
     </elements>

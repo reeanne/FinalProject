@@ -73,6 +73,26 @@ int main(int argc, char* argv[]) {
   if (pool.contains<vector<Real> >("rhythm.ticks")) { // there might be empty ticks
     ticks = pool.value<vector<Real> >("rhythm.ticks");
   }
+
+   cout << "-------- writing results to file " << argv[2] << " --------" << endl;
+
+  standard::Algorithm* output = standard::AlgorithmFactory::create("YamlOutput",
+                                                                   "filename", argv[2],
+                                                                   "format", "json");
+  output->input("pool").set(pool);
+  output->compute();
+
+  if (argc == 4 && atoi(argv[3])) {
+    // printing to stdout:
+    cout << "number of frames: " << pool.value<vector<Real> >("rhythm.ticks").size() << endl;
+  }
+
+  // clean up:
+  delete output;
+  essentia::shutdown();
+
+  return 0;
+  /*
   ostream* fileStream = new ofstream(outputFilename.c_str());
   for (size_t i=0; i<ticks.size(); ++i) {
     *fileStream << ticks[i] << "\n";
@@ -81,4 +101,7 @@ int main(int argc, char* argv[]) {
 
   essentia::shutdown();
   return 0;
+  */
+
+
 }

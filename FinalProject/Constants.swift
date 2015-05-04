@@ -13,6 +13,7 @@ import AudioToolbox
 class Constants {
     
     let musicSubPath: String = "Assets/Sounds/";
+    let fretTexture: SKTexture = SKTexture(imageNamed: "grey_fret.png");
     
     let textures: [Colour: [String: SKTexture]] = [
         Colour.Blue: [

@@ -149,7 +149,7 @@ class MenuController: NSViewController {
         if (levelName != nil) {
             var levelData = getLevel(levelName!);
             var melodyData = levelData!.melody;
-            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int]);
+            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Double]);
             var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
             var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
             appDelegate.level = levelObject;
@@ -367,7 +367,7 @@ class MenuController: NSViewController {
         userData = getUser(user.username);
         
         if let moc = self.managedObjectContext {
-            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch!);
+            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch!, beats: melody.beats!);
             Level.createInManagedObjectContext(moc, name: currentLevel.name, user: userData, melody: melodyData);
         }
         
