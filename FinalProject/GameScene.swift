@@ -101,8 +101,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var tempSize = constants.fretTexture.size();
         fret.position = CGPointMake(self.frame.size.width / overallRatio, self.frame.size.height + constants.fretTexture.size().height);
         fret.zPosition = 0;
-        fret.size = CGSize(width: tempSize.width * 3, height: tempSize.height);
-        // fret.setScale(0.3);
         
         fret.runAction(_movePipesAndRemove);
         _frets.addChild(fret);
@@ -113,9 +111,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnPipes() {
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
+        if (index > level.melody.pitch!.count) {
+            // Star Message & Score
+        }
         var pitch: Int = level.melody.pitch![index];
 
-      // if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
+        //if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
         if (pitch > 0) {
             var (picture, x) = determineColour(pitch);
             var note: SKSpriteNode = SKSpriteNode(texture: picture);
@@ -165,7 +166,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
         
         var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
-        var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 4);
+        var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 2);
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
         self.runAction(spawnThenDelayForever);
@@ -338,8 +339,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setupSprites() {
         scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
-        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
         progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
+        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
+
         
         middleIcon.hidden = true;
         
