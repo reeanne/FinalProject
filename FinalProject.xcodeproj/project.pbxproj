@@ -432,7 +432,7 @@
 					"$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build/";
+				SWIFT_INCLUDE_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -448,7 +448,7 @@
 					"$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build/";
+				SWIFT_INCLUDE_PATHS = "";
 			};
 			name = Release;
 		};

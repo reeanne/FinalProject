@@ -16,11 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var songPlayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
-    var height: CGFloat! = nil;
-    var width: CGFloat! = nil;
-    
-    // Dictionary of all the textures.
-       
+
     var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
     var _pipes: SKNode = SKNode();
@@ -37,7 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //let offsetPresspoint: Double = 7;
     var scored: SKLabelNode! = nil;
     var totalScore: SKLabelNode! = nil;
-    var middleIcon: SKSpriteNode! = nil;
+    var middleParent: SKNode! = nil;
     var progressBar: SKSpriteNode! = nil;
     
     // Beats.
@@ -84,11 +80,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
         
-
-        height = CGRectGetMidX(self.frame) *  3 / 4;
-        width = CGRectGetMidY(self.frame) * 2 / 4;
-        
-        // Print it to the console
     }
     
     override func mouseDown(theEvent: NSEvent) {
@@ -314,13 +305,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paused = pause;
         if (pause) {
             songPlayer.pause();
-            middleIcon.texture = constants.middleIcons["pause"];
-            println(middleIcon.description);
         } else {
-            middleIcon.texture = constants.middleIcons["play"];
             songPlayer.play();
         }
-        middleIcon.hidden = !pause;
+        middleParent.hidden = !pause;
 
     }
     
@@ -340,16 +328,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
         progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
-        middleIcon = self.childNodeWithName("ScoreParent")?.childNodeWithName("MiddleIcon") as! SKSpriteNode;
+        middleParent = self.childNodeWithName("MiddleParent")!;
+        
+        middleParent.hidden = true;
 
-        
-        middleIcon.hidden = true;
-        
         // createBackground();
+        showStars(0);
         buttons = initialiseButtons();
         createPipes();
         updateProgressBar();
 
+    }
+    
+    func showStars(number: Int) {
+        var star: SKNode;
+        for (var i = 1; i <= number; i++) {
+             middleParent.childNodeWithName("Star" + i.description)!.hidden = false;
+        }
+        for (var i = number + 1; i <= 3; i++) {
+             middleParent.childNodeWithName("Star" + i.description)!.hidden = true;
+        }
     }
     
 
