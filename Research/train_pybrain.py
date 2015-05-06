@@ -1,6 +1,6 @@
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.tools.validation import ModuleValidator, CrossValidator
-from pybrain.structure import SigmoidLayer
+from pybrain.structure import SigmoidLayer, TanhLayer
 import pybrain.tools.shortcuts as shortcuts
 from pybrain.datasets import SupervisedDataSet
 import sys
