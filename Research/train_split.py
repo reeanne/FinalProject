@@ -7,8 +7,8 @@ from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 
-train_file = 'foreign_data.csv'
-validation_file = 'validation_data.csv'
+train_file = 'newdata.csv'
+validation_file = 'newdata.csv'
 output_model_file = 'model.pkl'
 
 hidden_size = 100
@@ -22,6 +22,7 @@ train = np.vstack(( train, validation ))
 
 x_train = train[:,0:-2]
 y_train = train[:,-2:]
+
 
 input_size = x_train.shape[1]
 target_size = y_train.shape[1]

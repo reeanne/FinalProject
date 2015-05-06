@@ -7,8 +7,8 @@ from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 
-train_file = 'foreign_data.csv'
-validation_file = 'validation_data.csv'
+train_file = 'data/train.csv'
+validation_file = 'data/validation.csv'
 output_model_file = 'model_val.pkl'
 
 hidden_size = 100
@@ -36,7 +36,7 @@ ds.setField( 'target', y_train )
 
 # init and train
 
-net = buildNetwork(input_size, hidden_size, target_size, bias= True )
+net = buildNetwork( input_size, hidden_size, target_size, bias= True )
 trainer = BackpropTrainer( net,ds )
 
 train_mse, validation_mse = trainer.trainUntilConvergence( verbose = True, validationProportion = validation_proportion, 
