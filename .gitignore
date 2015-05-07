@@ -29,6 +29,22 @@ DerivedData
 # Latex Reports
 #
 
+Final Report/*.aux
+Final Report/*.dvi
+Final Report/*.sty
+Final Report/*.log
+Final Report/*.toc
+Final Report/*.lot
+Final Report/*.lof
+Final Report/*.synctex.gz
+Final Report/*.out
+Final Report/Missing Packages/*.sty
+Final Report/Chapters/*.log
+Final Report/main-blx.bibf
+Final Report/main.bbl
+Final Report/main.blg
+Final Report/main.run.xml
+
 Interim/*.aux
 Interim/*.dvi
 Interim/*.sty
