@@ -7,7 +7,7 @@ from math import sqrt
 from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from sklearn.metrics import mean_squared_error as MSE
 
-test_file = 'data/test.csv'
+test_file = 'data2.csv'
 model_file = 'model.pkl'
 output_predictions_file = 'predictions.txt'
 
@@ -18,8 +18,9 @@ net = pickle.load( open( model_file, 'rb' ))
 # load data
 
 test = np.loadtxt( test_file, delimiter = ',' )
-x_test = test[:,0:-2]
-y_test = test[:,-2:]
+x_test = test[:,0:5]
+y_test = test[:,-4:-2]
+
 
 # you'll need labels. In case you don't have them...
 y_test_dummy = np.zeros( y_test.shape )
@@ -27,6 +28,8 @@ y_test_dummy = np.zeros( y_test.shape )
 input_size = x_test.shape[1]
 target_size = y_test.shape[1]
 
+
+print input_size, target_size
 assert( net.indim == input_size )
 assert( net.outdim == target_size )
 

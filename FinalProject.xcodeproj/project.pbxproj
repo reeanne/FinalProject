@@ -16,6 +16,15 @@
 		421884A91AF1B17400E037B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4249773C1AF1A3C100B8BC27 /* Images.xcassets */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
+		4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF371AFBDD24009AC03E /* FireFlies.sks */; };
+		4292DF3A1AFBDD24009AC03E /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF381AFBDD24009AC03E /* spark.png */; };
+		4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF3B1AFBDD4F009AC03E /* Magic.sks */; };
+		4292DF3E1AFBDD6A009AC03E /* Rain.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF3D1AFBDD6A009AC03E /* Rain.sks */; };
+		4292DF401AFBDD93009AC03E /* Smoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF3F1AFBDD93009AC03E /* Smoke.sks */; };
+		4292DF421AFBDDB1009AC03E /* Snow.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF411AFBDDB1009AC03E /* Snow.sks */; };
+		4292DF441AFBDDD7009AC03E /* Spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF431AFBDDD7009AC03E /* Spark.sks */; };
+		4292DF471AFBDDED009AC03E /* Bokeh.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF451AFBDDED009AC03E /* Bokeh.sks */; };
+		4292DF481AFBDDED009AC03E /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF461AFBDDED009AC03E /* bokeh.png */; };
 		42A67D391A52DCE50094808D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D381A52DCE50094808D /* AppDelegate.swift */; };
 		42A67D3B1A52DCE50094808D /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D3A1A52DCE50094808D /* GameScene.swift */; };
 		42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D3C1A52DCE50094808D /* GameScene.sks */; };
@@ -61,6 +70,15 @@
 		4249773C1AF1A3C100B8BC27 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
+		4292DF371AFBDD24009AC03E /* FireFlies.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireFlies.sks; sourceTree = "<group>"; };
+		4292DF381AFBDD24009AC03E /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		4292DF3B1AFBDD4F009AC03E /* Magic.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Magic.sks; sourceTree = "<group>"; };
+		4292DF3D1AFBDD6A009AC03E /* Rain.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Rain.sks; sourceTree = "<group>"; };
+		4292DF3F1AFBDD93009AC03E /* Smoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Smoke.sks; sourceTree = "<group>"; };
+		4292DF411AFBDDB1009AC03E /* Snow.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Snow.sks; sourceTree = "<group>"; };
+		4292DF431AFBDDD7009AC03E /* Spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Spark.sks; sourceTree = "<group>"; };
+		4292DF451AFBDDED009AC03E /* Bokeh.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Bokeh.sks; sourceTree = "<group>"; };
+		4292DF461AFBDDED009AC03E /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
 		42A67D331A52DCE50094808D /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42A67D371A52DCE50094808D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A67D381A52DCE50094808D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -144,6 +162,15 @@
 				427BB9B81AE2E168006EB148 /* Views */,
 				42A67D381A52DCE50094808D /* AppDelegate.swift */,
 				42A67D3A1A52DCE50094808D /* GameScene.swift */,
+				4292DF371AFBDD24009AC03E /* FireFlies.sks */,
+				4292DF3B1AFBDD4F009AC03E /* Magic.sks */,
+				4292DF3D1AFBDD6A009AC03E /* Rain.sks */,
+				4292DF3F1AFBDD93009AC03E /* Smoke.sks */,
+				4292DF411AFBDDB1009AC03E /* Snow.sks */,
+				4292DF431AFBDDD7009AC03E /* Spark.sks */,
+				4292DF451AFBDDED009AC03E /* Bokeh.sks */,
+				4292DF461AFBDDED009AC03E /* bokeh.png */,
+				4292DF381AFBDD24009AC03E /* spark.png */,
 				421728581AF2DC6900AF7A55 /* Constants.swift */,
 				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
 				42EBB4D41A54AB980038845F /* LevelObject.swift */,
@@ -274,9 +301,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4292DF471AFBDDED009AC03E /* Bokeh.sks in Resources */,
+				4292DF3E1AFBDD6A009AC03E /* Rain.sks in Resources */,
 				421884A91AF1B17400E037B0 /* Images.xcassets in Resources */,
+				4292DF421AFBDDB1009AC03E /* Snow.sks in Resources */,
+				4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */,
+				4292DF401AFBDD93009AC03E /* Smoke.sks in Resources */,
+				4292DF441AFBDDD7009AC03E /* Spark.sks in Resources */,
 				421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */,
 				42016A931AE1D48C0046FC15 /* GameView.xib in Resources */,
+				4292DF3A1AFBDD24009AC03E /* spark.png in Resources */,
+				4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */,
+				4292DF481AFBDDED009AC03E /* bokeh.png in Resources */,
 				42016A911AE1D42B0046FC15 /* MenuView.xib in Resources */,
 				42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */,
 			);

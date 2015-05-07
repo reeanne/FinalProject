@@ -10,7 +10,7 @@ chords_lookup = {'C': 1, 'C#': 2, 'D': 3, 'D#': 4, 'E': 5, 'E#': 6, 'F': 7, 'F#'
 
 
 def main():
-	output = open("newmldata", 'aw')
+	output = open("mlmydata", 'aw')
 	for i, arg in enumerate(sys.argv):
 		if i == 0:
 			pass
@@ -27,23 +27,29 @@ def analyse_track(file, output):
 		data = json.load(datafile)
 
 		loudness = data["lowlevel"]["average_loudness"]
-		silence20_dmean = data["lowlevel"]["silence_rate_20dB"]["dmean"]
+
+		silence20_mean = data["lowlevel"]["silence_rate_20dB"]["mean"]
 		silence20_dvar = data["lowlevel"]["silence_rate_20dB"]["dvar"]
-		silence30_dmean = data["lowlevel"]["silence_rate_30dB"]["dmean"]
+		silence30_mean = data["lowlevel"]["silence_rate_30dB"]["mean"]
 		silence30_dvar = data["lowlevel"]["silence_rate_30dB"]["dvar"]
-		silence60_dmean = data["lowlevel"]["silence_rate_60dB"]["dmean"]
+		silence60_mean = data["lowlevel"]["silence_rate_60dB"]["mean"]
 		silence60_dvar = data["lowlevel"]["silence_rate_60dB"]["dvar"]
 
-		dissonance_dmean = data["lowlevel"]["dissonance"]["dmean"]
+		dissonance_mean = data["lowlevel"]["dissonance"]["mean"]
 		dissonance_dvar = data["lowlevel"]["dissonance"]["dvar"]
 
-		spectral_centroid = data["lowlevel"]["spectral_centroid"]["dmean"] #
-		spectral_rms = data["lowlevel"]["spectral_rms"]["dmean"]
+		pitch_salience =  data["lowlevel"]["pitch_salience"]["mean"]
+		zerocrossingrate = data["lowlevel"]["zerocrossingrate"]["mean"]
+
+
+		spectral_centroid = data["lowlevel"]["spectral_centroid"]["mean"] #
+		spectral_rms = data["lowlevel"]["spectral_rms"]["mean"]
+		spectral_energy = data["lowlevel"]["spectral_energy"]["mean"]
 
 		dynamic_complexity = data["lowlevel"]["dynamic_complexity"]
 
 		bmp = data["rhythm"]["bpm"]
-		beat_loudness_dmean = data["rhythm"]["beats_loudness"]["dmean"]
+		beat_loudness_mean = data["rhythm"]["beats_loudness"]["mean"]
 		beat_loudness_dvar = data["rhythm"]["beats_loudness"]["dvar"]
 
 		chords_key = chords_lookup[data["tonal"]["chords_key"]]
@@ -51,9 +57,9 @@ def analyse_track(file, output):
 		key_key = chords_lookup[data["tonal"]["key_key"]]
 		key_scale = 1 if data["tonal"]["key_scale"] == "major" else 0
 
-		output.write(file_name + '\t' + str(loudness) + '\t' + str(silence20_dmean) + '\t' + str(silence20_dvar) + '\t' + str(silence30_dmean)+ '\t' + str(silence30_dvar) + '\t' + str(silence60_dmean)  \
-						+ '\t' + str(silence30_dvar) + '\t' + str(dynamic_complexity) + '\t' + str(bmp) + '\t'  + str(spectral_centroid) + '\t' + str(beat_loudness_dvar) + '\t' + str(beat_loudness_dmean)
-						+ '\t' + str(chords_scale) + '\t' + str(chords_key) + '\t' + str(key_key) + '\t' + str(key_scale) + " \n")
+		output.write(file_name + '\t' + str(loudness) + '\t' + str(silence20_mean) + '\t' + str(silence20_dvar) + '\t' + str(silence30_mean)+ '\t' + str(silence30_dvar) + '\t' + str(silence60_mean)  \
+						+ '\t' + str(silence60_dvar) + '\t' + str(dynamic_complexity) + '\t' + str(bmp) + '\t'  + str(spectral_centroid)  + '\t' + str(spectral_rms) + '\t' + str(spectral_energy) + '\t' +str(beat_loudness_dvar) + '\t' + str(beat_loudness_mean)
+						+ '\t' + str(chords_scale) + '\t' + str(chords_key) + '\t' + str(key_key) + '\t' + str(key_scale) + '\t' + str(zerocrossingrate) + '\t' + str(pitch_salience) + '\t' + str(dissonance_mean) + '\t' + str(dissonance_dvar) + " \n")
 
 
 if __name__ == "__main__":

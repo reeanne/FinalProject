@@ -1,0 +1,114 @@
+\begin{thebibliography}{20}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bogost(2011)]{introquote}
+Ian Bogost.
+\newblock \emph{How to Do Things with Vidoegames}.
+\newblock University of Minnesota Press, 2011.
+
+\bibitem[GHS()]{GHSales}
+Guitar hero sales article.
+\newblock URL
+  \url{http://arstechnica.com/gaming/2009/01/guitar-hero-iii-first-game-to-reach-1-billion-in-sales/}.
+
+\bibitem[Salamon and G\'{o}mez(2012)]{salamon}
+J.~Salamon and E.~G\'{o}mez.
+\newblock Melody extraction from polyphonic music signals using pitch contour
+  characteristics.
+\newblock \emph{IEEE Trans. on Audio, Speech and Language Processing},
+  20\penalty0 (6), 2012.
+
+\bibitem[Yang et~al.(2008)Yang, Lin, Su, and Chen]{mood}
+Yi-Hsuan Yang, Yu-Ching Lin, Ya-Fan Su, and Homer~H. Chen.
+\newblock A regression approach to music emotion recognition.
+\newblock \emph{Audio, Speech, and Language Processing, IEEE Transactions on},
+  16\penalty0 (2):\penalty0 448-- 457, 2008.
+
+\bibitem[gam()]{gametypes}
+Music video game types.
+\newblock URL \url{http://en.wikipedia.org/wiki/Music_video_game}.
+
+\bibitem[DDR()]{DDR}
+Dance dance revolution screenshort.
+\newblock URL
+  \url{http://cdn-static.gamekult.com/gamekult-com/images/photos/00/00/34/99/ME0000349967_2.jpg}.
+
+\bibitem[mvg()]{mvgdef}
+Music video game definition.
+\newblock URL
+  \url{http://psp.about.com/od/pspglossary/a/Music-Game-Definition.html}.
+
+\bibitem[is()]{is}
+Internal section screenshot.
+\newblock URL \url{http://www.hardcoregaming101.net/internalsection/is2.jpg}.
+
+\bibitem[sim()]{simtunes}
+Simtunes screenshot.
+\newblock URL \url{http://i.ytimg.com/vi/9CLYALO930k/hqdefault.jpg}.
+
+\bibitem[rhy()]{rhythmgame}
+Rhythm game definition.
+\newblock URL \url{http://en.wikipedia.org/wiki/Rhythm_game}.
+
+\bibitem[ghs()]{ghscreen}
+Guitar hero screenshot.
+\newblock URL
+  \url{https://images-na.ssl-images-amazon.com/images/G/01/videogames/detail-page/gh3.lor.03.lg.jpg}.
+
+\bibitem[con()]{controller}
+Guitar hero controller photo.
+\newblock URL
+  \url{http://www.pixelplayer.se/bilder/texter/rec_8576_1_20081117.jpeg}.
+
+\bibitem[Salamon et~al.(2014)Salamon, G\'{o}mez, Ellis, and
+  Richard]{comparison}
+J.~Salamon, E.~G\'{o}mez, D.~P.~W. Ellis, and G.~Richard.
+\newblock Melody transcription from music audio: Approaches and evaluation.
+\newblock \emph{IEEE Signal Processing Magazine}, 31\penalty0 (2):\penalty0
+  118-- 134, 2014.
+
+\bibitem[Poliner et~al.(2007)Poliner, Ellis, Ehmann, G\'{o}mez, Streich, and
+  Ong]{melodydef}
+G.~E. Poliner, D.~P.~W. Ellis, F.~Ehmann, E.~G\'{o}mez, S.~Streich, and B.~Ong.
+\newblock Melody transcription from music audio: Approaches and evaluation.
+\newblock \emph{IEEE Trans. on Audio, Speech and Language Process}, 15\penalty0
+  (4):\penalty0 564-- 575, 2007.
+
+\bibitem[Smith(2007)]{filters}
+Julius~O. Smith.
+\newblock \emph{Introduction to Digital Filters with Audio Applications}.
+\newblock W3K Publishing, 2007.
+\newblock URL \url{http://books.w3k.org/}.
+
+\bibitem[STF()]{STFT}
+Short time fourier transform.
+\newblock URL
+  \url{http://www.originlab.com/index.aspx?go=Products/Origin/DataAnalysis/SignalProcessing/STFT}.
+
+\bibitem[Durrieu et~al.(2010)Durrieu, Richard, David, and Fevotte]{durrieu}
+J.-L. Durrieu, G.~Richard, B.~David, and C.~Fevotte.
+\newblock Source/filter model for unsupervised main melody extraction from
+  polyphonic audio signals.
+\newblock \emph{IEEE Trans. on Audio, Speech and Language Process}, 18\penalty0
+  (3):\penalty0 564-- 57, 2010.
+
+\bibitem[vit()]{viterbi}
+Viterbi algorithm.
+\newblock URL \url{http://en.wikipedia.org/wiki/Viterbi_algorithm}.
+
+\bibitem[vib()]{vibrato}
+Vibrato definition.
+\newblock URL \url{http://en.wikipedia.org/wiki/Vibrato}.
+
+\bibitem[Feng et~al.(2003)Feng, Zhuang, and Pan]{moodold}
+Yazhong Feng, Yueting Zhuang, and Yunhe Pan.
+\newblock Music information retrieval by detecting mood via computational media
+  aesthetics.
+\newblock \emph{Web Intelligence, 2003. WI 2003. Proceedings. IEEE/WIC
+  International Conference on}, pages 235-- 241, 2003.
+
+\end{thebibliography}

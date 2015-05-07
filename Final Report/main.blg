@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: unsrtnat.bst
+Database file #1: Bibliography.bib
+Warning--empty year in GHSales
+Warning--empty year in gametypes
+Warning--empty year in DDR
+Warning--empty year in mvgdef
+Warning--empty year in is
+Warning--empty year in simtunes
+Warning--empty year in rhythmgame
+Warning--empty year in ghscreen
+Warning--empty year in controller
+Warning--empty year in STFT
+Warning--empty year in viterbi
+Warning--empty year in vibrato
+You've used 20 entries,
+            2481 wiz_defined-function locations,
+            640 strings with 6876 characters,
+and the built_in function-call counts, 5783 in all, are:
+= -- 493
+> -- 170
+< -- 4
++ -- 90
+- -- 50
+* -- 401
+:= -- 759
+add.period$ -- 49
+call.type$ -- 20
+change.case$ -- 38
+chr.to.int$ -- 20
+cite$ -- 44
+duplicate$ -- 328
+empty$ -- 673
+format.name$ -- 60
+if$ -- 1297
+int.to.chr$ -- 1
+int.to.str$ -- 21
+missing$ -- 10
+newline$ -- 97
+num.names$ -- 24
+pop$ -- 223
+preamble$ -- 1
+purify$ -- 20
+quote$ -- 0
+skip$ -- 252
+stack$ -- 0
+substring$ -- 196
+swap$ -- 49
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 134
+warning$ -- 12
+while$ -- 27
+width$ -- 0
+write$ -- 219
+(There were 12 warnings)
