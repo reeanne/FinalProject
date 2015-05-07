@@ -351,10 +351,24 @@ A trained neural network can be thought of as an "expert" in the category of inf
 The computational systems we write are procedural; a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
 On the other hand, neural network are “connectionist” computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
 
-Neural networks are made up of many artificial neurons. An artificial neuron is simply an electronically modelled biological neuron. The term network refers to the inter–connections them in the different layers of the system. The number of the neurons depends on a task the network is design for. There are many different ways of connecting neurons to create a neural network.
+Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network The number of them depends on a task the network is designed for. .
 
+An example system has three layers. The first layer has input neurons which send data via synapses to the second layer of neurons. Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
-Each input into the neuron has its own weight associated with it illustrated by the red circle. A weight is simply a floating point number and it's these we adjust when we eventually come to train the network. The weights in most neural nets can be both negative and positive, therefore providing excitory or inhibitory influences to each input. As each input enters the nucleus (blue circle) it's multiplied by its weight. The nucleus then sums all these new input values which gives us the activation (again a floating point number which can be negative or positive). If the activation is greater than a threshold value - lets use the number 1 as an example - the neuron outputs a signal. If the activation is less than 1 the neuron outputs zero. This is typically called a step function (take a peek at the following diagram and have a guess why).
+As each input enters the nucleus, it is multiplied by its weight. The nucleus then sums all these new input values which gives us the activation. If the activation is greater than a threshold value, the neuron outputs a signal. If the activation is less than the threshold, the neuron outputs zero. This is typically called a step function.
+
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \vspace{-30pt}
+
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/simpleANN}
+  \end{center}
+  \caption{Diagram of a simple neural network with 4 input nodes, 3 nodes in a hidden layer and one output node.}
+\end{wrapfigure}
+
+One type of neural network is called a feedforward network named after the way the neurons in each layer feed their output forward to the next layer until we get the final output from the neural network. 
+ 
+Each input is sent to every neuron in the hidden layer and then each hidden layer’s neuron’s output is connected to every neuron in the next layer. There can be any number of hidden layers within a feedforward network but one is usually enough to suffice for most problems you will tackle. Also the number of neurons I've chosen for the above diagram was completely arbitrary. There can be any number of neurons in each layer, it all depends on the problem. By now you may be feeling a little dazed by all this information so I think the best thing I can do at this point would be to give you a real world example of how a neural net can be used in the hope that I can get your very own brain’s neurons firing!
  
 
 

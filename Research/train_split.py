@@ -12,7 +12,7 @@ validation_file = 'data2.csv'
 output_model_file = 'model.pkl'
 
 hidden_size = 5
-epochs = 1000000
+epochs = 100000
 
 # load data
 
@@ -24,7 +24,7 @@ ds = SDS(5, 2)
 
 for row in train:
 	#print row[6]
-	ds.addSample(row[0:5].tolist(), row[-4:-2])
+	ds.addSample(row[0:3].tolist() + row[7:9].tolist(), row[-4:-2])
 #x_train = train[:,0:-2]
 #y_train = train[:,-2:]
 
