@@ -4,7 +4,7 @@
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\lhead{Chapter 3. \emph{Chapter Title Here}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+\lhead{Chapter 3. \emph{Implementation}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
 
 
 \section{Mood Detection}
@@ -14,20 +14,37 @@ A common reason for engaging in music listening is that music is an effective me
 In our exploration we decided to base our research on data collected by \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
 \subsection{Choice of Features}
-Using Essentia library, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
+Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
 \begin{itemize}
+
 \item average loudness - dynamic range descriptor. It rescales average loudness, computed on 2sec windows with 1 sec overlap, into the [0,1] interval. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. 
+
 \item means and derivatives of variance of rates of silent frames in a signal for thresholds of 20, 30 and 60db,
+
 \item dynamic complexity - dynamic complexity computed on 2sec windows with 1sec overlap
-\item BMP - BPM value according to detected beats
-\item spectral centroid - centroid statistics describing the spectral shape
-\item spectral RMS
-\item spectral energy
+
+\item BMP - beats per minute value according to detected beats
+
+\item spectral centroid - centroid statistics describing the spectral shape. It indicates where the "center of mass" of the spectrum is. Perceptually, it has a robust connection with the impression of "brightness" of a sound
+
+\item spectral RMS (root mean square). In physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current, obtained by taking the mean of the squares of the instantaneous values during a cycle. This is the effective value in the sense of the value of the direct current that would produce the same power dissipation in a resistive load. An electric current of given magnitude produces the same heating regardless of the direction of current flow; squaring the quantity measured ensures that alternation of sign does not invalidate the result.
+\item spectral energy - the energy E{s} of a continuous-time signal x(t) defined as: \\
+$ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt $
+
 \item mean and derivative of variance of beat loudness -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands.
-\item scale and key of chords and the key
-\item means of zero-crossing rate
-\item pitch salience of a spectrum
-\item mean and derivative of variance of dissonance. 
+
+\item scale and key of the key estimated key using Temperley’s profile, its scale
+
+\item scale and key of the chords key taken as the most frequent chord, and scale of the progression, whether major or minor. 
+
+\item means of zero-crossing rate - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds.
+ZCR is defined formally as: \\
+$ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\}}$
+
+\item pitch salience of a spectrum - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value. Pitch salience was designed as quick measure of tone sensation. Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. Application: characterizing percussive sounds.
+
+\item mean and derivative of variance of sensory dissonance (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonace between two spectral peaks according to their frequency and amplitude relations.  
+
 \end{itemize}
 
 \begin{figure}
@@ -41,7 +58,7 @@ Using Essentia library, we implemented an extractor to retrieve certain features
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/zerocrossing-arousal}
-                \caption{ graph representing a correlation between zero-crossing rate and arousal values.}
+                \caption{A graph representing a correlation between zero-crossing rate and arousal values.}
                 \label{fig:simtunes}
         \end{subfigure}
           \caption{Chosen results of bivariate correlation with multiple regression.}
