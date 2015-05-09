@@ -11,7 +11,7 @@ train_file = 'Regression_fab.csv'
 validation_file = 'Regression.csv'
 output_model_file = 'model.pkl'
 
-hidden_size = 4
+hidden_size = 50
 epochs = 1000
 
 # load data
