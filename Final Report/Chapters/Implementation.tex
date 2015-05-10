@@ -13,37 +13,44 @@ A common reason for engaging in music listening is that music is an effective me
 
 In our exploration we decided to base our research on data collected by \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
+
+
+
+high arousal, positive valence (Happy), high arousal, negative valence (Agitated), low arousal negative valence (Sad), and low arousal, positive valence (Peaceful). 
+
+
+
 \subsection{Choice of Features}
 Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
 \begin{itemize}
 
-\item average loudness - dynamic range descriptor. It rescales average loudness, computed on 2sec windows with 1 sec overlap, into the [0,1] interval. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. 
+\item average loudness - dynamic range descriptor. It rescales average loudness, computed on 2sec windows with 1 sec overlap, into the [0,1] interval. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the valence, with higher loudness implying higher valence value.
 
-\item means and derivatives of variance of rates of silent frames in a signal for thresholds of 20, 30 and 60db,
+\item means and derivatives of variance of rates of silent frames in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value.
 
-\item dynamic complexity - dynamic complexity computed on 2sec windows with 1sec overlap
+\item dynamic complexity - dynamic complexity computed on 2sec windows with 1sec overlap. The dynamic complexity is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on the arousal level.
 
-\item BMP - beats per minute value according to detected beats
+\item BMP - beats per minute value according to detected beats. This feature should be correlated with the arousal level - the faster the song, the more energetic it seems. 
 
-\item spectral centroid - centroid statistics describing the spectral shape. It indicates where the "center of mass" of the spectrum is. Perceptually, it has a robust connection with the impression of "brightness" of a sound
+\item spectral centroid - centroid statistics describing the spectral shape. It indicates where the "center of mass" of the spectrum is. Perceptually, it has a robust connection with the impression of "brightness" of a sound - an indication of the amount of high-frequency content in a sound. We believe the spectral centroid might be related to both valence and arousal.
 
 \item spectral RMS (root mean square). In physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current, obtained by taking the mean of the squares of the instantaneous values during a cycle. This is the effective value in the sense of the value of the direct current that would produce the same power dissipation in a resistive load. An electric current of given magnitude produces the same heating regardless of the direction of current flow; squaring the quantity measured ensures that alternation of sign does not invalidate the result.
 \item spectral energy - the energy E{s} of a continuous-time signal x(t) defined as: \\
 $ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt $
 
-\item mean and derivative of variance of beat loudness -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands.
+\item mean and derivative of variance of beat loudness -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
 
-\item scale and key of the key estimated key using Temperley’s profile, its scale
+\item scale and key of the key estimated key using Temperley’s profile
 
-\item scale and key of the chords key taken as the most frequent chord, and scale of the progression, whether major or minor. 
+\item scale and key of the chords key taken as the most frequent chord, and scale of the progression, whether major or minor. This and the key features could have an impact on the valence value.
 
-\item means of zero-crossing rate - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds.
+\item means of zero-crossing rate - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds. We believe it could be related to the arousal value.
 ZCR is defined formally as: \\
 $ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\}}$
 
-\item pitch salience of a spectrum - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value. Pitch salience was designed as quick measure of tone sensation. Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. Application: characterizing percussive sounds.
+\item pitch salience of a spectrum - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value. Pitch salience was designed as quick measure of tone sensation. Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. Application: characterizing percussive sounds. We think the value could have an effect on both the valence and arousal.
 
-\item mean and derivative of variance of sensory dissonance (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonace between two spectral peaks according to their frequency and amplitude relations.  
+\item mean and derivative of variance of sensory dissonance (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonace between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to negative valence.
 
 \end{itemize}
 
@@ -73,6 +80,17 @@ $ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right
 As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}. We found significant correlation between \textit{valence} and \textit{dvar and mean silence60, dvar of silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and dvar of dissonance}. For \textit{arousal}, we noticed correlation with \textit{spectral centroid, pitch salience, zero-crossing rate}, both \textit{mean} and \textit{dva}r of  \textit{silence60, spectral energy, mean dissonance} and \textit{dynamic complexity}. 
 
 Values of all the features were then normalized between 0 and 1 to prepare them for the neural network training. 
+
+
+
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{Figures/myANN}
+  \end{center}
+  \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
+\label{finalnetwork}
+\end{wrapfigure}
 
 
 \subsection{Neural Network for Mood Prediction}
@@ -134,15 +152,6 @@ As we can see, the optimal solution is the one with 8 nodes in the hidden layer.
 \label{table:learningrate}
 \end{center}
 \end{table}
-
-\begin{wrapfigure}{l}{0.5\textwidth}
-  \vspace{-25pt}
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{Figures/myANN}
-  \end{center}
-  \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
-\label{finalnetwork}
-\end{wrapfigure}
 
 
 Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}.
