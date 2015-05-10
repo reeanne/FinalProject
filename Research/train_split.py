@@ -2,6 +2,7 @@
 
 import numpy as np
 import cPickle as pickle
+from pybrain.structure import TanhLayer
 from math import sqrt
 from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
@@ -11,8 +12,8 @@ train_file = 'Regression_fab.csv'
 validation_file = 'Regression.csv'
 output_model_file = 'model.pkl'
 
-hidden_size = 50
-epochs = 1000
+hidden_size = 8
+epochs = 10000
 
 # load data
 
@@ -39,9 +40,9 @@ for row in train:
 
 # init and train
 
-net = buildNetwork( 8, hidden_size, 2, bias = True )
+net = buildNetwork( 8, hidden_size, 2, bias = True,  hiddenclass=TanhLayer )
 net.randomize()
-trainer = BackpropTrainer( net,ds, verbose=True)
+trainer = BackpropTrainer( net,ds, verbose=True, learningrate = 0.1)
 
 print "training for {} epochs...".format( epochs )
 
