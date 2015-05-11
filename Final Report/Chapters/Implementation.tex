@@ -7,18 +7,30 @@
 \lhead{Chapter 3. \emph{Implementation}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
 
 
+In this chapter we will go over the implementation process of the project. We will describe various choices we made, justifying them in the context of our objectives. Mood detection, melody extraction and the game architecture will be our main focus.
+
+\vspace{20pt}
+
 \section{Mood Detection}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-40pt}
+
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/ThayersAV}
+  \end{center}
+  \caption{Thayer’s arousal-valence emotion plane.\cite{mood}.}
+  \label{fig:Thayer}
+\end{wrapfigure}
 
 A common reason for engaging in music listening is that music is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are commonalities in perceived emotion across different listeners based on the characteristics of the music. Several studies have attempted to predict emotion conveyed during music listening. Some have explored the relationship between physiological activity experienced by a listener and perceived emotion, while others focused on the relationship between perceived emotion and the musical/acoustic features themselves. In our approach, we adapted the latter option, representing emotion using a two-dimensional space with valence on the x-axis and arousal on the y-axis.
 
 In our exploration we decided to base our research on data collected by \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
 
+Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values for a musical track and the moods perceived by people. As we can see, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
-
-high arousal, positive valence (Happy), high arousal, negative valence (Agitated), low arousal negative valence (Sad), and low arousal, positive valence (Peaceful). 
-
-
+\vspace{10pt}
 
 \subsection{Choice of Features}
 Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
@@ -35,8 +47,10 @@ Using Essentia library \cite{essentia}, we implemented an extractor to retrieve 
 \item spectral centroid - centroid statistics describing the spectral shape. It indicates where the "center of mass" of the spectrum is. Perceptually, it has a robust connection with the impression of "brightness" of a sound - an indication of the amount of high-frequency content in a sound. We believe the spectral centroid might be related to both valence and arousal.
 
 \item spectral RMS (root mean square). In physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current, obtained by taking the mean of the squares of the instantaneous values during a cycle. This is the effective value in the sense of the value of the direct current that would produce the same power dissipation in a resistive load. An electric current of given magnitude produces the same heating regardless of the direction of current flow; squaring the quantity measured ensures that alternation of sign does not invalidate the result.
+
 \item spectral energy - the energy E{s} of a continuous-time signal x(t) defined as: \\
 $ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt $
+Signal energy is always equal to the summation across all frequency components of the signal's spectral energy density. It could have an impact on both valence and arousal.
 
 \item mean and derivative of variance of beat loudness -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
 
@@ -73,7 +87,7 @@ $ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right
 
 \end{figure}
 
-
+\vspace{10pt}
 
 \subsection{Correlation Between Features and Mood Perception}
 
@@ -86,16 +100,15 @@ Values of all the features were then normalized between 0 and 1 to prepare them 
 \begin{wrapfigure}{l}{0.5\textwidth}
   \vspace{-30pt}
   \begin{center}
-    \includegraphics[width=0.4\textwidth]{Figures/myANN}
+    \includegraphics[width=0.5\textwidth]{Figures/myANN}
   \end{center}
   \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
 \label{finalnetwork}
 \end{wrapfigure}
 
+\vspace{10pt}
 
 \subsection{Neural Network for Mood Prediction}
-
-
 
 Our goal was to train the network to predict mean participant valence and arousal values for musical excerpts. 
 Our first network implementation was a supervised, feedforward network with backpropagation. 
@@ -159,11 +172,29 @@ Having found the optimal number of nodes in the hidden layer, we moved on to fin
 
 In the end, we came up with the network which can be seen on Figure \ref{finalnetwork}.
 
+\vspace{20pt}
+
+\section{Main Melody Extraction}
+
+\vspace{10pt}
 
 \section{The Game}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+
+In this section, we will go over the architecture and the design choices made when planning and implementing our game.
+
+The game is written mostly in Swift, a multi-paradigm, compiled programming language created by Apple Inc. for iOS and OS X development. 
+It was first introduced at Apple's 2014 Worldwide Developers Conference (WWDC). Swift is designed to work with Apple's Cocoa and Cocoa Touch frameworks, building on the best of C and Objective-C, without the constraints of C compatibility. It adopts safe programming patterns and adds modern features to make programming easier, more flexible, and more fun \cite{swiftintro}. 
+
+We chose this language as we wanted to create a game for the OS X platform. In addition to this, the author also had a personal interest in learning the language.
+
+\vspace{10pt}
+
+\subsection{Data Storage}
+Core Data is the standard way to persist and manage data in both iPhone and Mac applications. Core Data is an object graph and persistence framework provided by Apple in the Mac OS X and iOS operating systems. It allows data organised by the relational entity–attribute model to be serialised into XML, binary, or SQLite stores. The data can be manipulated using higher level objects representing entities and their relationships.
+Core Data describes data with a high level data model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. The controller objects available in Interface Builder can retrieve and manipulate these entities directly. When combined with Cocoa bindings the UI can display many components of the data model without needing background code.
 
 
+\vspace{20pt}
 
 \section{Main Section 2}
 
