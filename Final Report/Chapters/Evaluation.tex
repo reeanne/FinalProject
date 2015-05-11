@@ -26,6 +26,81 @@ Summative evaluation looks at the impact of an intervention on the target group.
 
 
 \subsection{Evaluation of Mood Detection system}
+
+0.123735719652
+
+We wanted to use neural networks to calculate valence and arousal ratings of songs using audio features we extract. 
+
+We computed the mean error between participant ratings and network-predicted outputs across all segments of all test melodies. The network's performance total RMSE was 0.123735719652 on scale from 0 to 1. 
+ predicted at an average accuracy of 54.3\% for all four segments. However, it performed better at predicting valence/arousal values for the final 30-second segment, at an average accuracy of 60\%. 
+
+Results from the static network indicate that a network can be trained to identify statistical consistencies across audio features abstracted from music and satisfactorily predict valence/arousal values that closely match mean participant ratings.
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c| } \hline 
+ expected arousal & expected valence & predicted arousal & predicted valence \\ \hline \hline
+  0.476390 0.339629
+0.295385 0.241508
+0.333232 0.341642
+0.360882 0.434056
+0.180681 0.185307
+0.280778 0.284745
+0.447892 0.314786
+0.272754 0.216293
+0.316515 0.310306
+0.229543 0.224105
+0.545507 0.470057
+0.307956 0.331694
+0.502996 0.431021
+0.525432 0.501670
+0.324717 0.309554
+0.485072 0.465040
+0.248289 0.209169
+0.159978 0.274588
+0.444313 0.438239
+0.252907 0.217122
+0.508490 0.475056
+0.276301 0.279992
+0.367237 0.359536
+0.325705 0.265299
+0.646694 0.426537
+0.276581 0.332559
+0.621411 0.594185
+0.475480 0.407889
+0.354076 0.274597
+0.306607 0.288274
+0.355211 0.337470
+0.465739 0.443998
+0.378525 0.383268
+0.430519 0.435068
+0.168037 0.287601
+0.382486 0.404523
+0.420924 0.278928
+0.415644 0.400477
+0.562128 0.467504
+0.584892 0.474749
+0.525280 0.554626
+0.538577 0.483013
+0.476250 0.472520
+0.511305 0.528802
+0.633593 0.563983
+0.672227 0.693368
+0.452509 0.476789
+0.523316 0.488339
+0.473689 0.522716
+0.536469 0.505960
+0.631893 0.751352
+
+\end{tabular}
+\caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
+\label{table:rsmetable}
+\end{center}
+\end{table}
+
+
+
 0.155465908371
 
 \subsection{Comparison to Original Songs}

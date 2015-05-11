@@ -22,8 +22,9 @@ train = np.loadtxt( train_file, delimiter = ',' )
 validation = np.loadtxt( validation_file, delimiter = ',' )
 train = np.vstack(( train, validation ))
 
-x_train = train[:,0:-2]
-y_train = train[:,-2:]
+x_train = train[:, 10:-2]
+y_traiv = train[:,-2:]
+
 
 input_size = x_train.shape[1]
 target_size = y_train.shape[1]

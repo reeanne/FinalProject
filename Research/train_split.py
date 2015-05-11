@@ -2,7 +2,6 @@
 
 import numpy as np
 import cPickle as pickle
-from pybrain.structure import TanhLayer
 from math import sqrt
 from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
@@ -40,7 +39,7 @@ for row in train:
 
 # init and train
 
-net = buildNetwork( 8, hidden_size, 2, bias = True,  hiddenclass=TanhLayer )
+net = buildNetwork( 8, hidden_size, 2, bias = True )
 net.randomize()
 trainer = BackpropTrainer( net,ds, verbose=True, learningrate = 0.1)
 

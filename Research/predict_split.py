@@ -7,7 +7,7 @@ from math import sqrt
 from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from sklearn.metrics import mean_squared_error as MSE
 
-test_file = 'Regression_fab.csv'
+test_file = 'evaluation.csv'
 model_file = 'model.pkl'
 output_predictions_file = 'predictions.txt'
 

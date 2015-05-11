@@ -22,6 +22,7 @@ In this section, we investigate different types of music games \cite{gametypes},
     \includegraphics[width=0.43\textwidth]{Figures/dancedancerevolution}
   \end{center}
   \caption{Screenshot from Dance Dance Revolution, an example of a rhythm music game \cite{DDR}.}
+  \label{fig:DDR}
 \end{wrapfigure}
 
 A music video game can be defined as a type of game that uses music or rhythm as an integral part of gameplay. This may involve pressing buttons in time with a song, whether on a conventional controller, and instrument controller or some kind of dance mat, singing into a microphone or creating original music. Players can often perform different parts of the same song together in local multiplayer games or over the Internet, providing enjoyable social experiences \cite{mvgdef}.
@@ -54,6 +55,7 @@ The goal of the music memory game is to score a player on their musical memory. 
         \end{subfigure}
           \caption{Examples of music video games.}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+        \label{fig:simtunesandis}
 \end{figure}
 
 
@@ -94,6 +96,7 @@ In free form music games, the main task of the user is to create content. This f
         \end{subfigure}
           \caption{Guitar Hero components}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+        \label{fig:GH}
 \end{figure}
 
 \vspace{20pt}
@@ -203,6 +206,7 @@ In this section we will go over two different approaches to the problem of main 
     \includegraphics[width=0.48\textwidth]{Figures/durrieudiagram}
   \end{center}
   \caption{Outline of system proposed by Durrieu: X is the STFT of the mixture signal, $p(\Xi|X)$ the posterior probability of a given melody sequence, and $\hat{\Xi} $ the desired smooth melody sequence\cite{durrieu}.}
+  \label{fig:durrieu}
 \end{wrapfigure}
 
 
@@ -215,7 +219,7 @@ The likelihood of the vocal part V is calculated using two different frameworks.
 
 The first submission uses the source/filter Gaussian scaled mixture model (GSMM). In this model the source element refers to the excitation of the vocal folds and is therefore linked to the fundamental frequency of the sound $f_{\text{0}}$, while the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that we consider one possible filter frequency response, which is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
-Fig 2.4. A) shows the diagram of the GSMM model for the main voice part. Each source excitation $u$ is filtered by each filter $k$. The amplitudes for a frame $n$ and for all the couples $(k, u)$ are then applied to each of the output signals. At last a “state selector” sets the active state for the given frame.
+Figure \ref{gsmmimm}  A) shows the diagram of the GSMM model for the main voice part. Each source excitation $u$ is filtered by each filter $k$. The amplitudes for a frame $n$ and for all the couples $(k, u)$ are then applied to each of the output signals. At last a “state selector” sets the active state for the given frame.
 
 The second model was derived from the first one to find a solution that would be more efficient to compute. The authors came up with a formulation that keep the source/filter model within an instantaneous mixture framework (IMM). In this model, for each source a set of filters is defined and at each frame, once every source is filtered and multiplied by a given amplitude, they are all added together.
 
