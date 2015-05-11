@@ -12,7 +12,7 @@ validation_file = 'Regression.csv'
 output_model_file = 'model.pkl'
 
 hidden_size = 8
-epochs = 10000
+epochs = 1000
 
 # load data
 

@@ -1,3 +1,6 @@
+
+
+
 "train/validate to find out how many epochs to train"
 
 import numpy as np
@@ -7,8 +10,8 @@ from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 
-train_file = 'data/train.csv'
-validation_file = 'data/validation.csv'
+train_file = 'Regression_fab.csv'
+#validation_file = 'evaluation.csv
 output_model_file = 'model_val.pkl'
 
 hidden_size = 100
@@ -19,11 +22,12 @@ validation_proportion = 0.15
 # load data, join train and validation files
 
 train = np.loadtxt( train_file, delimiter = ',' )
-validation = np.loadtxt( validation_file, delimiter = ',' )
-train = np.vstack(( train, validation ))
+#validation = np.loadtxt( validation_file, delimiter = ',' )
+#train = np.vstack(( train, validation ))
+
 
 x_train = train[:, 10:-2]
-y_traiv = train[:,-2:]
+y_train = train[:,-2:]
 
 
 input_size = x_train.shape[1]
