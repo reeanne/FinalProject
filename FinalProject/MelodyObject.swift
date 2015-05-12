@@ -17,27 +17,28 @@ enum MoodObject: Int {
 class MelodyObject {
     
     var audioURL: NSURL;
-    var mood: Mood?;
     var pitch: [Int]?;
     var beats: [Double]?;
+    var arousal: [Float] = [];
+    var valence: [Float] = [];
     
     
     init(audioURL: NSURL) {
         self.audioURL = audioURL;
         self.pitch = getPredominantMelody(audioURL);
         self.beats = getBeats(audioURL);
+        (self.arousal, self.valence) = getMood(audioURL);
     }
     
-    init(audioURL: NSURL, pitch: [Int], beats: [Double]) {
+    init(audioURL: NSURL, pitch: [Int], beats: [Double], arousal: [Float], valence: [Float]) {
         self.audioURL = audioURL;
         self.pitch = pitch;
         self.beats = beats;
+        self.arousal = arousal
+        self.valence = valence;
     }
     
-    
-    func determineMood() -> Mood? {
-        return nil;
-    }
+ 
     
     /**
         Temporary method for printing data of the audiofile.
@@ -88,6 +89,40 @@ class MelodyObject {
             NSLog("Task failed.");
             return [];
         }
+    }
+    
+    
+    func getMood(audioURL: NSURL) -> ([Float],[Float]) {
+        var task: NSTask = NSTask();
+        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/gamepredictions.json";
+        var programPath: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/extract_and_predict.py"
+        
+        // TODO: Change the paths to adjust to different users, not just mine...
+        task.launchPath = "/usr/local/bin/python";
+        task.arguments = [programPath, audioURL, "300"];
+        task.launch();
+        task.waitUntilExit();
+        var status = task.terminationStatus;
+        if (status == 0) {
+            NSLog("Task succeeded.");
+            
+            var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
+            inputStream.open();
+            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [[Float]];
+            var arousalData = [Float](count:json.count, repeatedValue: 0.0);
+            var valenceData = [Float](count:json.count, repeatedValue: 0.0);
+            for (var i = 0; i < json.count; i++) {
+                arousalData[i]  = json[i][0];
+                valenceData[i] = json[i][1];
+            }
+            println("asasasa", arousalData.description, "asasasasa", valenceData.description)
+            return (arousalData, valenceData);
+            //return ([], [])
+        } else {
+            NSLog("Task failed.");
+            return ([], []);
+        }
+
     }
     
     

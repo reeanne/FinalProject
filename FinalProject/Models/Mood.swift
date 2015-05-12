@@ -11,7 +11,8 @@ import CoreData
 
 class Mood: NSManagedObject {
 
-    @NSManaged var name: String
+    @NSManaged var valence: [Float];
+    @NSManaged var arousal: [Float];
     @NSManaged var melodies: Melody
 
 }

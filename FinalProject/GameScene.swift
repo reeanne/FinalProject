@@ -41,6 +41,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var beatsTimer: NSTimer! = nil;
     var beatsIndex = 0;
     
+    // Mood.
+    var moodIndex = 0;
+    var sparkEmmiter: SKEmitterNode! = nil;
+    var moodXposition: Float = 1/3;
+    
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
     let missedCategory: UInt32 = 0x1 << 1;
@@ -135,7 +140,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Create ground
         var groundTexture = SKTexture(imageNamed: "background_wave");
         var moveGroundSprite: SKAction = SKAction.moveByX(0, y: -self.frame.size.height * 2, duration: NSTimeInterval(0.02 * groundTexture.size().height));
-        var resetGroundSprite: SKAction = SKAction.moveByX(0, y:self.frame.size.height * 2, duration: 0);
+        var resetGroundSprite: SKAction = SKAction.moveByX(0, y: self.frame.size.height * 2, duration: 0);
         var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
         
         for(var i: CGFloat = 0; i < 2 + self.frame.size.height / (groundTexture.size().height * 2); ++i) {
@@ -336,6 +341,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         buttons = initialiseButtons();
         createPipes();
         updateProgressBar();
+        
+        setupMood();
 
     }
     
@@ -377,6 +384,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateBoard();
         updateProgressBar();
     }
+    
+    func setupMood() {
+        let sparkEmmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
+        sparkEmmiter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmmitterPath) as! SKEmitterNode;
+        
+        changeMood();
+        sparkEmmiter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
+        sparkEmmiter.name = "sparkEmmitter"
+        sparkEmmiter.zPosition = -100;
+        sparkEmmiter.targetNode = self;
+        sparkEmmiter.physicsBody = nil;
+        
+        let moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
+        
+        sparkEmmiter.runAction(SKAction.repeatActionForever(moveSparkle()));
+        self.addChild(sparkEmmiter)
+    }
+    
+    func moveSparkle() -> SKAction {
+        var fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+        
+        moodXposition *= -1;
+        var x = CGFloat(1/2 + moodXposition) * self.frame.size.width;
+        var y = 1/2 * self.frame.size.width; //CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) - self.frame.size.height * 5 / 6;
+        return SKAction.moveByX(x , y: y, duration: NSTimeInterval(fourIntervals));
+        
+    }
+    
+    func changeMood() {
+        sparkEmmiter.particleColorSequence = nil;
+        println(level.melody.arousal)
+        sparkEmmiter.particleColor = SKColor(red: CGFloat(max(0, level.melody.arousal[moodIndex])),
+            green: CGFloat(max(0, level.melody.valence[moodIndex])),
+            blue: 0.4, alpha: 0.4);
+        moodIndex++;
+    }
+
     
     func playWoosh() {
         AudioServicesPlaySystemSound(constants.wooshSound);

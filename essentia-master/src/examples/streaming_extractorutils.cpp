@@ -56,7 +56,7 @@ void setDefaultOptions(Pool& pool) {
   pool.set("startTime", 0);
   pool.set("endTime", 2000.0);
   pool.set("analysisSampleRate", 44100.0);
-  pool.set("outputJSON", false); // false for YAML, true for JSON
+  pool.set("outputJSON", true); // false for YAML, true for JSON
   pool.set("outputFrames", false); // set to true to output all frames
   string silentFrames = "noise";
   int zeroPadding = 0;
