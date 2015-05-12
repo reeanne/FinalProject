@@ -66,7 +66,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
 
         beats = level.melody.beats;
-
         
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
