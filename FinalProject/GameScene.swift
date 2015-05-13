@@ -43,7 +43,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Mood.
     var moodIndex = 0;
-    var sparkEmmiter: SKEmitterNode! = nil;
+    var sparkEmitter: SKEmitterNode! = nil;
     var moodXposition: Float = 1/3;
     
     // Collision Categories.
@@ -255,7 +255,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                 }
             }
-            println("mistake")
             mistakes++;
             currentNumber--;
             updateProgressBar();
@@ -273,7 +272,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ratio = currentNumber * ratio / maxCurrentNumber;
             result = Int(ceil(ratio)) * 10;
             total = max(0, result);
-            println(total);
             progressBar.texture = constants.progressBar[total];
         }
     }
@@ -386,36 +384,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setupMood() {
-        let sparkEmmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
-        sparkEmmiter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmmitterPath) as! SKEmitterNode;
+        let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
+        sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
         
         changeMood();
-        sparkEmmiter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
-        sparkEmmiter.name = "sparkEmmitter"
-        sparkEmmiter.zPosition = -100;
-        sparkEmmiter.targetNode = self;
-        sparkEmmiter.physicsBody = nil;
+        sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
+        sparkEmitter.name = "sparkEmmitter"
+        sparkEmitter.zPosition = -100;
+        sparkEmitter.targetNode = self;
+        sparkEmitter.physicsBody = nil;
         
         let moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
-        
-        sparkEmmiter.runAction(SKAction.repeatActionForever(moveSparkle()));
-        self.addChild(sparkEmmiter)
+        var fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+
+        self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
+        ])));
+        self.addChild(sparkEmitter)
     }
     
-    func moveSparkle() -> SKAction {
+    func moveSparkle() {
         var fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
-        
         moodXposition *= -1;
-        var x = CGFloat(1/2 + moodXposition) * self.frame.size.width;
-        var y = 1/2 * self.frame.size.width; //CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) - self.frame.size.height * 5 / 6;
-        return SKAction.moveByX(x , y: y, duration: NSTimeInterval(fourIntervals));
+        println("here")
+        var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
+        var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
+        sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
         
     }
     
     func changeMood() {
-        sparkEmmiter.particleColorSequence = nil;
-        println(level.melody.arousal)
-        sparkEmmiter.particleColor = SKColor(red: CGFloat(max(0, level.melody.arousal[moodIndex])),
+        sparkEmitter.particleColorSequence = nil;
+        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, level.melody.arousal[moodIndex])),
             green: CGFloat(max(0, level.melody.valence[moodIndex])),
             blue: 0.4, alpha: 0.4);
         moodIndex++;
