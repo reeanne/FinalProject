@@ -25,8 +25,7 @@ In this chapter we will go over the implementation process of the project. We wi
 
 A common reason for engaging in music listening is that music is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are commonalities in perceived emotion across different listeners based on the characteristics of the music. Several studies have attempted to predict emotion conveyed during music listening. Some have explored the relationship between physiological activity experienced by a listener and perceived emotion, while others focused on the relationship between perceived emotion and the musical/acoustic features themselves. In our approach, we adapted the latter option, representing emotion using a two-dimensional space with valence on the x-axis and arousal on the y-axis.
 
-In our exploration we decided to base our research on data collected by \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
-
+In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
 Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values for a musical track and the moods perceived by people. As we can see, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
@@ -36,20 +35,20 @@ Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values
 Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
 \begin{itemize}
 
-\item average loudness - dynamic range descriptor. It rescales average loudness, computed on 2sec windows with 1 sec overlap, into the [0,1] interval. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the valence, with higher loudness implying higher valence value.
+\item average loudness - dynamic range descriptor. It rescales average loudness, computed on 2 second windows with 1 second overlap, into the [0,1] interval. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the valence, with higher loudness implying higher valence value.
 
 \item means and derivatives of variance of rates of silent frames in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value.
 
-\item dynamic complexity - dynamic complexity computed on 2sec windows with 1sec overlap. The dynamic complexity is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on the arousal level.
+\item dynamic complexity - dynamic complexity computed on 2 second windows with 1 second overlap. The dynamic complexity is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on the arousal level.
 
 \item BMP - beats per minute value according to detected beats. This feature should be correlated with the arousal level - the faster the song, the more energetic it seems. 
 
-\item spectral centroid - centroid statistics describing the spectral shape. It indicates where the "center of mass" of the spectrum is. Perceptually, it has a robust connection with the impression of "brightness" of a sound - an indication of the amount of high-frequency content in a sound. We believe the spectral centroid might be related to both valence and arousal.
+\item spectral centroid - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. We believe the spectral centroid might be related to both valence and arousal.
 
-\item spectral RMS (root mean square). In physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current, obtained by taking the mean of the squares of the instantaneous values during a cycle. This is the effective value in the sense of the value of the direct current that would produce the same power dissipation in a resistive load. An electric current of given magnitude produces the same heating regardless of the direction of current flow; squaring the quantity measured ensures that alternation of sign does not invalidate the result.
+\item spectral RMS (root mean square) - in physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current, obtained by taking the mean of the squares of the instantaneous values during a cycle. This is the effective value in the sense of the value of the direct current that would produce the same power dissipation in a resistive load. An electric current of given magnitude produces the same heating regardless of the direction of current flow; squaring the quantity measured ensures that alternation of sign does not invalidate the result.
 
 \item spectral energy - the energy E{s} of a continuous-time signal x(t) defined as: \\
-$ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt $
+$ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt $. \\
 Signal energy is always equal to the summation across all frequency components of the signal's spectral energy density. It could have an impact on both valence and arousal.
 
 \item mean and derivative of variance of beat loudness -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
@@ -64,7 +63,7 @@ $ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right
 
 \item pitch salience of a spectrum - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value. Pitch salience was designed as quick measure of tone sensation. Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. Application: characterizing percussive sounds. We think the value could have an effect on both the valence and arousal.
 
-\item mean and derivative of variance of sensory dissonance (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonace between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to negative valence.
+\item mean and derivative of variance of sensory dissonance (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonace between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to low valence.
 
 \end{itemize}
 
@@ -243,5 +242,3 @@ The player can at any time pause, stop or replay the game.
 
 
 \section{Main Section 2}
-
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.

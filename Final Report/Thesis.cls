@@ -320,7 +320,8 @@
 \newcounter{dummy}
 \newcommand\addtotoc[1]{
 \refstepcounter{dummy}
-\addcontentsline{toc}{chapter}{#1}}
+%\addcontentsline{toc}{chapter}{#1}
+}
 \renewcommand\tableofcontents{
 \btypeout{Table of Contents}
 \addtotoc{Contents}

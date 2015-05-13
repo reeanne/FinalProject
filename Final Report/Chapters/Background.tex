@@ -78,7 +78,7 @@ Reactive music games, in contrast to generative one, employ music to determine t
 
 \subsection{Free Form Music Games}
 
-In free form music games, the main task of the user is to create content. This form of music game is often compared to non-game music synthesisers. Free form music games are somewhere between generative hybrid music games and non-game utilities, depending on the degree to which their gameplay relies on a driving underlying plot-line. An example of such game could be SimTunes, where the user is painting a picture using large pixels and each color represents a musical note. 
+In free form music games, the main task of the user is to create content. This form of music game is often compared to non-game music synthesisers. Free form music games are somewhere between generative hybrid music games and non-game utilities, depending on the degree to which their gameplay relies on a driving underlying plot-line. An example of such game could be SimTunes, where the user is painting a picture using large pixels and each colour represents a musical note. 
 
 \begin{figure}
         \centering
@@ -112,7 +112,7 @@ Guitar Hero is one of the most popular franchises in the history of music games.
 \subsection{The Controller}
 
 
-Rather than a typical gamepad, Guitar Hero uses an instrument-shaped controller (guitar in the earlier releases, bass, microphone and drums in more recent ones). Playing the game with the guitar controller simulates playing an actual guitar, except it uses five coloured "fret buttons" and a "strum bar" instead of frets and strings, and an analogous mapping for the other instruments. They incorporate most of the real life techniques and motions that an instrumentalist would perform on a real instrument.
+Rather than a typical gamepad, Guitar Hero uses an instrument-shaped controller (guitar in the earlier releases, bass, microphone and drums in more recent ones). Playing the game with the guitar controller simulates playing an actual guitar, except it uses five coloured ``fret buttons'' and a ``strum bar'' instead of frets and strings, and an analogous mapping for the other instruments. They incorporate most of the real life techniques and motions that an instrumentalist would perform on a real instrument.
 
 \vspace{10pt}
 
@@ -169,9 +169,9 @@ However, in our case, the term polyphonic will simply refer to any type of music
 
 The concept of “melody” ultimately relies on the judgment of people listening. This is why it will vary depending on the application context - whether we want to determine symbolic melodic similarity or transcribe a music track. 
 
-In order to have a clear framework to work within, the Music Information Retrieval (MIR) community has adopted in recent years the definition proposed by \cite{melodydef}, “...the melody is the single (monophonic) pitch sequence that a listener might reproduce if asked to whistle or hum a piece of polyphonic music, and that a listener would recognise as being the 'essence' of that music when heard in comparison".
+In order to have a clear framework to work within, the Music Information Retrieval (MIR) community has adopted in recent years the definition proposed by \cite{melodydef}, ``...the melody is the single (monophonic) pitch sequence that a listener might reproduce if asked to whistle or hum a piece of polyphonic music, and that a listener would recognise as being the 'essence' of that music when heard in comparison''.
 
-In practice, research has focused on "single source predominant fundamental frequency estimation" — which means a search for a main melody coming from a single sound source throughout the song analysed. As we can see, the subjective element is still present in this description of a melody as there might not be a definite way of deciding what predominant is. However, it fits well with our project’s objective — generating a game level based on changes in the pitch.
+In practice, research has focused on ``single source predominant fundamental frequency estimation'' — which means a search for a main melody coming from a single sound source throughout the song analysed. As we can see, the subjective element is still present in this description of a melody as there might not be a definite way of deciding what predominant is. However, it fits well with our project’s objective — generating a game level based on changes in the pitch.
 
 \vspace{10pt}
 
@@ -232,7 +232,7 @@ This together with STFT and an amplitude coefficient associated with each source
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/gsmm}
-                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a "state selector" then chooses the active state.}
+                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
                 \label{fig:Guitar Hero screenshot}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
@@ -335,7 +335,7 @@ If the mean distance is within $1200\pm50$ cents, the contours are considered oc
 Secondly, Salamon and G\'{o}mez use the relationship between neighbouring contours (in time) to decide which of the duplicates is the correct one. Their approach is based on two assumptions: firstly, that most (though not all) of the time the correct contour will have greater salience than its duplicate (the salience function parameters were optimised to this end). Secondly, that melodies tend to have a continuous pitch trajectory avoiding large jumps, in accordance with voice leading principles.
 
 The method iteratively computes the $\overline{P(t)}$ - pitch trajectory that represents the time evolution of the melody's pitch.
-It then detects and removes an octave duplicate as well as  the "pitch outliers” – contours more than one octave above or below the pitch mean and then it is recalculated. Authors empirically discovered that 2 iterations of this process are enough to get a good approximation of the true trajectory of the melody, which is then passed to the final stage of the model - the final melody selection.
+It then detects and removes an octave duplicate as well as  the ``pitch outliers'' – contours more than one octave above or below the pitch mean and then it is recalculated. Authors empirically discovered that 2 iterations of this process are enough to get a good approximation of the true trajectory of the melody, which is then passed to the final stage of the model - the final melody selection.
 
 At this stage, there is often only one peak to be chosen as the main melody. When there is still more than one contour present in a frame, the melody is selected as the peak belonging to the contour with the highest total salience $C_{\sum s}$. If no contour is present the frame is regarded as unvoiced.
 
@@ -380,18 +380,18 @@ In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is bett
 
 
 \section{Introduction to Neural Networks}
-An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, "A logical calculus of the ideas imminent in nervous activity,” they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
+An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
-Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform one of these “easy-for-a-human, difficult-for-a-machine” tasks, often referred to as pattern recognition. They have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately, and thanks to their structure they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
-A trained neural network can be thought of as an "expert" in the category of information it has been given to analyse. This expert can then be used to provide projections given new situations of interest and answer "what if" questions.
+Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform one of these ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. They have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
+A trained neural network can be thought of as an ``expert'' in the category of information it has been given to analyse. This expert can then be used to provide projections given new situations of interest and answer ``what if'' questions.
 
 \vspace{10pt}
 
 \subsection{Models}
 The computational systems we write are procedural; a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
-On the other hand, neural network are “connectionist” computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
+On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
 
-Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network The number of them depends on a task the network is designed for. .
+Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network. The number of them depends on a task the network is designed for.
 
 \begin{wrapfigure}{l}{0.5\textwidth}
   \vspace{-30pt}
@@ -400,17 +400,65 @@ Neural networks are made up of many artificial neurons. There are many different
     \includegraphics[width=0.48\textwidth]{Figures/simpleANN}
   \end{center}
   \caption{Diagram of a simple neural network with 4 input nodes, 3 nodes in a hidden layer and one output node.}
+  \label{fig:examplennn}
 \end{wrapfigure}
 
-An example system has three layers. The first layer has input neurons which send data via synapses to the second layer of neurons. Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
+An example system depicted in Figure \ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
 As each input enters the nucleus, it is multiplied by its weight. The nucleus then sums all these new input values which gives us the activation. If the activation is greater than a threshold value, the neuron outputs a signal. If the activation is less than the threshold, the neuron outputs zero. This is typically called a step function.
 
-
 One type of neural network is called a feedforward network named after the way the neurons in each layer feed their output forward to the next layer until we get the final output from the neural network. 
  
-Each input is sent to every neuron in the hidden layer and then each hidden layer’s neuron’s output is connected to every neuron in the next layer. There can be any number of hidden layers within a feedforward network but one is usually enough to suffice for most problems you will tackle. Also the number of neurons I've chosen for the above diagram was completely arbitrary. There can be any number of neurons in each layer, it all depends on the problem. By now you may be feeling a little dazed by all this information so I think the best thing I can do at this point would be to give you a real world example of how a neural net can be used in the hope that I can get your very own brain’s neurons firing!
- 
+Each input is sent to every neuron in the hidden layer (marked blue) and then each hidden layer’s neuron’s output is connected to every neuron in the next layer. There can be any number of hidden layers within a feedforward network but one is usually enough to suffice for most problem. There can be any number of neurons in each layer, depending on the problem that is being solved.
+
+\vspace{10pt}
+
+\subsection{Training}
+Once a network has been structured for a particular application, it is ready to be trained. In the beginning, the initial weights are chosen randomly. 
+There are two approaches to training - supervised and unsupervised. Supervised training involves a mechanism of providing the network with the desired output either by manually ``grading'' the network's performance or by providing the desired outputs with the inputs. Unsupervised training is where the network has to make sense of the inputs without outside help.
+
+Majority of networks utilize supervised training. Unsupervised training is used to perform some initial characterization on inputs \cite{mostcommon}.
+
+\vspace{10pt}
+
+\subsection*{Supervised Training}
+
+In supervised training, both the inputs and the outputs are provided. The network then processes the inputs and compares its resulting outputs against the desired outputs. Errors are then propagated back through the system, causing the system to adjust the weights which control the network. This process occurs over and over as the weights are continually tweaked. The set of data which enables the training is called the ``training set''. During the training of a network the same set of data is processed many times as the connection weights are ever refined.
+
+Unfortunately, some networks never learn. This could be caused by the input data not containing the specific information from which the desired output is derived. Networks can also fail to converge if there is not enough data to enable complete learning. 
+
+Ideally, there should be enough data so that part of the data can be held back as a test. Many layered networks with multiple nodes are capable of memorizing data. To make sure the network is learning significant patterns rather than plainly memorizing the data, supervised training needs to hold back a set of data to be used to test the system after it has undergone its training.
+
+If a network simply cannot solve the problem, the designer then has to review the input and outputs, the number of layers, the number of elements per layer, the connections between the layers, the summation, transfer, and training functions, and even the initial weights themselves. Those changes required to create a successful network constitute a process wherein the ``art'' of neural networking occurs.
+
+Another part of the designer's creativity governs the rules of training. There are many laws (algorithms) used to implement the adaptive feedback required to adjust the weights during training. The most common technique is backward-error propagation, more commonly known as back-propagation, which we will describe later.
+
+Yet, training is not just a technique. It involves a ``feel'', and conscious analysis, to insure that the network is not over-trained. Initially, an artificial neural network configures itself with the general statistical trends of the data. Later, it continues to ``learn'' about other aspects of the data which may be spurious from a general viewpoint.
+
+When finally the system has been correctly trained, and no further learning is needed, the weights can, if desired, be saved. This way it can be used for predicting the output values for new, unseen data.
+
+\vspace{10pt}
+\subsection*{Unsupervised Training}
+
+The other type of training is called unsupervised training. In unsupervised training, the network is provided with inputs but not with desired outputs. The system itself must then decide what features it will use to group the input data. This is often referred to as self-organization or adaption.
+
+At the present time, unsupervised learning is not well understood. This adaption to the environment is the promise which would enable science fiction types of robots to continually learn on their own as they encounter new situations and new environments. Life is filled with situations where exact training sets do not exist. Some of these situations involve military action where new combat techniques and new weapons might be encountered. Because of this unexpected aspect to life and the human desire to be prepared, there continues to be research into, and hope for, this field.
+\vspace{10pt}
+
+\subsection{Backpropagation algorithm}
+
+A Backpropagation network is a network that learns by example. Given the desired input and output data telling the network what we want it to do, it changes its weights so that, when training is finished, it produces the required output for a particular input. 
+Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
+
+The algorithm starts by first setting up all the network's weights to be small random number. Next, the input pattern is applied and the output calculated (called the forward pass). The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated (expected output - actual output). This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the reverse pass. The process is repeated again and again until the error is minimal.
+
+Backpropagtion algorithm has some problems associated with it. Perhaps the best known is associated with local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will “gets stuck” (because it cannot go uphill) and the error will not decrease further.
+
+There are are several solutions to this problem. One is very simple and that is to reset the weights to different random numbers and try training again (this can also solve several other problems). Another solution is to add “momentum” to the weight change. This means that the weight change this iteration depends not just on the current error, but also on previous changes. For example: 
+\begin{equation}
+W+ = W + Current change + (Change on previous iteration * constant)
+\end{equation}
+
 \vspace{20pt}
 
 

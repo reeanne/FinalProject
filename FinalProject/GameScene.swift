@@ -45,6 +45,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var moodIndex = 0;
     var sparkEmitter: SKEmitterNode! = nil;
     var moodXposition: Float = 1/3;
+    var fourIntervals: Double = 0;
     
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
@@ -390,12 +391,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         changeMood();
         sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
         sparkEmitter.name = "sparkEmmitter"
-        sparkEmitter.zPosition = -100;
+        sparkEmitter.zPosition = -1;
         sparkEmitter.targetNode = self;
         sparkEmitter.physicsBody = nil;
         
         let moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
-        var fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+        fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
 
         self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
         ])));
@@ -403,9 +404,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func moveSparkle() {
-        var fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+        
+        fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
         moodXposition *= -1;
-        println("here")
         var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
         var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
         sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
@@ -414,9 +415,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func changeMood() {
         sparkEmitter.particleColorSequence = nil;
-        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, level.melody.arousal[moodIndex])),
-            green: CGFloat(max(0, level.melody.valence[moodIndex])),
-            blue: 0.4, alpha: 0.4);
+        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
+            green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
+            blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
+        println("here  " + level.melody.arousal.description + level.melody.valence.description);
         moodIndex++;
     }
 
