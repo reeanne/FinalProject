@@ -2,9 +2,9 @@
 
 \chapter{Background} % Main chapter title
 
-\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter2} 
+\label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter2} 
 
-\lhead{Chapter 2. \emph{Background}} % This is for the header on each page - perhaps a shortened title
+\lhead{Chapter 4. \emph{Background}} % This is for the header on each page - perhaps a shortened title
 
 %----------------------------------------------------------------------------------------
 
@@ -205,7 +205,7 @@ In this section we will go over two different approaches to the problem of main 
   \begin{center}
     \includegraphics[width=0.48\textwidth]{Figures/durrieudiagram}
   \end{center}
-  \caption{Outline of system proposed by Durrieu: X is the STFT of the mixture signal, $p(\Xi|X)$ the posterior probability of a given melody sequence, and $\hat{\Xi} $ the desired smooth melody sequence\cite{durrieu}.}
+  \caption{Outline of system proposed by Durrieu: X is the STFT of the mixture signal, $p(\Xi|X)$ the posterior probability of a given melody sequence, and $\hat{\Xi} $ the desired smooth melody sequence \cite{durrieu}.}
   \label{fig:durrieu}
 \end{wrapfigure}
 
@@ -219,7 +219,26 @@ The likelihood of the vocal part V is calculated using two different frameworks.
 
 The first submission uses the source/filter Gaussian scaled mixture model (GSMM). In this model the source element refers to the excitation of the vocal folds and is therefore linked to the fundamental frequency of the sound $f_{\text{0}}$, while the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that we consider one possible filter frequency response, which is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
-Figure \ref{gsmmimm}  A) shows the diagram of the GSMM model for the main voice part. Each source excitation $u$ is filtered by each filter $k$. The amplitudes for a frame $n$ and for all the couples $(k, u)$ are then applied to each of the output signals. At last a “state selector” sets the active state for the given frame.
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/gsmm}
+                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
+                \label{fig:gsmm}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/imm}
+                \caption{Schematic principle of the generative IMM. At each frame, all the U sources, each filtered by K filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
+                \label{fig:imm}
+        \end{subfigure}
+          \caption{Diagram of both models presented in the paper \cite{durrieu}.}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+        \label{fig:gsmmimm}
+\end{figure}
+
+Figure \ref{fig:gsmm}  A) shows the diagram of the GSMM model for the main voice part. Each source excitation $u$ is filtered by each filter $k$. The amplitudes for a frame $n$ and for all the couples $(k, u)$ are then applied to each of the output signals. At last a ``state selector'' sets the active state for the given frame.
 
 The second model was derived from the first one to find a solution that would be more efficient to compute. The authors came up with a formulation that keep the source/filter model within an instantaneous mixture framework (IMM). In this model, for each source a set of filters is defined and at each frame, once every source is filtered and multiplied by a given amplitude, they are all added together.
 
@@ -227,25 +246,6 @@ The background music signal $m(t)$ can be thought of as a mixture of $R$ indepen
 Each of the sources is centred and characterised by its power spectral density (PSD), which describes how the power of a signal or time series is distributed over the different frequencies. PSD can be estimated using a Covariance Method.
 Due to the linearity of the Fourier transform, $M(f,t)$, the STFT of $m$, is also the instantaneous mixture of the $R$ spectra $M_{r}(f,t)$ of the sources: $M_{r}(f,t)$.
 This together with STFT and an amplitude coefficient associated with each source is used to calculate the likelihood for each of the frequency bins. Let $M_{t}(f)$ be the STFT of the background signal at frame $t$ and frequency bin $f$, then we write its likelihood.
-
-\begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/gsmm}
-                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
-                \label{fig:Guitar Hero screenshot}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/imm}
-                \caption{Schematic principle of the generative IMM. At each frame, all the U sources, each filtered by K filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
-                \label{fig:Controller}
-        \end{subfigure}
-          \caption{Diagram of both models presented in the paper\cite{durrieu}.}
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-        \label{fig:gsmmimm}
-\end{figure}
 
 Once the parameters are estimated using the maximum likelihood criterion for each of the model, the Viterbi smoothing of the melody line is applied, obtaining a trade-off between the smoothness of the melody and its global energy in the signal. The Viterbi algorithm is a dynamic programming algorithm for finding the most likely sequence of hidden states – called the Viterbi path – that results in a sequence of observed events \cite{viterbi}.
  
@@ -291,7 +291,7 @@ Peaks of the salience function at each frame are now potential $f_{0}$ of the ma
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.7\textwidth]{Figures/pitchcontour}
-      \caption{Pitch contours generated from excerpts of (a) vocal jazz and (b) opera. Melody contours are highlighted in bold\cite{salamon}.}
+      \caption{Pitch contours generated from excerpts of (a) vocal jazz and (b) opera. Melody contours are highlighted in bold \cite{salamon}.}
 \label{fig:pitchcontours}
 \end{figure}
 
@@ -359,22 +359,23 @@ In their paper \cite{comparison}, authors attempted to compare multiple melody e
 \begin{figure}[h!]
   \centering
     \includegraphics[width=\textwidth]{Figures/comparisonall}
-      \caption{a) Raw pitch accuracy and b) overall accuracy obtained in MIREX by 16 melody extraction algorithms evaluated in \cite{comparison}. The vertical dashed line separates the algorithms that were only evaluated on some collections (left of the line) from those evaluated on all six collections (right of the line)\cite{comparison}.}
+      \caption{a) Raw pitch accuracy and b) overall accuracy obtained in MIREX by 16 melody extraction algorithms evaluated in \cite{comparison}. The vertical dashed line separates the algorithms that were only evaluated on some collections (left of the line) from those evaluated on all six collections (right of the line) \cite{comparison}.}
+\label{fig:comparison}
 \end{figure}
 
 
-In Figure 2.8. the authors presented results obtained by the algorithms evaluated at MIREX. To get a general idea of the performance of the algorithms, it is sufficient to focus on two evaluation measures.
-The raw pitch accuracy, presented in Figure 2.8 a) represents how well the algorithm tracks the pitch of the melody. The overall accuracy on the other hand, as shown in Figure 2.8 b), combines this measure with the efficiency of the algorithm's voicing detection, meaning the voicing-related measures are also reflected in this measure.
+In Figure \ref{fig:comparison}. the authors presented results obtained by the algorithms evaluated at MIREX. To get a general idea of the performance of the algorithms, it is sufficient to focus on two evaluation measures.
+The raw pitch accuracy, presented in Figure \ref{fig:comparison} a) represents how well the algorithm tracks the pitch of the melody. The overall accuracy on the other hand, as shown in Figure \ref{fig:comparison} b), combines this measure with the efficiency of the algorithm's voicing detection, meaning the voicing-related measures are also reflected in this measure.
 
 As we can see, some collections are generally hard to analyse (for example MIREX09 -5db), in general the collections yield different results for different algorithms. This allows us to spot pros and cons of each approach investigated.
 
-We can also notice that the raw pitch accuracy gradually improved from 2005 to 2009, after which it stayed relatively unchanged. Overall we can see that the average pitch accuracy over a collection lies between 70-80%.
+We can also notice that the raw pitch accuracy gradually improved from 2005 to 2009, after which it stayed relatively unchanged. Overall we can see that the average pitch accuracy over a collection lies between 70-80\%.
 
-On the other hand, when it comes to overall accuracy, the performance goes down compared to the raw pitch accuracy for all algorithms due to voicing detection being factored into the results. The importance of this step depends on the intended use of the algorithm. Generally, the overall accuracy results lie between 65-70%.
+On the other hand, when it comes to overall accuracy, the performance goes down compared to the raw pitch accuracy for all algorithms due to voicing detection being factored into the results. The importance of this step depends on the intended use of the algorithm. Generally, the overall accuracy results lie between 65-70\%.
 
 Finally, an important factor in assessment of an algorithm is its complexity. While deriving O-notation is too complex for some of the algorithms, generally it is observed that algorithms involving source separation are significantly more computationally complex than salience based approaches Unfortunately, there is no specific data provided by Salamon and G\'{o}mez [9] or by Durrieu [5] on their algorithms.
 
-In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly, as seen in Figure 2.8.. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game designing as we do not want to keep the user waiting for a long time for his level to generate and load.
+In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly, as seen in Figure \ref{fig:comparison}. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game designing as we do not want to keep the user waiting for a long time for his level to generate and load.
 
 \vspace{20pt}
 
@@ -382,7 +383,7 @@ In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is bett
 \section{Introduction to Neural Networks}
 An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
-Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform one of these ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. They have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
+Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform one of these ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
 A trained neural network can be thought of as an ``expert'' in the category of information it has been given to analyse. This expert can then be used to provide projections given new situations of interest and answer ``what if'' questions.
 
 \vspace{10pt}
@@ -452,9 +453,9 @@ Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
 
 The algorithm starts by first setting up all the network's weights to be small random number. Next, the input pattern is applied and the output calculated (called the forward pass). The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated (expected output - actual output). This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the reverse pass. The process is repeated again and again until the error is minimal.
 
-Backpropagtion algorithm has some problems associated with it. Perhaps the best known is associated with local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will “gets stuck” (because it cannot go uphill) and the error will not decrease further.
+Backpropagation algorithm has some problems associated with it. Perhaps the best known is associated with local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will ``gets stuck'' (because it cannot go uphill) and the error will not decrease further.
 
-There are are several solutions to this problem. One is very simple and that is to reset the weights to different random numbers and try training again (this can also solve several other problems). Another solution is to add “momentum” to the weight change. This means that the weight change this iteration depends not just on the current error, but also on previous changes. For example: 
+There are are several solutions to this problem. One is very simple and that is to reset the weights to different random numbers and try training again (this can also solve several other problems). Another solution is to add ``momentum'' to the weight change. This means that the weight change this iteration depends not just on the current error, but also on previous changes. For example: 
 \begin{equation}
 W+ = W + Current change + (Change on previous iteration * constant)
 \end{equation}
@@ -463,13 +464,59 @@ W+ = W + Current change + (Change on previous iteration * constant)
 
 
 \section{Mood Detection}
+
+
 It is well known that music can convey emotion and modulate mood. That is why the relation between musical sounds and their influence on the listener’s emotion has been well studied.
 
-One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan \cite{moodold}. They employ Computational Media Aesthetics to detect mood for music information retrieval tasks. The two dimensions of tempo and articulation are extracted from the audio signal and are mapped to one of four emotional categories; happiness, sadness, anger, and fear. 
+\subsection{Emotion Classification}
+\label{sec:emotionClass}
+
+Currently, there is no standard method to measure and analyze emotion in music. However, a psychological model of emotion has found increasing use in computational studies. 
+
+In 1989, in his publication \cite{Russell}, J. A. Russell noticed that set of emotional dimensions such as displeasure, distress, depression, excitement etc. are interrelated in a highly systematic fashion. He claimed these relationships can be represented in a spacial model in which concepts fall in circle in the following order: pleasure, excitement, arousal, distress, displeasure, depression, sleepiness and relaxation. Depiction of the model is presented in Figure \ref{fig:Russell}.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/Russell}
+                \caption{Model proposed by J. A. Russell.}
+                \label{fig:Russell}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/ThayersAV}
+                \caption{Model proposed by R. E. Thayer \cite{mood}.}
+                \label{fig:Thayer}
+        \end{subfigure}
+          \caption{Diagram of both models for representing emotions.}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+        \label{fig:RussellThayer}
+\end{figure}
+
+
+A somewhat similar model was described in 1989 by R. E. Thayer. Thayer’s two-dimensional emotion model offers a simple but quite effective model for placing emotion in a two-dimensional space \cite{Thayer}. In the model, the amount of arousal and valence is measured along the vertical and horizontal axis, respectively.
+
+Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values and the moods perceived by people. As we can see, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
+
+
+
+
+\subsection{Related Literature}
+
+Some studies have explored the relationship between physiological activity experienced by a listener and perceived emotion, be it facial expression or speech recognition of even heartbeat and respiratory changes \cite{physicalmood}.
+Others have explored the relationship between perceived emotion and the musical/acoustic features themselves.
+
+
+One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan \cite{moodold}. They employ Computational Media Aesthetics, that is, analysing two music dimensions to detect mood for music information retrieval tasks. The two dimensions -- tempo and articulation, are extracted from the audio signal and are mapped to one of four emotional categories; happiness, sadness, anger, and fear. 
 After that, feature called relative tempo is calculated, and after the mean and standard deviation of the feature called average silence ratio in the presented computational articulation model are calculated, a simple Back Propagation neural network classifier is trained to detect mood.
 
+Different approach was applied by Kim and Andr\'{e} \cite{physicalmood}. To collect physiological data set, a musical induction which leads subjects to real emotional states was used over many weeks. They used four-channel biosensors to measure electromyogram, electrocardiogram, skin conductivity, and respiration changes. From that, they retrieve a wide range of physiological features and are analysed to find the best emotion-relevant ones and correlate them with emotional states. Finally, the classification of four musical emotions (positive/high arousal, negative/high arousal, negative/low arousal, and positive/low arousal) is performed by using an extended linear discriminant analysis (pLDA)
+
+
 In publication by Yang, Lin, Su and Chen \cite{mood}, the authors presented a tool which recognises a mood in a musical track, allowing a user to then choose the song they want to play by deciding on emotions it is supposed to represent.
-Specifically, the authors formulate music emotion recognition as a regression problem to predict the arousal and valence values (AV values) of each music sample directly.
+Specifically, the authors formulate music emotion recognition as a regression problem to predict the arousal and valence values (AV values) of each music sample directly. For this purpose, they adopt Support Vector Regression (SVR) as classifier using a number of chosen features.
+
 
 Potentially, the second approach described seems more appropriate for our project as it allows for better granularity in the melody emotion detection and, hence, wider variety of changes in the game's environment. However, this area of the project is left to be further researched.
 
