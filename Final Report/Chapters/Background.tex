@@ -145,6 +145,23 @@ To be able to evaluate the performance of the new algorithms, annual Music Infor
 
 \vspace{10pt}
 
+\subsection{Sound Spectrum}
+
+\begin{wrapfigure}{r}{0.45\textwidth}
+  \vspace{-40pt}
+
+  \begin{center}
+    \includegraphics[width=0.43\textwidth]{Figures/soundspectrum}
+  \end{center}
+  \caption{Example of a sound spectrum diagram \cite{soundspectrum}.}
+  \label{fig:DDR}
+\end{wrapfigure}
+
+
+Most sounds are made up of a complicated mixture of vibrations. A sound spectrum is a representation of a sound – usually a short sample of a sound – in terms of the amount of vibration at each individual frequency. It is usually presented as a graph of either power or pressure as a function of frequency. The power or pressure is usually measured in decibels and the frequency is measured in vibrations per second (or hertz, abbreviation Hz) or thousands of vibrations per second (kilohertz, abbreviation kHz). 
+
+\vspace{10pt}
+
 \subsection{Pitch, Tones, Fundamental Frequency}
 
 Pitch is the most natural way of ordering sounds on a frequency-related scale. If sounds whose frequency is clear and stable enough to be distinguished from noise, they can be compared among  one another as “lower” or “higher”. Pitch is not an objective physical property — it depends on anatomy and physiology of the auditory system, which is a subject of an extensive study called psychoacoustics. 
@@ -389,10 +406,6 @@ A trained neural network can be thought of as an ``expert'' in the category of i
 \vspace{10pt}
 
 \subsection{Models}
-The computational systems we write are procedural; a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
-On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
-
-Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network. The number of them depends on a task the network is designed for.
 
 \begin{wrapfigure}{l}{0.5\textwidth}
   \vspace{-30pt}
@@ -403,6 +416,11 @@ Neural networks are made up of many artificial neurons. There are many different
   \caption{Diagram of a simple neural network with 4 input nodes, 3 nodes in a hidden layer and one output node.}
   \label{fig:examplennn}
 \end{wrapfigure}
+
+The computational systems we write are procedural; a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
+On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
+
+Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network. The number of them depends on a task the network is designed for.
 
 An example system depicted in Figure \ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
