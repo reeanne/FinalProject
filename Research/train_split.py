@@ -7,41 +7,25 @@ from pybrain.datasets.supervised import SupervisedDataSet as SDS
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 
-train_file = 'Regression_fab.csv'
-validation_file = 'Regression.csv'
+train_file = 'train.csv'
 output_model_file = 'model.pkl'
 
-hidden_size = 8
+hidden_size = 7
 epochs = 1000
 
 # load data
 
 train = np.loadtxt( train_file, delimiter = ',' )
-validation = np.loadtxt( validation_file, delimiter = ',' )
-train = np.vstack(( train, validation ))
 
 ds = SDS(8, 2)                                                       
 
 for row in train:
-	#print row[6]
 	ds.addSample(row[10:-2].tolist(), row[-2:])
-#x_train = train[:,0:-2]
-#y_train = train[:,-2:]
 
-#input_size = x_train.shape[1]
-#target_size = y_train.shape[1]
-
-# prepare dataset
-
-#ds = SDS( input_size, target_size )
-#ds.setField( 'input', x_train )
-#ds.setField( 'target', y_train )
-
-# init and train
 
 net = buildNetwork( 8, hidden_size, 2, bias = True )
 net.randomize()
-trainer = BackpropTrainer( net,ds, verbose=True, learningrate = 0.1)
+trainer = BackpropTrainer( net,ds, verbose=True, learningrate = 0.001)
 
 print "training for {} epochs...".format( epochs )
 

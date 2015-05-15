@@ -62,8 +62,8 @@ def analyse_track(file, length):
 		with open(outputfile) as datafile:
 			data = json.load(datafile)
 
-			silence60_mean = (data["lowlevel"]["silence_rate_60dB"]["mean"] - min_max[0][0]) / (min_max[1][0] - min_max[0][0])
-			silence60_dvar = (data["lowlevel"]["silence_rate_60dB"]["dvar"]  - min_max[0][1]) / (min_max[1][1]- min_max[0][1])
+			loudness = (data["lowlevel"]["average_loudness"] - min_max[0][0]) / (min_max[1][0] - min_max[0][0])
+			silence60_mean = (data["lowlevel"]["silence_rate_60dB"]["mean"] - min_max[0][1]) / (min_max[1][1]- min_max[0][1])
 			dynamic_complexity = (data["lowlevel"]["dynamic_complexity"] - min_max[0][2]) / (min_max[1][2] - min_max[0][2])
 			spectral_centroid = (data["lowlevel"]["spectral_centroid"]["mean"] - min_max[0][3]) / (min_max[1][3] - min_max[0][3])
 			spectral_energy = (data["lowlevel"]["spectral_energy"]["mean"] - min_max[0][4]) / (min_max[1][4] - min_max[0][4])
@@ -71,7 +71,7 @@ def analyse_track(file, length):
 			pitch_salience =  (data["lowlevel"]["pitch_salience"]["mean"] - min_max[0][6]) / (min_max[1][6] - min_max[0][6])
 			dissonance_mean = (data["lowlevel"]["dissonance"]["mean"] - min_max[0][7]) / (min_max[1][7] - min_max[0][7])
 
-			input = [silence60_mean, silence60_dvar, dynamic_complexity, spectral_centroid, spectral_energy, zerocrossingrate, pitch_salience, dissonance_mean]
+			input = [loudness, silence60_mean, dynamic_complexity, spectral_centroid, spectral_energy, zerocrossingrate, pitch_salience, dissonance_mean]
 
 			# predict
 			p = net.activate(input)

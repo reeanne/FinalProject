@@ -54,9 +54,13 @@ There have been some research focusing on relation between spectral energy and s
 
 \item[mean and derivative of variance of beat loudness] -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
 
-\item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
+\item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. 
+In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being 'in' a specific key, such as ``in the key of C major or in the key of F\#''. Sometimes the terms 'major' or 'minor' are appended, as 'in the key of A minor' or 'in the key of B major'.
+Broadly speaking the phrase 'in key of C' means that C is music's harmonic center or tonic (the first degree of the scale, or the root of the scale). 
+The terms 'major' and 'minor' further imply the use of a major scale or a minor scale. Thus the phrase 'in the key of E major' implies a piece of tonal music harmonically centered on the note E and making use of a major scale whose first note, or tonic, is E. 
+We believe that those features can have an impact on both arousal and valence - songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
 
-\item[scale and key of the chords key] taken as the most frequent chord, and scale of the progression, whether major or minor. In this case, similarly to the above case of the key, we expect the features to have an impact on the valence value.
+\item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
 
 \item[means of zero-crossing rate] - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds. We believe it could be related to the arousal value. Music has a fairly normal distribution of frames with lower and higher zero-crossing rates. Speech however displays a much more skewed distribution. This could have an impact on songs where the vocals are quite rapid and energetic, for example rap music, and therefore might have a significant impact on mood recognition in our system.
 ZCR is defined formally as: 
@@ -95,7 +99,7 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
 
 In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
-As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in appendix for reference. 
+As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in Appendix A (Chapter \ref{sec:appendixa}, Section \ref{sec:bivariatediagram}) for reference. 
 
 We found significant correlation between \textbf{valence} and derivative of varriance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and dvar of dissonance}. 
 
@@ -130,52 +134,70 @@ The network’s task was to provide the valence and arousal values based on the 
 
 The network was built, trained, and tested using the pyBrain python library for neural network implementation. 
 
-We trained our network for 10000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
+We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
+
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.7\textwidth]{Figures/nodesperf}
+\caption{Data presented in table \ref{table:rsmetable}, plotted on a diagram.}
+\end{figure}
+
 
 \begin{table}
 \begin{center}
-\begin{tabular}{| c | c |} \hline 
-  No. of Nodes & RMSE  \\ \hline \hline
-  1 &  0.0885458989882 \\ \hline
-  2 &  0.0881453943244 \\ \hline
-  3 &  0.0873850620651 \\ \hline
-  4 &  0.086553779403   \\ \hline
-  5 &  0.0862146793784 \\ \hline
-  6 &  0.0860987534316 \\ \hline
-  7 &  0.0861442944822 \\ \hline
-  8 &  0.0850460538049 \\ \hline
-  9 &  0.085143906777   \\ \hline
- 10 & 0.0852984563213 \\ \hline
- 15 & 0.085547018396   \\ \hline
- 20 & 0.0854215840659 \\ \hline
- 50 & 0.0856472028298 \\ \hline
+\begin{tabular}{| c | l | l | l | l |} \hline 
+  No. of Nodes & RMSE 1 & RMSE 2 & result 1 & result 2  \\ \hline \hline
+  1 &  0.0727638005274 & 0.0740582536152  & 0.0998088934575 & 0.0978822145006 \\ \hline
+  2 &  0.071796654024 & 0.0709793303052 & 0.113046836083 & 0.112405435125 \\ \hline
+  3 & 0.0722212571658 & 0.0733605257262 &  0.155412522783 & 0.0948392717258 \\ \hline
+  4 &   0.0702013899702 & 0.0699921976435 &  0.102602437509 & 0.115373051966 \\ \hline
+  5 &  0.0659433293266 &  0.0693361162261 &  0.116558760273  & 0.10423200269\\ \hline
+  6 & 	 0.0722427034758 & 0.0751383013205 &  0.142248432275  &  0.118843096333  \\ \hline
+  7 &  0.0698701385354  & 0.0678483277007  & 0.088954243616 & 0.103537259056 \\ \hline
+  8 &   0.0692459138916 &  0.066424019477 & 0.131412928439 & 0.136098090028 \\ \hline
+  9 &   0.0676910853628 &  0.0707274913708 & 0.128139548772 & 0.104231713578\\ \hline
+ 10 & 0.0684398705278 & 0.0673887116962 & 0.140505458102 & 0.175156506583\\ \hline
+ 15 & 0.0671656450239 & 0.0673141803371 & 0.116563143115  &  0.139265837027\\ \hline
+ 20 & 0.0737978227013 &  0.0720620813131 & 0.160424096589 & 0.136210925296\\ \hline
+ 50 & 0.0669456166054 &   0.0694139442297 & 0.164132829293 & 0.171603556123\\ \hline
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
 \label{table:rsmetable}
 \end{center}
 \end{table}
 
-As we can see, the optimal solution is the one with 8 nodes in the hidden layer. To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
+
+
+As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that altough for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
+To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
 
 \begin{table}
 \begin{center}
-\begin{tabular} {| c | c |} \hline
- Learning Rate & RMSE \\  \hline \hline
- 0.3 & 0.0846361666437 \\ \hline
- 0.25 & 0.0827496336912 \\ \hline
- 0.2 & 0.080513130655 \\ \hline
- 0.15 & 0.0807476303566 \\ \hline
- 0.1 & 0.0792817515366 \\ \hline
- 0.05 & 0.0805650982375 \\ \hline
- 0.01 & 0.085863454125 \\ \hline
+\begin{tabular} {| c | l | l |} \hline
+ Learning Rate & RMSE & result RMSE \\  \hline \hline
+ 0.3 & 0.0707970888752 & 0.14578838717 \\ \hline
+ 0.25 & 0.0699336891245 & 0.163193322998 \\ \hline
+ 0.2 &  0.0667986974361 & 0.15521882498 \\ \hline
+ 0.15 & 0.0724218948598 & 0.104971086068 \\ \hline
+ 0.1 & 0.0684257582616 & 0.100719004205 \\ \hline
+ 0.05 & 0.0695957657331 & 0.0979349713899 \\ \hline
+ 0.01 & 0.0689460348924 & 0.090954243616 \\ \hline
+ 0.005 & 0.0724023992534 & 0.130733683966 \\ \hline
+ 0.001 &  0.079664786995 & 0.112619882406 \\ \hline
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given learning rate parameter value.}
 \label{table:learningrate}
 \end{center}
 \end{table}
 
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.7\textwidth]{Figures/learningrate}
+\caption{Data presented in table \ref{table:learningrate}, plotted on a diagram.}
+\end{figure}
 
-Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}.
+
+Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
 
 
 In the end, we came up with the network which can be seen on Figure \ref{finalnetwork}.
