@@ -34,7 +34,7 @@ void Trimmer::configure() {
   _startIndex = (long long)(parameter("startTime").toReal() * sampleRate);
   _endIndex = (long long)(parameter("endTime").toReal() * sampleRate);
   if (_startIndex > _endIndex) {
-      _endIndex = (long long)(parameter("endTime").toReal() * sampleRate) + _startIndex;
+    throw EssentiaException("Trimmer: startTime cannot be larger than endTime.");
   }
 }
 
@@ -71,7 +71,7 @@ void Trimmer::configure() {
   _startIndex = (long long)(parameter("startTime").toReal() * sampleRate);
   _endIndex = (long long)(parameter("endTime").toReal() * sampleRate);
   if (_startIndex > _endIndex) {
-      _endIndex = (long long)(parameter("endTime").toReal() * sampleRate) + _startIndex;
+    throw EssentiaException("Trimmer: startTime cannot be larger than endTime.");
   }
   _consumed = 0;
   _preferredSize = defaultPreferredSize;

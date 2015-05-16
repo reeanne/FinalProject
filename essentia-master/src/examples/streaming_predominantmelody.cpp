@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 
   standard::Algorithm* output = standard::AlgorithmFactory::create("YamlOutput",
                                                                    "filename", argv[2],
-                                                                   "format", "json");
+								   "format", "json");
   output->input("pool").set(pool);
   output->compute();
 
