@@ -33,7 +33,10 @@ void TuningSystemFeatures(Pool& pool, const string& nspace) {
   if (!nspace.empty()) tonalspace = nspace + ".tonal.";
 
   vector<Real> hpcp_highres = meanFrames(pool.value<vector<vector<Real> > >(tonalspace + "hpcp_highres"));
+  
   normalize(hpcp_highres);
+    pool.set(tonalspace + "hpcp_mine", hpcp_highres);
+
 
   // 1- diatonic strength
   standard::AlgorithmFactory& factory = standard::AlgorithmFactory::instance();
@@ -189,6 +192,7 @@ void TonalDescriptors(SourceBase& input, Pool& pool, const Pool& options, const 
   connect(peaks->output("frequencies"), hpcp_key->input("frequencies"));
   connect(peaks->output("magnitudes"), hpcp_key->input("magnitudes"));
   connect(hpcp_key->output("hpcp"), pool, tonalspace + "hpcp");
+  
 
   // native streaming Key algo
   Algorithm* skey = factory.create("Key");
@@ -261,5 +265,5 @@ void TonalPoolCleaning(Pool& pool, const string& nspace) {
   pool.set(tonalspace + "tuning_frequency", tuningFreq);
 
   // remove the highres hpcp which were only used to compute other features
-  pool.remove(tonalspace + "hpcp_highres");
+  //pool.remove(tonalspace + "hpcp_highres");
 }

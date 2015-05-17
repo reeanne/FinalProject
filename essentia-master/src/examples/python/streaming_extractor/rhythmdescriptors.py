@@ -19,7 +19,7 @@
 
 import sys, os
 import essentia, essentia.standard, essentia.streaming
-from essentia.streaming import RhythmExtractor2013, BPMHistogramDescriptors
+from essentia.streaming import *
 
 class RhythmDescriptorsExtractor(essentia.streaming.CompositeBase):
 

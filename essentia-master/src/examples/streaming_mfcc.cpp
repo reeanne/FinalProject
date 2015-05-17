@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
   spec->output("spectrum")  >>  mfcc->input("spectrum");
 
   mfcc->output("bands")     >>  NOWHERE;                          // we don't want the mel bands
-  mfcc->output("mfcc")      >>  PC(pool, "lowlevel.mfcc"); // store only the mfcc coeffs
+  mfcc->output("mfcc")      >>  PC(pool, "lowlevel.mfcc");        // store only the mfcc coeffs
 
   // Note: PC is a #define for PoolConnector
 
@@ -117,7 +117,8 @@ int main(int argc, char* argv[]) {
   cout << "-------- writing results to file " << outputFilename << " --------" << endl;
 
   standard::Algorithm* output = standard::AlgorithmFactory::create("YamlOutput",
-                                                                   "filename", outputFilename);
+                                                                   "filename", outputFilename,
+                                                                    "format", "json");
   output->input("pool").set(aggrPool);
   output->compute();
 
