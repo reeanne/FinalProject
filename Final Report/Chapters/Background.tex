@@ -207,6 +207,11 @@ In particular, STFT extracts several frames of the signal to be analysed with a 
 
 The short time Fourier transform of a time-domain signal $y$ is denoted by the matrix $F \times N$, $F$ being the Fourier transform size and $N$ the number of analysis frames.
 
+\vspace{10pt}
+
+\subsection{Chroma}
+A chroma feature is characterized by a 12-dimensional vector that represents the amount of energy that can be found in each of the 12 different pitches that commonly exist in the western popular music folded into one single octave. This is achieved by applying a constant-Q transform across the entire spectrogram and then folding it into one octave comprising the 12 quantized pitches. When these features are stack to- gether following the song structure in a N × 12 matrix, we generate a so-called chromagram, where N is the number of time frames in which the musical piece has been divided.
+
 \vspace{20pt}
 
 \section{Main Melody Extraction from Polyphonic Music}
