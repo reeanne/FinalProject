@@ -210,7 +210,28 @@ The short time Fourier transform of a time-domain signal $y$ is denoted by the m
 \vspace{10pt}
 
 \subsection{Chroma}
-A chroma feature is characterized by a 12-dimensional vector that represents the amount of energy that can be found in each of the 12 different pitches that commonly exist in the western popular music folded into one single octave. This is achieved by applying a constant-Q transform across the entire spectrogram and then folding it into one octave comprising the 12 quantized pitches. When these features are stack to- gether following the song structure in a N × 12 matrix, we generate a so-called chromagram, where N is the number of time frames in which the musical piece has been divided.
+
+\begin{figure}       
+      \centering
+                \includegraphics[width=0.6\textwidth]{Figures/chromagram_example}
+			   \vspace{20pt}
+			   \label{fig:chromaexample}
+			   \caption{Example of a chromagram.}
+\end{figure}
+
+A chroma feature is characterized by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches. Usually 12 pitches commonly existing in the western popular music folded into one single octave are considered, but one can use multiples of 12 to consider semi-tones or even smaller differences between tones. This is achieved by applying a constant-Q transform across the entire spectrogram. 
+
+In mathematics and signal processing, the Constant Q Transform transforms a data series to the frequency domain. It is related to the Fourier Transform,[1] and very closely related to the complex Morlet wavelet transform.[2]
+
+The transform can be thought of as a series of logarithmically spaced filters, with the k-th filter having a spectral width some multiple of the previous filter's width, i.e.
+
+\begin{equation}
+\delta f_k = 2^{ \frac {1}{n} } * \delta f_{k-1} = \left ( {2^{ \frac {1}{n} }} \right )^{k} * \delta f_{\mathrm{min}}
+\end{equation}
+
+where $\delta$fk is the bandwidth of the kth filter, fmin is the centre frequency of the lowest filter, and n is the number of filters per octave.
+
+Next, the spectrogram is folded into one octave comprising the M quantised pitches, where M is the number of pitches found in the chroma. When these features are stack together following the song structure in a N x M; matrix, a chromagram is generated, where N is the number of time frames in which the musical piece has been divided.
 
 \vspace{20pt}
 
@@ -469,7 +490,7 @@ The other type of training is called unsupervised training. In unsupervised trai
 At the present time, unsupervised learning is not well understood. This adaption to the environment is the promise which would enable science fiction types of robots to continually learn on their own as they encounter new situations and new environments. Life is filled with situations where exact training sets do not exist. Some of these situations involve military action where new combat techniques and new weapons might be encountered. Because of this unexpected aspect to life and the human desire to be prepared, there continues to be research into, and hope for, this field.
 \vspace{10pt}
 
-\subsection{Backpropagation algorithm}
+\subsection{Backpropagation Algorithm}
 
 A Backpropagation network is a network that learns by example. Given the desired input and output data telling the network what we want it to do, it changes its weights so that, when training is finished, it produces the required output for a particular input. 
 Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
@@ -522,30 +543,96 @@ A somewhat similar model was described in 1989 by R. E. Thayer. Thayer’s two-d
 
 Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values and the moods perceived by people. As we can see, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
-
-
+\vspace{10pt}
 
 \subsection{Related Literature}
 
 Some studies have explored the relationship between physiological activity experienced by a listener and perceived emotion, be it facial expression or speech recognition of even heartbeat and respiratory changes \cite{physicalmood}.
 Others have explored the relationship between perceived emotion and the musical/acoustic features themselves.
 
-
 One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan \cite{moodold}. They employ Computational Media Aesthetics, that is, analysing two music dimensions to detect mood for music information retrieval tasks. The two dimensions -- tempo and articulation, are extracted from the audio signal and are mapped to one of four emotional categories; happiness, sadness, anger, and fear. 
 After that, feature called relative tempo is calculated, and after the mean and standard deviation of the feature called average silence ratio in the presented computational articulation model are calculated, a simple Back Propagation neural network classifier is trained to detect mood.
 
-Different approach was applied by Kim and Andr\'{e} \cite{physicalmood}. To collect physiological data set, a musical induction which leads subjects to real emotional states was used over many weeks. They used four-channel biosensors to measure electromyogram, electrocardiogram, skin conductivity, and respiration changes. From that, they retrieve a wide range of physiological features and are analysed to find the best emotion-relevant ones and correlate them with emotional states. Finally, the classification of four musical emotions (positive/high arousal, negative/high arousal, negative/low arousal, and positive/low arousal) is performed by using an extended linear discriminant analysis (pLDA)
-
+Different approach was applied by Kim and Andr\'{e} \cite{physicalmood}. To collect physiological data set, a musical induction which leads subjects to real emotional states was used over many weeks. They used four-channel biosensors to measure electromyogram, electrocardiogram, skin conductivity, and respiration changes. From that, they retrieve a wide range of physiological features and are analysed to find the best emotion-relevant ones and correlate them with emotional states. Finally, the classification of four musical emotions (positive/high arousal, negative/high arousal, negative/low arousal, and positive/low arousal) is performed by using an extended linear discriminant analysis (pLDA).
 
 In publication by Yang, Lin, Su and Chen \cite{mood}, the authors presented a tool which recognises a mood in a musical track, allowing a user to then choose the song they want to play by deciding on emotions it is supposed to represent.
 Specifically, the authors formulate music emotion recognition as a regression problem to predict the arousal and valence values (AV values) of each music sample directly. For this purpose, they adopt Support Vector Regression (SVR) as classifier using a number of chosen features.
 
-
 Potentially, the second approach described seems more appropriate for our project as it allows for better granularity in the melody emotion detection and, hence, wider variety of changes in the game's environment. However, this area of the project is left to be further researched.
-
 
 \vspace{20pt}
 
+\section{Song Structure Retrieval}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-10pt}
+
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/SSM_beat}
+  \end{center}
+  \caption{Self similarity matrix for Bach's Prelude No. 1 in C Major, BVW.}
+  \label{fig:SSMbach}
+\end{wrapfigure}
+
+Automatic music structure analysis from audio signals is an interesting topic that receives a lot of attention these days. The technique can be used for music data analysis, indexing, retrieval and management. It decomposes a song
+into several sections and detects repetative patterns since they are often semantically meaningful parts. 
+
+\vspace{10pt}
+
+\subsection{Song Structure}
+
+Popular music is typically created using sectional, repeating forms. 
+Most pop/rock songs have a standard structure: an introduction followed by alternating verses, choruses, and solos/bridges segments, and concluding with an outro. A musical boundary can be defined as the point in time where a song transitions between two of these segments.
+
+However, this is not always the case as there are different types of musical structure. To describe them, let us represent the verse as A and the chorus as B. 
+
+Songs could be strophic - where all the verses are written to the same music, which could be represented as AAA... . Many folk and popular songs represent a strophic structure \cite{strophic}, including ``Barbara Allen'', ``Erie Canal'', and ``Michael Row the Boat Ashore''.
+
+Another song structure seen in the pop culture is thirty-two-bar form, where the structure of each repeated part is made up of four eight bar sections, in an AABA pattern. An example of a song with such a structure could be The Rolling Stones' ``Brown Sugar'' or The Police's ``Every Breath You Take''. 
+
+In contrast to thirty-two-bar form, which is focused on the verse (contrasted and prepared by the B section), in verse–chorus form it is the chorus that is highlighted (prepared and contrasted with the verse). Good example could be a song ``Be My Baby'' first recorded by the Ronettes, where the structure could be represented by ABABB(B).
+
+\vspace{10pt}
+
+\subsection{Similarity Matrix}
+
+A similarity matrix is a matrix of scores that represent the similarity between a number of data points. Each element of the similarity matrix contains a measure of similarity between two of the data points. Similarity matrices are strongly related to their counterparts, distance matrices and substitution matrices.
+Similarity matrices have a wide range of uses, including finding clusters of data points.
+
+Similarity between two points i, j is computed as a distance between the features of the beat indices i and j.There are many ways of computing a distance. Some of the most popular are:
+\begin{description}
+\item[Euclidean] - for an n-dimensional space, the distance between two vectors of attributes p and q is:
+\begin{equation}
+d(p, q) = \sqrt{(p_1- q_1)^2 + (p_2 - q_2)^2+\cdots+(p_i - q_i)^2+\cdots+(p_n - q_n)^2}
+\end{equation}
+\item[Cosine] = Given two vectors of attributes, p and q, the cosine similarity, cos($\theta$), is represented using a dot product and magnitude as
+\begin{equation}
+\text{similarity} = \cos(\theta) = {p \cdot q \over \|p\| \|q\|} = \frac{ \sum\limits_{i=1}^{n}{p_i \times q_i} }{ \sqrt{\sum\limits_{i=1}^{n}{([_i)^2}} \times \sqrt{\sum\limits_{i=1}^{n}{(q_i)^2}} }
+\end{equation}
+\item[Manhattan] -  distance, d, between two vectors p, q in an n-dimensional real vector space with fixed Cartesian coordinate system, is the sum of the lengths of the projections of the line segment between the points onto the coordinate axes. More formally,
+\begin{equation}
+d(p, q) = \|p - q\|_1 = \sum_{i=1}^n |p_i-q_i|,
+\end{equation}
+\item[Correlation] - distance between p and q, is defined as:
+\begin{equation}
+d(p, q) =  {(p - \mu _{p}) \cdot (q - \mu _{q}) \over ||p -\mu _{p} ||_{2} ||q - \mu _{q}||_{2}}
+\end{equation}
+where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes the mean of the feature vector x, and $\cdot$ represents the dot product.
+\end{description}
+
+\vspace{10pt}
+
+\subsection{Related Literature}
+
+Many other researchers have considered the importance of patterns and repetition in music. 
+
+For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (or simply “similarity matrix”) to visualize similarities between segments of music signals. Given a song, each element of a similarity matrix represents the pairwise similarity be- tween two respective temporal windows of acoustic features. Furthermore, Foote and Copper \cite{FooteCopper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
+
+
+
+
+
+\vspace{20pt}
 
 \section{Level Generation}
 It is not really surprising that there is no current literature on the problem of automatically generating Guitar Hero buttons given an arbitrary piece of music.

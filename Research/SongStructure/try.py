@@ -6,6 +6,9 @@ import essentia
 import essentia.standard as ES
 import librosa
 from scipy.ndimage import filters
+import json
+import os.path
+
 
 
 from pylab import *
@@ -285,19 +288,27 @@ def extract_features_librosa2():
     log_S = librosa.logamplitude(S, ref_power=np.max)
     mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=12).T
 
-    print "HPCP."
-    hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate, hop_length=hop_size).T
+    if os.path.isfile('data.json'):
+        with open('data.json') as data_file:    
+            data = json.load(data_file)
+            hpcp = data["hpcp"]
+    else:
+        print "HPCP."
+        hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate, hop_length=hop_size).T
+        with open('data.json', 'w') as outfile:
+            json.dump({"hpcp": hpcp}, outfile)
+
     print "Tonnetz."
     #tonnetz = chroma_to_tonnetz(hpcp)
 
     print "Beat synchronising."
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
-    bs_tonnetz = librosa.feature.sync(tonnetz.T, beats_idx, pad=False).T
+    bs_tonnetz = []
+    #bs_tonnetz = librosa.feature.sync(tonnetz.T, beats_idx, pad=False).T
     #bs_hpcp = []
-    #bs_tonnetz = []
     print "before plotting"
-    plot(bs_tonnetz)
+    #plot(bs_tonnetz)
 
     return bs_mfcc, bs_hpcp, bs_tonnetz
 
@@ -306,12 +317,16 @@ def newfunction():
     niter = 500 
     mfcc, hpcp, tonnetz = extract_features_librosa2()
 
+    print "Median filter."
     hpcp = median_filter(hpcp, M=20)
 
-    est_idxs, est_labels = get_segmentation(mfcc.T, 3, 16, 4, 16, niter=niter, bound_idxs=None, in_labels=None)
+    print "Segmentation."
+    est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, niter=niter, bound_idxs=None, in_labels=None)
 
+    print "Removing duplicates."
     indices = np.unique(np.asarray(est_idxs, dtype = int))
 
+    print "Postprocess."
     idxs, labels = postprocess(indices, est_labels)
     print indx, labels
 
