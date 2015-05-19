@@ -291,12 +291,13 @@ def extract_features_librosa2():
     if os.path.isfile('data.json'):
         with open('data.json') as data_file:    
             data = json.load(data_file)
-            hpcp = data["hpcp"]
+            hpcp = np.array(data["hpcp"])
     else:
         print "HPCP."
         hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate, hop_length=hop_size).T
         with open('data.json', 'w') as outfile:
-            json.dump({"hpcp": hpcp}, outfile)
+            json.dump({"hpcp": hpcp.tolist()}, outfile)
+
 
     print "Tonnetz."
     #tonnetz = chroma_to_tonnetz(hpcp)
