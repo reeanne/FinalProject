@@ -384,6 +384,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateProgressBar();
     }
     
+    
     func setupMood() {
         let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
         sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
@@ -403,15 +404,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(sparkEmitter)
     }
     
+    
     func moveSparkle() {
         
-        fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
-        moodXposition *= -1;
-        var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
-        var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
-        sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
-        
+        if (beatsIndex + 4 <= beats.count) {
+            fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+            moodXposition *= -1;
+            var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
+            var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
+            sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
+        }
     }
+    
     
     func changeMood() {
         sparkEmitter.particleColorSequence = nil;
@@ -427,6 +431,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         AudioServicesPlaySystemSound(constants.wooshSound);
     }
     
+
     func gameOver() {
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
             SKAction.fadeOutWithDuration(3.0)])

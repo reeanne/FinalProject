@@ -46,8 +46,8 @@ def cnmf(S, rank, niter=500, hull=False):
     if hull:
         nmf_mdl = pymf.CHNMF(S, num_bases=rank)
     else:
-        nmf_mdl = pymf.CNMF(S, num_bases=rank)
-    mdl.factorize(niter=niter)
+        nmf_mdl = pymf.CNMF(S, num_bases=rank)  
+    nmf_mdl.factorize(niter=niter)
     F = np.asarray(nmf_mdl.W)
     G = np.asarray(nmf_mdl.H)
     return F, G
@@ -262,9 +262,10 @@ def extract_features_librosa2():
     hop_size = 512
     n_mels = 128
     mfcc_coeff = 14
+    sampling_rate = 11025
 
     print "Loading the file."
-    waveform, sampling_rate = librosa.load("Houses.mp3")
+    waveform, _ = librosa.load("01-Sargon-Mindless.mp3", sr=11025)
     print "HPSS."
     waveform_harmonic, waveform_percussive = librosa.effects.hpss(waveform)
 
