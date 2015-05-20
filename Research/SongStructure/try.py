@@ -133,7 +133,7 @@ def get_segmentation(X, rank, R, rank_labels, R_labels, niter=300,
             try:
                 F, G = cnmf(X, rank, niter=niter, hull=False)
             except:
-                print "bounds"
+                print "Bounds failed."
                 return np.empty(0), [1]
 
             # Filter G
@@ -158,45 +158,6 @@ def get_segmentation(X, rank, R, rank_labels, R_labels, niter=300,
         labels = np.ones(len(bound_idxs) - 1)
 
     return bound_idxs, labels
-
-
-
-def chroma_to_tonnetz(C):
-
-    """Transforms chromagram to Tonnetz (Harte, Sandler, 2006)."""
-    N = C.shape[0]
-    T = np.zeros((N, 6))
-
-    r1 = 1      # Fifths
-    r2 = 1      # Minor
-    r3 = 0.5    # Major
-
-    # Generate Transformation matrix
-    phi = np.zeros((6, 12))
-    for i in range(6):
-        for j in range(12):
-            if i % 2 == 0:
-                fun = np.sin
-            else:
-                fun = np.cos
-
-            if i < 2:
-                phi[i, j] = r1 * fun(j * 7 * np.pi / 6.)
-            elif i >= 2 and i < 4:
-                phi[i, j] = r2 * fun(j * 3 * np.pi / 2.)
-            else:
-                phi[i, j] = r3 * fun(j * 2 * np.pi / 3.)
-
-    # Do the transform to tonnetz
-    for i in range(N):
-        for d in range(6):
-            denom = float(C[i, :].sum())
-            if denom == 0:
-                T[i, d] = 0
-            else:
-                T[i, d] = 1 / denom * (phi[d, :] * C[i, :]).sum()
-
-    return T
 
 
 def lognormalize_chroma(C):
@@ -256,6 +217,7 @@ def postprocess(est_idxs, est_labels):
     est_idxs = np.asarray(est_idxs, dtype=int)
     return est_idxs, est_labels
 
+
 def extract_features_librosa2():
 
     frame_size = 2048
@@ -293,25 +255,18 @@ def extract_features_librosa2():
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
 
-    print "Tonnetz."
-    #tonnetz = chroma_to_tonnetz(hpcp)
-
     print "Beat synchronising."
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
-    bs_tonnetz = []
-    #bs_tonnetz = librosa.feature.sync(tonnetz.T, beats_idx, pad=False).T
-    #bs_hpcp = []
-    print "before plotting"
-    #plot(bs_tonnetz)
 
-    return bs_mfcc, bs_hpcp, bs_tonnetz
+    return bs_mfcc, bs_hpcp
+
 
 def newfunction():
 
     niter = 500 
     H = 20
-    mfcc, hpcp, tonnetz = extract_features_librosa2()
+    mfcc, hpcp = extract_features_librosa2()
 
     if hpcp.shape[0] >= H:
         # Median filter
@@ -328,8 +283,6 @@ def newfunction():
             est_labels = [1]
         else:
             est_idxs = self.in_bound_idxs
-
-    #assert est_idxs[0] == 0  and est_idxs[-1] == F.shape[0] - 1
 
     # Post process estimations
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
