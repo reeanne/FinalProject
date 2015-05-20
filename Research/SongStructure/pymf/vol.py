@@ -17,7 +17,7 @@ __version__ = "$Revision: 46 $"
 # $Source$
 
 import numpy as np
-from scipy import factorial
+from scipy.misc import factorial
 
 __all__ = ["cmdet", "simplex"]
 

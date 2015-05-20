@@ -21,7 +21,7 @@ __version__ = "$Revision: 45 $"
 import scipy.sparse
 import numpy as np
 from scipy import inf
-from scipy.misc.common import factorial
+from scipy.misc import factorial
 
 from dist import *
 from vol import *

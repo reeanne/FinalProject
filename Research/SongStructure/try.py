@@ -8,6 +8,7 @@ import librosa
 from scipy.ndimage import filters
 import json
 import os.path
+import pymf
 
 
 
@@ -18,6 +19,7 @@ def median_filter(X, M=8):
     for i in xrange(X.shape[1]):
         X[:, i] = filters.median_filter(X[:, i], size=M)
     return X
+
 
 def cnmf(S, rank, niter=500, hull=False):
     """(Convex) Non-Negative Matrix Factorization.
@@ -37,13 +39,13 @@ def cnmf(S, rank, niter=500, hull=False):
         Activation matrix (decomposed matrix)
         (s.t. S ~= F * G)
     """
-    if hull:
-        nmf_mdl = pymf.CHNMF(S, num_bases=rank)
-    else:
-        nmf_mdl = pymf.CNMF(S, num_bases=rank)
+  
+    nmf_mdl = pymf.CNMF(S, num_bases=rank)
+
     nmf_mdl.factorize(niter=niter)
     F = np.asarray(nmf_mdl.W)
     G = np.asarray(nmf_mdl.H)
+
     return F, G
 
 
@@ -55,6 +57,7 @@ def most_frequent(x):
 def compute_labels(X, rank, R, bound_idxs, niter=300):
     """Computes the labels using the bounds."""
 
+    print "Computing Labels."
     try:
         F, G = cnmf(X, rank, niter=niter, hull=False)
     except:
@@ -63,7 +66,6 @@ def compute_labels(X, rank, R, bound_idxs, niter=300):
     label_frames = filter_activation_matrix(G.T, R)
     label_frames = np.asarray(label_frames, dtype=int)
 
-    #labels = [label_frames[0]]
     labels = []
     bound_inters = zip(bound_idxs[:-1], bound_idxs[1:])
     for bound_inter in bound_inters:
@@ -72,8 +74,6 @@ def compute_labels(X, rank, R, bound_idxs, niter=300):
         else:
             labels.append(most_frequent(
                 label_frames[bound_inter[0]: bound_inter[1]]))
-        #print bound_inter, labels[-1]
-    #labels.append(label_frames[-1])
 
     return labels
 
@@ -91,7 +91,6 @@ def filter_activation_matrix(G, R):
     G[:, :] = 0
     G[max_idx] = idx + 1
 
-    # TODO: Order matters?
     G = np.sum(G, axis=1)
     G = median_filter(G[:, np.newaxis], R)
 
@@ -125,19 +124,16 @@ def get_segmentation(X, rank, R, rank_labels, R_labels, niter=300,
         Indeces of the labels representing the similarity between segments.
     """
 
-    #import pylab as plt
-    #plt.imshow(X, interpolation="nearest", aspect="auto")
-    #plt.show()
 
     # Find non filtered boundaries
     compute_bounds = True if bound_idxs is None else False
     while True:
-        #import pdb; pdb.set_trace()  # XXX BREAKPOINT
 
         if bound_idxs is None:
             try:
                 F, G = cnmf(X, rank, niter=niter, hull=False)
             except:
+                print "bounds"
                 return np.empty(0), [1]
 
             # Filter G
@@ -160,11 +156,6 @@ def get_segmentation(X, rank, R, rank_labels, R_labels, niter=300,
                                 niter=niter)
     else:
         labels = np.ones(len(bound_idxs) - 1)
-
-    #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
-    #for b in bound_idxs:
-        #plt.axvline(b, linewidth=2.0, color="k")
-    #plt.show()
 
     return bound_idxs, labels
 
@@ -216,6 +207,7 @@ def lognormalize_chroma(C):
     C = 80 * np.log10(C)  # Normalize from -80 to 0
     return C
 
+
 def times_to_intervals(times):
     """Given a set of times, convert them into intervals.
     Parameters
@@ -241,7 +233,9 @@ def intervals_to_times(inters):
     times: np.array(N)
         A set of times.
     """
+    print inters.shape[0], inters.shape[1]
     return np.concatenate((inters.flatten()[::2], [inters[-1, -1]]), axis=0)
+
 
 def remove_empty_segments(times, labels):
     """Removes empty segments if needed."""
@@ -316,19 +310,30 @@ def extract_features_librosa2():
 def newfunction():
 
     niter = 500 
+    H = 20
     mfcc, hpcp, tonnetz = extract_features_librosa2()
 
-    print "Median filter."
-    hpcp = median_filter(hpcp, M=20)
+    if hpcp.shape[0] >= H:
+        # Median filter
+        hpcp = median_filter(hpcp, M=20)
+        # Find the boundary indices and labels using matrix factorization
+        print "Segmentation."
+        est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, niter=niter, bound_idxs=None, in_labels=None)
+        est_idxs = np.unique(np.asarray(est_idxs, dtype=int))
+    else:
+        # The track is too short. We will only output the first and last
+        # time stamps
+        if self.in_bound_idxs is None:
+            est_idxs = np.array([0, F.shape[0]-1])
+            est_labels = [1]
+        else:
+            est_idxs = self.in_bound_idxs
 
-    print "Segmentation."
-    est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, niter=niter, bound_idxs=None, in_labels=None)
+    #assert est_idxs[0] == 0  and est_idxs[-1] == F.shape[0] - 1
 
-    print "Removing duplicates."
-    indices = np.unique(np.asarray(est_idxs, dtype = int))
+    # Post process estimations
+    est_idxs, est_labels = postprocess(est_idxs, est_labels)
 
-    print "Postprocess."
-    idxs, labels = postprocess(indices, est_labels)
-    print indx, labels
+    print est_idxs, est_labels
 
 newfunction()
