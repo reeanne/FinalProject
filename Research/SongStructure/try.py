@@ -13,8 +13,7 @@ import sys, csv
 from essentia import *
 from essentia.standard import *
 from pylab import *
-
-from pylab import *
+import logging
 
 in_bound_idxs = None
 
@@ -251,13 +250,14 @@ def postprocess(est_idxs, est_labels):
 
 
 def get_predominant(sampling_rate):
+
     hopSize = 512
     frameSize = 2048
     run_predominant_melody = PredominantMelody(frameSize=frameSize,
                                                hopSize=hopSize);
 
     # Load audio file, apply equal loudness filter, and compute predominant melody
-    audio = MonoLoader(filename = "Houses.mp3")()
+    audio = MonoLoader(filename = "1000.mp3")()
     audio = EqualLoudness()(audio)
     pitch, confidence = run_predominant_melody(audio)
 
@@ -301,46 +301,43 @@ def extract_features_librosa2():
     mfcc_coeff = 14
     sampling_rate = 11025
 
-    print "Loading the file."
-    waveform, _ = librosa.load("01-Sargon-Mindless.mp3", sr=11025)
-    print "HPSS."
+    print("Loading the file.")
+    waveform, _ = librosa.load("1000.mp3", sr=11025)
+    print("HPSS.")
     waveform_harmonic, waveform_percussive = librosa.effects.hpss(waveform)
 
     #plot(waveform[1*44100:2*44100])
     #show()
-    print "Beats."
+    print("Beats.")
     tempo, beats_idx = librosa.beat.beat_track(y=waveform_percussive, sr=sampling_rate, hop_length=hop_size)
-    print len (beats_idx)
     #frame_time = librosa.frames_to_time(beats_idx, sr=sampling_rate, hop_length=hop_size)
 
-    print "Melspectrogram."
+    print("Melspectrogram.")
     S = librosa.feature.melspectrogram(waveform, sr=sampling_rate, n_fft=frame_size, hop_length=hop_size, n_mels=n_mels)
 
-    print "Predominant."
+    print("Predominant.")
     pitch = get_predominant(sampling_rate)
 
-
-
-    print "MFCCs."
+    print("MFCCs.")
     log_S = librosa.logamplitude(S, ref_power=np.max)
     mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=14).T
-    print len(mfcc)
+    print(len(mfcc))
 
     if os.path.isfile('data.json'):
         with open('data.json') as data_file:    
-            print "HPCP."
+            print("HPCP 1")
             data = json.load(data_file)
             hpcp = np.array(data["hpcp"])
-            print len(hpcp)
+            print(len(hpcp))
     else:
-        print "HPCP."
+        print("HPCP 2")
         hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate, hop_length=hop_size).T
-        print len(hpcp)
+        print(len(hpcp))
         with open('data.json', 'w') as outfile:
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
 
-    print "Beat synchronising."
+    print("Beat synchronising.")
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
 
@@ -357,6 +354,7 @@ def lognormalise_chroma(C):
 
 def newfunction():
 
+    print 'sdsds'
     frame_size = 2048
     hop_size = 512
     n_mels = 128
@@ -364,14 +362,16 @@ def newfunction():
     sampling_rate = 11025
     niter = 500 
     H = 20
-    mfcc, hpcp, beats, dur = extract_features_librosa2()
+
+    #swapped
+    hpcp, mfcc, beats, dur = extract_features_librosa2()
     hpcp = lognormalise_chroma(hpcp)
 
     if hpcp.shape[0] >= H:
         # Median filter
         hpcp = median_filter(hpcp, M=20)
         # Find the boundary indices and labels using matrix factorization
-        print "Segmentation."
+        print("Segmentation.")
         est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, niter=niter, bound_idxs=in_bound_idxs, in_labels=None)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))
     else:
@@ -385,13 +385,11 @@ def newfunction():
 
     # Post process estimations
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
-    print est_idxs
-    print beats
     frames = librosa.frames_to_time(beats, sr=sampling_rate,
                                              hop_length=hop_size)
     est_times, est_labels = process_segmentation_level(
             est_idxs, est_labels, hpcp.shape[0], frames, dur)
-    print "dur    ", dur
     print est_times, est_labels
+    return est_times, est_labels
 
 newfunction()

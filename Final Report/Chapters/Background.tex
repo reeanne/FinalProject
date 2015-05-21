@@ -154,7 +154,7 @@ To be able to evaluate the performance of the new algorithms, annual Music Infor
     \includegraphics[width=0.43\textwidth]{Figures/soundspectrum}
   \end{center}
   \caption{Example of a sound spectrum diagram \cite{soundspectrum}.}
-  \label{fig:DDR}
+  \label{fig:soundspectrumexample}
 \end{wrapfigure}
 
 
@@ -564,22 +564,20 @@ Potentially, the second approach described seems more appropriate for our projec
 
 \section{Song Structure Retrieval}
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-  \vspace{-10pt}
-
-  \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/SSM_beat}
-  \end{center}
-  \caption{Self similarity matrix for Bach's Prelude No. 1 in C Major, BVW.}
-  \label{fig:SSMbach}
-\end{wrapfigure}
-
 Automatic music structure analysis from audio signals is an interesting topic that receives a lot of attention these days. The technique can be used for music data analysis, indexing, retrieval and management. It decomposes a song
 into several sections and detects repetative patterns since they are often semantically meaningful parts. 
+
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.7\textwidth]{Figures/songstructure}
+  \caption{An example diagram of a song structure.}
+\end{figure}
+
 
 \vspace{10pt}
 
 \subsection{Song Structure}
+
 
 Popular music is typically created using sectional, repeating forms. 
 Most pop/rock songs have a standard structure: an introduction followed by alternating verses, choruses, and solos/bridges segments, and concluding with an outro. A musical boundary can be defined as the point in time where a song transitions between two of these segments.
@@ -592,7 +590,7 @@ Another song structure seen in the pop culture is thirty-two-bar form, where the
 
 In contrast to thirty-two-bar form, which is focused on the verse (contrasted and prepared by the B section), in verse–chorus form it is the chorus that is highlighted (prepared and contrasted with the verse). Good example could be a song ``Be My Baby'' first recorded by the Ronettes, where the structure could be represented by ABABB(B).
 
-\vspace{10pt}
+
 
 \subsection{Similarity Matrix}
 
@@ -622,6 +620,19 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 
 \vspace{10pt}
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-10pt}
+
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/SSM_beat}
+  \end{center}
+  \caption{Self similarity matrix for Bach's Prelude No. 1 in C Major, BVW.}
+  \label{fig:SSMbach}
+\end{wrapfigure}
+
+
+\vspace{10pt}
+
 \subsection{Related Literature}
 
 Many other researchers have considered the importance of patterns and repetition in music. This led to development of many algorithms for the task.
@@ -644,6 +655,7 @@ Some researchers to join the grouping and boundary identification into one algor
 In their paper \cite{Peeters}, Peeters, La Burthe, and Rodet presented an algorithm which makes use of k-means clustering. The k-means clustering is a method of vector quantisation, originally from signal processing. It aims to partition n observations into k clusters in which each observation belongs to the cluster with the nearest mean, serving as a prototype of the cluster. This results in a partitioning of the data space into Voronoi cells (a partitioning of a plane into regions based on distance to points in a specific subset of the plane).
 The problem is computationally difficult (NP-hard); however, there are efficient heuristic algorithms that are commonly employed and converge quickly to a local optimum.
 
+An alternative to using any variants of SSM is using supervised learning. For instance, Turnbull and Lanckriet \cite{segmentsupervised} developed a set of difference features that indicate when there are changes in perceptual aspects (e.g., timbre, harmony, melody, rhythm) of the music. They used multiple individual difference features to detect boundaries of a song. 
 
 
 

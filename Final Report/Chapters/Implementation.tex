@@ -212,6 +212,73 @@ In the end, we came up with the network which can be seen on Figure \ref{finalne
 
 Understanding the structure of music (e.g. intro, verse, chorus, bridge, and outro) is important as it allows us to divide a song into semantically meaningful segments, within which musical characteristics are relatively consistent.
 
+\vspace{10pt}
+
+\subsection{Feature Preparation}
+
+To implement a system capable of unsupervised structure recognition, we need to provide it with some data. We investigated two possible values - \textit{Mel-frequency cepstral coefficients} and \textit{harmonic pitch class profile}.
+
+Cepstrum is the result of taking the Inverse Fourier transform (IFT) of the logarithm of the estimated spectrum of a signal. It can be viewed as information about rate of change in the different spectrum bands.
+
+The mel-frequency cepstrum (MFC) is a representation of the short-term power spectrum of a sound, based on a linear cosine transform of a log power spectrum on a nonlinear mel scale of frequency.
+
+\textit{Mel-frequency cepstral coefficients} (MFCCs) are coefficients that collectively make up an MFC. They are increasingly finding uses in music information retrieval applications such as genre classification, audio similarity measures, etc.
+
+MFCCs are derived from a type of cepstral representation of the audio clip. The mel-frequency cepstrum differs from cepstrum by having its frequency bands equally spaced on the mel scale, which approximates the human auditory system's response more closely than the linearly-spaced frequency bands used in the normal cepstrum. This frequency warping can allow for better representation of sound, for example, in audio compression.
+
+MFCCs are commonly derived as follows:
+\begin{itemize}
+\item Take the Fourier transform of a signal.
+\item Map the powers of the spectrum obtained above onto the mel scale, using triangular overlapping windows.
+\item Take the logs of the powers at each of the mel frequencies.
+\item Take the discrete cosine transform of the list of mel log powers, as if it were a signal.
+\item The MFCCs are the amplitudes of the resulting spectrum.
+\end{itemize}
+
+An alternative to using MFCCs as the features to base the algorithm on is \textit{HPCP}.
+
+Harmonic pitch class profiles (HPCP) is a vector of features extracted from an audio signal, based on the Pitch Class Profile descriptor proposed by Fujishima in the context of a chord recognition system.[1] HPCP are an enhanced pitch distribution feature which are sequences of feature vectors describing tonality measuring the relative intensity of each of the 12 pitch classes of the equal-tempered scale within an analysis frame. It is also called Chroma.
+
+By processing musical signals, HPCP features can be found and used to estimate the key of a piece,[2] to measure similarity between two musical pieces (cover version identification)[3] and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise (e.g., ambient noise or percussive sounds), independent of timbre and instrumentation and independent of loudness and dynamics.
+
+The General HPCP feature extraction procedure is summarized as follows:
+\begin{itemize}
+\item Input musical signal.
+\item Do spectral analysis to obtain the frequency components of the music signal.
+\item Use Fourier transform to convert the signal into a spectrogram. (The Fourier transform is a type of time-frequency analysis.)
+\item Do frequency filtering. A frequency range of between 100 and 5000 Hz is used.
+\item Do peak detection. Only the local maximum values of the spectrum are considered.
+\item Do reference frequency computation procedure. Estimate the deviation with respect to 440 Hz.
+\item Do Pitch class mapping with respect to the estimated reference frequency. This is a procedure for determining the pitch class value from frequency values. A weighting scheme with cosine function is used. It considers the presence of harmonic frequencies (harmonic summation procedure), taking account a total of 8 harmonics for each frequency. In order to map the value on a one-third of a semitone, the size of the pitch class distribution vectors has to be equal to 36.
+\item Normalize the feature frame by frame dividing through the maximum value to eliminate dependency on global loudness.
+\end{itemize}
+
+In this work we make use of the chroma features described in [15] that are provided by the Echo Nest API1.
+A chroma feature is characterized by a 12-dimensional vector that represents the amount of energy that can be found in each of the 12 different pitches that commonly exist in the western popular music folded into one single octave. This is achieved by applying a constant-Q transform across the entire spectrogram and then folding it into one octave comprising the 12 quantized pitches. When these features are stack to- gether following the song structure in a N x 12 matrix, we generate a so-called chromagram, where N is the number of time frames in which the musical piece has been divided.
+Moreover, we resample onset-based asynchronous chroma features (as found through The Echo Nest track API) to beats,
+
+A series of transformations are applied to the chromagram in order to better distinguish the different parts of a song (as it is common in this type of problem [1]). First, a sliding median filter of size h is run against each of the beat-synchronous chromagram channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining sec- tion boundary precision. By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. In Figure 1 we show the example of a non-filtered and its corresponding pre-filtered chromagram.
+
+We then compute the SSM of the pre-filtered beat- synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
+where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
+
+Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 empirically gave us the best results), such that close similarities will be closer and distant similarities will be more distant. This improves the contrast of the SSM and results in clearer matrix factorizations. After the exponentiation, the final step consists of normalizing the entire matrix between 0 (very dissimilar) and 1 (equal). We illustrate this enhancement in Figure 1.
+
+
+\vspace{10pt}
+
+\subsection{C-NMF}
+
+
+\vspace{10pt}
+
+\subsection{Boundaries}
+
+\vspace{10pt}
+
+\subsection{Labeling}
+
+\vspace{20pt}
 
 
 
