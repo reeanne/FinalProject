@@ -167,7 +167,6 @@ We trained our network for 1000 epochs with many different sizes of the hidden l
 \end{table}
 
 
-
 As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that altough for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
 To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
 
@@ -200,7 +199,7 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
 
 
-In the end, we came up with the network which can be seen on Figure \ref{finalnetwork}.
+In the end, we came up with the network which can be seen on Figure \ref{fig:finalnetwork}.
 
 \vspace{20pt}
 
@@ -214,7 +213,7 @@ Understanding the structure of music (e.g. intro, verse, chorus, bridge, and out
 
 \vspace{10pt}
 
-\subsection{Feature Preparation}
+\subsection{Feature Choice}
 
 To implement a system capable of unsupervised structure recognition, we need to provide it with some data. We investigated two possible values - \textit{Mel-frequency cepstral coefficients} and \textit{harmonic pitch class profile}.
 
@@ -237,9 +236,9 @@ MFCCs are commonly derived as follows:
 
 An alternative to using MFCCs as the features to base the algorithm on is \textit{HPCP}.
 
-Harmonic pitch class profiles (HPCP) is a vector of features extracted from an audio signal, based on the Pitch Class Profile descriptor proposed by Fujishima in the context of a chord recognition system.[1] HPCP are an enhanced pitch distribution feature which are sequences of feature vectors describing tonality measuring the relative intensity of each of the 12 pitch classes of the equal-tempered scale within an analysis frame. It is also called Chroma.
+Harmonic pitch class profiles (HPCP) is a vector of features extracted from an audio signal, based on the Pitch Class Profile descriptor. HPCP is an enhanced pitch distribution feature which is a sequence of chroma - feature vectors describing tonality measuring the relative intensity of each of the 12 pitch classes of the equal-tempered scale within an analysis frame. 
 
-By processing musical signals, HPCP features can be found and used to estimate the key of a piece,[2] to measure similarity between two musical pieces (cover version identification)[3] and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise (e.g., ambient noise or percussive sounds), independent of timbre and instrumentation and independent of loudness and dynamics.
+HPCP features can be found and used to estimate the key of a piece, to measure similarity between two musical pieces and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise, for example an ambient noise or percussive sounds, independent of timbre and instrumentation and independent of loudness and dynamics.
 
 The General HPCP feature extraction procedure is summarized as follows:
 \begin{itemize}
@@ -253,11 +252,18 @@ The General HPCP feature extraction procedure is summarized as follows:
 \item Normalize the feature frame by frame dividing through the maximum value to eliminate dependency on global loudness.
 \end{itemize}
 
-In this work we make use of the chroma features described in [15] that are provided by the Echo Nest API1.
-A chroma feature is characterized by a 12-dimensional vector that represents the amount of energy that can be found in each of the 12 different pitches that commonly exist in the western popular music folded into one single octave. This is achieved by applying a constant-Q transform across the entire spectrogram and then folding it into one octave comprising the 12 quantized pitches. When these features are stack to- gether following the song structure in a N x 12 matrix, we generate a so-called chromagram, where N is the number of time frames in which the musical piece has been divided.
-Moreover, we resample onset-based asynchronous chroma features (as found through The Echo Nest track API) to beats,
+The discussion of results given each of the alternatives are discussed in Section \ref{sec:structurefeatures}.
 
-A series of transformations are applied to the chromagram in order to better distinguish the different parts of a song (as it is common in this type of problem [1]). First, a sliding median filter of size h is run against each of the beat-synchronous chromagram channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining sec- tion boundary precision. By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. In Figure 1 we show the example of a non-filtered and its corresponding pre-filtered chromagram.
+\vspace{10pt}
+
+\subsection{Feature Preparation}
+
+A series of transformations are applied to the data in order to better distinguish the different parts of a song. First, we need to we synchronise our data with with the beats detected in the musical track. sensitive to local noise signal and chord variations [25]. To reduce local variation one can apply beat synchronization, a process of summarizing (usually taking the mean/median of) frame-wise features that occur between two beats, yielding fewer but longer beat-syn- chronous frames [7], [26]. The rationale for doing this is that chord labels between two consecutive beats tend to be the same; hence, the use of a beat-synchronous frame eliminates the effect of local variation. A recent approach related to this is to consider the boundary information pro- vided by repeated segments of a song, then smoothing chroma vectors corresponding to the same repetition to re- duce variation [20].
+
+
+Moreover, we resample onset-based asynchronous chroma features (as found through The Echo Nest track API) to beats, thus reducing greatly the number of frames across the musical piece, and leading to beat-synchronous chromagrams.
+
+ First, a sliding median filter of size h is run against each of the beat-synchronous chromagram channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining sec- tion boundary precision. By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. In Figure 1 we show the example of a non-filtered and its corresponding pre-filtered chromagram.
 
 We then compute the SSM of the pre-filtered beat- synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
 where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
