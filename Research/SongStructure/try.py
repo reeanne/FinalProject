@@ -205,8 +205,45 @@ def remove_empty_segments(times, labels):
     return intervals_to_times(np.asarray(new_inters)), new_labels
 
 
-def postprocess(est_idxs, est_labels):
+def process_segmentation_level(est_idxs, est_labels, N, frame_times, dur):
+    """Processes a level of segmentation, and converts it into times.
 
+    Parameters
+    ----------
+    est_idxs: np.array
+        Estimated boundaries in frame indeces.
+    est_labels: np.array
+        Estimated labels.
+    N: int
+        Number of frames in the whole track.
+    frame_times: np.array
+        Time stamp for each frame.
+    dur: float
+        Duration of the audio track.
+
+    Returns
+    -------
+    est_times: np.array
+        Estimated segment boundaries in seconds.
+    est_labels: np.array
+        Estimated labels for each segment.
+    """
+    assert est_idxs[0] == 0 and est_idxs[-1] == N - 1
+
+    # Add silences, if needed
+    est_times = np.concatenate(([0], frame_times[est_idxs], [dur]))
+    silence_label = np.max(est_labels) + 1
+    est_labels = np.concatenate(([silence_label], est_labels, [silence_label]))
+
+    # Remove empty segments if needed
+    est_times, est_labels = remove_empty_segments(est_times, est_labels)
+
+    # Make sure that the first and last times are 0 and duration, respectively
+
+    return est_times, est_labels
+
+
+def postprocess(est_idxs, est_labels):
     est_idxs, est_labels = remove_empty_segments(est_idxs, est_labels)
     # Make sure the indeces are integers
     est_idxs = np.asarray(est_idxs, dtype=int)
@@ -273,7 +310,6 @@ def extract_features_librosa2():
     #show()
     print "Beats."
     tempo, beats_idx = librosa.beat.beat_track(y=waveform_percussive, sr=sampling_rate, hop_length=hop_size)
-
     print len (beats_idx)
     #frame_time = librosa.frames_to_time(beats_idx, sr=sampling_rate, hop_length=hop_size)
 
@@ -282,16 +318,17 @@ def extract_features_librosa2():
 
     print "Predominant."
     pitch = get_predominant(sampling_rate)
-    print len(pitch)
+
 
 
     print "MFCCs."
     log_S = librosa.logamplitude(S, ref_power=np.max)
-    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=12).T
+    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=14).T
     print len(mfcc)
 
     if os.path.isfile('data.json'):
         with open('data.json') as data_file:    
+            print "HPCP."
             data = json.load(data_file)
             hpcp = np.array(data["hpcp"])
             print len(hpcp)
@@ -307,31 +344,28 @@ def extract_features_librosa2():
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
 
-    return bs_mfcc, bs_hpcp
+    return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate
 
 
-def compute_ssm(X, metric="seuclidean"):
-    """Computes the self-similarity matrix of X."""
-    D = distance.pdist(X, metric=metric)
-    D = distance.squareform(D)
-    D /= D.max()
-    return 1 - D
-
-
-def normalise_chroma(C):
-    """Normalizes chroma such that each vector is between 0 to 1."""
-    C += np.abs(C.min())
-    C = C/C.max(axis=0)
+def lognormalise_chroma(C):
+    """Log-normalizes chroma such that each vector is between -80 to 0."""
+    C += np.abs(C.min()) + 0.1
+    C = C / C.max(axis=0)
+    C = 80 * np.log10(C)  # Normalize from -80 to 0
     return C
-
 
 
 def newfunction():
 
+    frame_size = 2048
+    hop_size = 512
+    n_mels = 128
+    mfcc_coeff = 14
+    sampling_rate = 11025
     niter = 500 
     H = 20
-    mfcc, hpcp = extract_features_librosa2()
-    hpcp = normalise_chroma(hpcp)
+    mfcc, hpcp, beats, dur = extract_features_librosa2()
+    hpcp = lognormalise_chroma(hpcp)
 
     if hpcp.shape[0] >= H:
         # Median filter
@@ -351,7 +385,13 @@ def newfunction():
 
     # Post process estimations
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
-
-    print est_idxs, est_labels
+    print est_idxs
+    print beats
+    frames = librosa.frames_to_time(beats, sr=sampling_rate,
+                                             hop_length=hop_size)
+    est_times, est_labels = process_segmentation_level(
+            est_idxs, est_labels, hpcp.shape[0], frames, dur)
+    print "dur    ", dur
+    print est_times, est_labels
 
 newfunction()
