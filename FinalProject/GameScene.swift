@@ -504,7 +504,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func resetGame() {
         self.removeAllActions();
-        setupScene();
+        appDelegate.playGameWindow();
+        
     }
     
 

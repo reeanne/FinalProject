@@ -25,7 +25,10 @@ class GameController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad();
+        load();
+    }
     
+    func load() {
         user = (NSApplication.sharedApplication().delegate as! AppDelegate).user;
         level = (NSApplication.sharedApplication().delegate as! AppDelegate).level;
         
