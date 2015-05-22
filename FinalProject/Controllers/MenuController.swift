@@ -8,6 +8,8 @@
 
 import Cocoa
 import Foundation
+import AVFoundation
+
 
 class MenuController: NSViewController {
     
@@ -38,6 +40,7 @@ class MenuController: NSViewController {
     
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
     
+    var player: AVAudioPlayer = AVAudioPlayer();
     var managedObjectContext: NSManagedObjectContext! = nil;
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
@@ -199,11 +202,19 @@ class MenuController: NSViewController {
     }
     
     @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
-        if (newLevelFilePath.stringValue != "") {
+        if (newLevelFilePath.stringValue != "" && isFilePlayable(NSURL(fileURLWithPath: filePath)!)) {
             loadingProgressIndicator.hidden = false;
             loadingProgressIndicator.startAnimation(self);
             chooseFile(filePath);
             loadingProgressIndicator.stopAnimation(self);
+        } else {
+            let alert = NSAlert()
+            alert.messageText = "Warning"
+            alert.addButtonWithTitle("OK")
+            alert.informativeText = "Please make sure that the file you are trying to upload is a music file."
+            var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+            alert.beginSheetModalForWindow (appDelegate.window, completionHandler: nil )
+
         }
     }
     
@@ -308,6 +319,25 @@ class MenuController: NSViewController {
         }
         return result;
 
+    }
+
+    /**
+        Checks if the file is of a correct type for the music analysis part to work.
+    */
+    func isFilePlayable(url: NSURL) -> Bool {
+    
+        // Try opening audiofile -> if it's playable it will open, if not, it will return error
+        var audioFileID: AudioFileID = nil;
+        
+        let err = AudioFileOpenURL(url, Int8(kAudioFileReadPermission), 0, &audioFileID)
+
+        if (err != noErr) {
+            println("Couldn't open audio file...");
+            return false;
+        }
+        
+        AudioFileClose(audioFileID);
+        return true;
     }
     
     /**
@@ -442,6 +472,8 @@ class MenuController: NSViewController {
         newLevelCreateLevelButton.hidden = !value;
         backButton.hidden = !value;
     }
+    
+    
 
 }
 

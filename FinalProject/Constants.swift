@@ -70,6 +70,7 @@ class Constants {
 
     var wooshSound: SystemSoundID = 0;
     var applauseSound: SystemSoundID = 0;
+
     
     init() {
         let wooshURL = NSBundle.mainBundle().URLForResource(musicSubPath + "Woosh", withExtension: "mp3");
