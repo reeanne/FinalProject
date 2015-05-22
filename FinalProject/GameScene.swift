@@ -46,6 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var sparkEmitter: SKEmitterNode! = nil;
     var moodXposition: Float = 1/3;
     var fourIntervals: Double = 0;
+    var moodChangeTimer: NSTimer! = nil;
     
     // Collision Categories.
     let noteCategory: UInt32 = 0x1 << 0;
@@ -60,6 +61,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mistakes: Int = 0;
     var currentNumber: Float = 10;
     var maxCurrentNumber: Float = 20;
+    
+    // Settings.
+    var volume: Float = 1;
 
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -89,8 +93,105 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func mouseDown(theEvent: NSEvent) {
         /* Called when a mouse click occurs */
-        
+        var nodes = nodesAtPoint(theEvent.locationInWindow) as! [SKNode]
+        for node in nodes {
+            println(node)
+            if (node.name != nil && !node.hidden) {
+                switch node.name! {
+                    case "Mute":
+                        node.hidden = true;
+                        var show = self.childNodeWithName("ScoreParent")?.childNodeWithName("Unmute")!;
+                        show!.hidden = false
+                        volume = songPlayer.volume;
+                        songPlayer.volume = 0;
+                    case "Unmute":
+                        node.hidden = true;
+                        var show = self.childNodeWithName("ScoreParent")?.childNodeWithName("Mute")!;
+                        show!.hidden = false
+                        songPlayer.volume = volume;
+                    case "Settings":
+                        break;
+                    case "Resume":
+                        pause(!self.paused);
+                    case "Menu":
+                        // Go to menu.
+                        break;
+                    case "Replay":
+                        // Replay.
+                        println("Replay");
+                        setupScene();
+                        break;
+                    default:
+                        println(node.name)
+                        break;
+                    
+
+                }
+            }
+        }
     }
+    
+    override func keyUp(theEvent: NSEvent) {
+        switch theEvent.keyCode {
+        case 0:
+            var colour = Colour(rawValue: 0);
+            buttons[0].texture = constants.textures[colour!]!["hover"]!;
+        case 1:
+            var colour = Colour(rawValue: 1);
+            buttons[1].texture = constants.textures[colour!]!["hover"]!;
+        case 2:
+            var colour = Colour(rawValue: 2);
+            buttons[2].texture = constants.textures[colour!]!["hover"]!;
+        case 3:
+            var colour = Colour(rawValue: 3);
+            buttons[3].texture = constants.textures[colour!]!["hover"]!;
+        default:
+            break;
+        }
+    }
+    
+    override func keyDown(theEvent: NSEvent) {
+        
+        switch theEvent.keyCode {
+        case 0:
+            println("a");
+            var colour = Colour(rawValue: 0);
+            removeButtonPressed(colour!);
+            buttons[0].texture = constants.textures[colour!]!["pressed"]!;
+        case 1:
+            println("s");
+            var colour = Colour(rawValue: 1);
+            removeButtonPressed(colour!);
+            buttons[1].texture = constants.textures[colour!]!["pressed"]!;
+        case 2:
+            println("d");
+            var colour = Colour(rawValue: 2);
+            removeButtonPressed(colour!);
+            buttons[2].texture = constants.textures[colour!]!["pressed"]!;
+        case 3:
+            println("f");
+            var colour = Colour(rawValue: 3);
+            removeButtonPressed(colour!);
+            buttons[3].texture = constants.textures[colour!]!["pressed"]!;
+        case 12:
+            println("q");
+            if (self.paused){
+                gameOver();
+            }
+        case 15:
+            println("r");
+            if (self.paused) {
+                resetGame();
+            }
+        case 35:
+            println("pause");
+            pause(!self.paused);
+        default:
+            println(theEvent.keyCode);
+            break;
+        }
+    }
+
     
     func spawnFrets() {
         var fret: SKSpriteNode = SKSpriteNode(texture: constants.fretTexture);
@@ -204,39 +305,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return result;
     }
     
-    override func keyDown(theEvent: NSEvent) {
-        
-        switch theEvent.keyCode {
-            case 0:
-                println("a");
-                var colour = Colour(rawValue: 0);
-                removeButtonPressed(colour!);
-                buttons[0].texture = constants.textures[colour!]!["pressed"]!;
-            case 1:
-                println("s");
-                var colour = Colour(rawValue: 1);
-                removeButtonPressed(colour!);
-                buttons[1].texture = constants.textures[colour!]!["pressed"]!;
-            case 2:
-                println("d");
-                var colour = Colour(rawValue: 2);
-                removeButtonPressed(colour!);
-                buttons[2].texture = constants.textures[colour!]!["pressed"]!;
-            case 3:
-                println("f");
-                var colour = Colour(rawValue: 3);
-                removeButtonPressed(colour!);
-                buttons[3].texture = constants.textures[colour!]!["pressed"]!;
-            case 35:
-                println("pause");
-                pause(!self.paused);
-            default:
-                println(theEvent.keyCode);
-                break;
-        }
-    }
-    
-    
     func removeButtonPressed(colour: Colour) {
         var points = self.nodesAtPoint(buttons[colour.rawValue].position);
         var spriteNode: SKSpriteNode;
@@ -281,26 +349,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scored.text = hits.description;
         totalScore.text = (misses + hits).description;
     }
-    
-    
-    override func keyUp(theEvent: NSEvent) {
-        switch theEvent.keyCode {
-        case 0:
-            var colour = Colour(rawValue: 0);
-            buttons[0].texture = constants.textures[colour!]!["hover"]!;
-        case 1:
-            var colour = Colour(rawValue: 1);
-            buttons[1].texture = constants.textures[colour!]!["hover"]!;
-        case 2:
-            var colour = Colour(rawValue: 2);
-            buttons[2].texture = constants.textures[colour!]!["hover"]!;
-        case 3:
-            var colour = Colour(rawValue: 3);
-            buttons[3].texture = constants.textures[colour!]!["hover"]!;
-        default:
-            break;
-        }
-    }
 
     
     func pause(pause: Bool) {
@@ -325,6 +373,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    func setupScene() {
+        self.level = appDelegate.level;
+        self.user = appDelegate.user;
+        self.physicsWorld.contactDelegate = self
+        
+        beats = level.melody.beats;
+        
+        songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
+        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
+        
+        
+        setupSprites();
+        
+        // TODO: Fix quick Game.
+        songPlayer.prepareToPlay();
+        songPlayer.play();
+        
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+
     }
     
     func setupSprites() {
@@ -374,8 +443,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
             contact.bodyB.categoryBitMask == noteCategory) {
                 node = contact.bodyB.node as! SKSpriteNode;
+        } else {
+            return;
         }
-        node.texture = constants.textures[Colour.Grey]!["normal"]!;
+        node.texture = constants.textures[Colour.Grey]!["normal"]!; //
         playWoosh();
         node.zPosition = -1;
         misses++;
@@ -396,7 +467,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sparkEmitter.targetNode = self;
         sparkEmitter.physicsBody = nil;
         
-        let moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
+        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
 
         self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
@@ -431,6 +502,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         AudioServicesPlaySystemSound(constants.wooshSound);
     }
     
+    func resetGame() {
+        self.removeAllActions();
+        setupScene();
+    }
+    
 
     func gameOver() {
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
@@ -446,5 +522,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.runAction(sequence)
     }
+    
+
+    
+
     
 }
