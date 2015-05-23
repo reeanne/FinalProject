@@ -27,14 +27,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var timeInterval: Double = 0;
     var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
     var lastPitchSeen: Int = 0;
+    
     // The offset needed for the buttons to come up as they are sung.
     let offsetCurrent: Double = 2;
     let offsetPresspoint: Double = 0;
+    
     //let offsetPresspoint: Double = 7;
     var scored: SKLabelNode! = nil;
     var totalScore: SKLabelNode! = nil;
     var middleParent: SKNode! = nil;
     var progressBar: SKSpriteNode! = nil;
+    var settings: SKSpriteNode! = nil;
+    var mute: SKSpriteNode! = nil;
     
     // Beats.
     var beats: [Double]! = nil;
@@ -93,15 +97,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func mouseDown(theEvent: NSEvent) {
         /* Called when a mouse click occurs */
-        var nodes = nodesAtPoint(theEvent.locationInWindow) as! [SKNode]
+        var nodes = nodesAtPoint(theEvent.locationInNode(self)) as! [SKNode]
         for node in nodes {
-            println(node)
+            println(node.name)
+            println(theEvent.locationInWindow)
+            println(node.position)
+            println(mute.parent)
+            println(mute.position)
             if (node.name != nil && !node.hidden) {
                 switch node.name! {
-                    case "Mute":
+                    case mute.name!:
                         node.hidden = true;
-                        var show = self.childNodeWithName("ScoreParent")?.childNodeWithName("Unmute")!;
-                        show!.hidden = false
                         volume = songPlayer.volume;
                         songPlayer.volume = 0;
                     case "Unmute":
@@ -109,7 +115,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         var show = self.childNodeWithName("ScoreParent")?.childNodeWithName("Mute")!;
                         show!.hidden = false
                         songPlayer.volume = volume;
-                    case "Settings":
+                    case settings.name!:
                         break;
                     case "Resume":
                         pause(!self.paused);
@@ -384,8 +390,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
-        
-        
         setupSprites();
         
         // TODO: Fix quick Game.
@@ -401,6 +405,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
         progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
         middleParent = self.childNodeWithName("MiddleParent")!;
+        mute = self.childNodeWithName("Mute") as! SKSpriteNode;
+        settings = self.childNodeWithName("Settings") as! SKSpriteNode;
+        println(mute.description + "  " + settings.description)
         
         middleParent.hidden = true;
 

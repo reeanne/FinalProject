@@ -53,6 +53,12 @@ class Constants {
         "stop": SKTexture(imageNamed: "stop.png")
     ];
     
+    let settings: [String: SKTexture] = [
+        "settings": SKTexture(imageNamed: "settings.png"),
+        "mute": SKTexture(imageNamed: "mute.png"),
+        "unmute": SKTexture(imageNamed: "unmute.png")
+    ];
+    
     let progressBar: [Int: SKTexture] = [
         0: SKTexture(imageNamed: "progress0.png"),
         10: SKTexture(imageNamed: "progress10.png"),
