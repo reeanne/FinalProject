@@ -42,14 +42,15 @@ class MenuController: NSViewController {
     
     var player: AVAudioPlayer = AVAudioPlayer();
     var managedObjectContext: NSManagedObjectContext! = nil;
-    var user: UserObject! = nil;
-    var level: LevelObject! = nil;
+
     var userData: User! = nil;
     var filePath: String! = nil;
+    var appDelegate: AppDelegate! = nil;
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         loadingProgressIndicator.hidden = true;
         showCreateCharacterElements(false);
         showLoggedUserButtons(false);
@@ -105,8 +106,7 @@ class MenuController: NSViewController {
     
     @IBAction func userCreateUserButtonPressed(sender: AnyObject) {
         var username = userUserNameField.stringValue;
-        user = UserObject(userName: username);
-        (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
+        appDelegate.user = UserObject(userName: username);
         
         if let moc = self.managedObjectContext {
             userData = User.createInManagedObjectContext(moc, username: username)
@@ -133,7 +133,7 @@ class MenuController: NSViewController {
     
     @IBAction func loggedLoadLevelButtonPressed(sender: AnyObject) {
         if (userData == nil) {
-            userData = getUser(user.username);
+            userData = getUser(appDelegate.user.username);
         }
         var levels: [String] = getLevels(userData);
         levelSelectLevelPopup.addItemsWithTitles(levels);
@@ -164,7 +164,7 @@ class MenuController: NSViewController {
     
     @IBAction func levelDeleteLevelButtonPressed(sender: AnyObject) {
         var name = levelSelectLevelPopup.selectedItem?.title;
-        level = nil;
+        appDelegate.level = nil;
         (NSApplication.sharedApplication().delegate as! AppDelegate).level = nil;
         deleteLevel(name!);
         levelSelectLevelPopup.removeItemWithTitle(name!);
@@ -176,8 +176,7 @@ class MenuController: NSViewController {
         var username = userSelectUserPopup.selectedItem?.title;
         if (username != nil) {
             var userData :User = getUser(username!);
-            user = UserObject(userName: userData.username);
-            (NSApplication.sharedApplication().delegate as! AppDelegate).user = user;
+            appDelegate.user = UserObject(userName: userData.username);
             showMainMenuButtons(false);
             showChooseLevelButtons(false);
             showSelectUserButtons(false);
@@ -188,8 +187,7 @@ class MenuController: NSViewController {
  
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
-        user = nil;
-        (NSApplication.sharedApplication().delegate as! AppDelegate).user = nil;
+        appDelegate.user = nil;
         deleteUser(username!);
         userSelectUserPopup.removeItemWithTitle(username!);
     }
@@ -229,7 +227,7 @@ class MenuController: NSViewController {
         showSelectUserButtons(false);
         showChooseLevelButtons(false);
         showLevelLoadButtons(false);
-        if (user != nil) {
+        if (appDelegate.user != nil) {
             showMainMenuButtons(false);
             showLoggedUserButtons(true);
         } else {
@@ -393,8 +391,7 @@ class MenuController: NSViewController {
         var melody = MelodyObject(audioURL: audioURL!)
         var currentLevel = LevelObject(levelName: newLevelFilePath.stringValue, melody: melody);
         
-        var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
-        userData = getUser(user.username);
+        userData = getUser(appDelegate.user.username);
         
         if let moc = self.managedObjectContext {
             var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch!, beats: melody.beats!, arousal: melody.arousal, valence: melody.valence);

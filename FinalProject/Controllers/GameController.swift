@@ -16,9 +16,8 @@ import Cocoa
 class GameController: NSViewController {
     
     
-    var user: UserObject! = nil;
-    var level: LevelObject! = nil;
     var scene: GameScene!;
+    var appDelegate: AppDelegate! = nil;
     
     @IBOutlet var skView: SKView!
     
@@ -29,8 +28,7 @@ class GameController: NSViewController {
     }
     
     func load() {
-        user = (NSApplication.sharedApplication().delegate as! AppDelegate).user;
-        level = (NSApplication.sharedApplication().delegate as! AppDelegate).level;
+        self.appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         
         scene = GameScene.unarchiveFromFile("GameScene") as? GameScene;
         
@@ -48,8 +46,8 @@ class GameController: NSViewController {
                     }
                 }
             }
-            scene.user = user;
-            scene.level = level;
+            scene.user = appDelegate.user;
+            scene.level = appDelegate.level;
             scene.scaleMode = .AspectFill;
             self.skView!.presentScene(scene);
             self.skView!.ignoresSiblingOrder = true;
