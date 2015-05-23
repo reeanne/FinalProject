@@ -42,18 +42,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        menuController = MenuController(nibName: "MenuView", bundle: nil)
-        window.contentViewController = menuController;
+        showMenu();
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true;
     }
     
+    func showMenu() {
+        menuController = MenuController(nibName: "MenuView", bundle: nil)
+        if (user != nil){
+            menuController.showLoggedUserButtons(true);
+        }
+        window.contentViewController = menuController;
+    }
+    
     func playGameWindow() {
         
         gameController = GameController(nibName: "GameView", bundle: nil);
-      //  window.contentView = gameController.view;
         window.contentViewController = gameController;
     }
 

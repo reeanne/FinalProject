@@ -37,8 +37,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var totalScore: SKLabelNode! = nil;
     var middleParent: SKNode! = nil;
     var progressBar: SKSpriteNode! = nil;
-    var settings: SKSpriteNode! = nil;
-    var mute: SKSpriteNode! = nil;
+    var settingsButton: SKSpriteNode! = nil;
+    var muteButton: SKSpriteNode! = nil;
     
     // Beats.
     var beats: [Double]! = nil;
@@ -95,42 +95,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    /* Called when a mouse click occurs */
     override func mouseDown(theEvent: NSEvent) {
-        /* Called when a mouse click occurs */
         var nodes = nodesAtPoint(theEvent.locationInNode(self)) as! [SKNode]
         for node in nodes {
-            println(node.name)
-            println(theEvent.locationInWindow)
-            println(node.position)
-            println(mute.parent)
-            println(mute.position)
-            if (node.name != nil && !node.hidden) {
+            if (node.name != nil && !node.hidden && !node.parent!.hidden) {
                 switch node.name! {
-                    case mute.name!:
-                        node.hidden = true;
-                        volume = songPlayer.volume;
-                        songPlayer.volume = 0;
-                    case "Unmute":
-                        node.hidden = true;
-                        var show = self.childNodeWithName("ScoreParent")?.childNodeWithName("Mute")!;
-                        show!.hidden = false
-                        songPlayer.volume = volume;
-                    case settings.name!:
+                    case muteButton.name!:
+                        mute();
+                    case settingsButton.name!:
                         break;
                     case "Resume":
                         pause(!self.paused);
                     case "Menu":
-                        // Go to menu.
-                        break;
+                        pause(false);
+                        gameOver();
                     case "Replay":
                         // Replay.
+                        pause(false)
                         println("Replay");
                         setupScene();
                         break;
                     default:
                         println(node.name)
                         break;
-                    
 
                 }
             }
@@ -405,9 +393,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
         progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
         middleParent = self.childNodeWithName("MiddleParent")!;
-        mute = self.childNodeWithName("Mute") as! SKSpriteNode;
-        settings = self.childNodeWithName("Settings") as! SKSpriteNode;
-        println(mute.description + "  " + settings.description)
+        muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
+        settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
+        println(muteButton.description + "  " + settingsButton.description)
         
         middleParent.hidden = true;
 
@@ -515,6 +503,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func mute() {
+        if (songPlayer.volume == 0) {
+            songPlayer.volume = volume;
+            volume = 0;
+            muteButton.texture = constants.settings["mute"];
+        } else {
+            volume = songPlayer.volume;
+            songPlayer.volume = 0;
+            muteButton.texture = constants.settings["unmute"];
+        }
+    }
+    
 
     func gameOver() {
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
@@ -523,7 +523,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let welcomeReturn =  SKAction.runBlock({
             let transition = SKTransition.revealWithDirection(
                 SKTransitionDirection.Down, duration: 1.0)
-            self.scene!.view?.presentScene(nil)
+            self.appDelegate.showMenu()
         })
         
         let sequence = SKAction.sequence([fadeOut, welcomeReturn])

@@ -336,19 +336,23 @@ Once the user has created an account or chosen an existing one, they can either 
 
 Once we move on to playing a game, the \verb|GameViewController| unpacks the \verb|GameScene| - an object representing a scene of content in Sprite Kit.
 
-Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. Sprite Kit uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Sprite Kit does the work to render frames of animation efficiently using the graphics hardware. Sprite Kit is optimized so that the positions of sprites can be changed arbitrarily in each frame of animation.
-
-Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. In addition, Xcode provides built-in support for Sprite Kit so that you can create complex special effects and texture atlases directly in Xcode. This combination of framework and tools makes Sprite Kit a good choice for games and other apps that require similar kinds of animation \cite{spritekit}. 
+Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
 
 In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
 
 The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the level.
 
-The player can at any time pause, stop or replay the game. 
+The player can at any time pause, stop or replay the game. They can also control the volume of the music and other sounds in the game. 
+
+Upon completion of the level the player presented with their score, shown as stars and a concrete number. The player can later revisit the levels if they want to improve their score. 
 
 \vspace{10pt}
 
 \subsection{Melody Detection as a Game Changer}
+
+\vspace{10pt}
+
+\subsection{Introduction of The Song Segmentation}
 
 \vspace{10pt}
 
