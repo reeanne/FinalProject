@@ -79,7 +79,6 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/spectralcentroid-valence}
                 \caption{A graph representing a correlation between spectral centroid and valence values.}
-                \label{fig:is }
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
           %(or a blank line to force the subfigure onto a new line)
@@ -108,14 +107,13 @@ For \textbf{arousal}, we noticed correlation with \textit{spectral centroid, pit
 Values of all the features were then normalized between 0 and 1 to prepare them for the neural network training. 
 
 
-
 \begin{wrapfigure}{l}{0.5\textwidth}
   \vspace{-30pt}
   \begin{center}
     \includegraphics[width=0.5\textwidth]{Figures/myANN}
   \end{center}
   \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
-\label{finalnetwork}
+\label{fig:finalnetwork}
 \end{wrapfigure}
 
 \vspace{10pt}
@@ -135,6 +133,9 @@ The network’s task was to provide the valence and arousal values based on the 
 The network was built, trained, and tested using the pyBrain python library for neural network implementation. 
 
 We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
+
+
+Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalization. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
 \begin{figure}[h]
 	\centering
@@ -196,7 +197,9 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 \end{figure}
 
 
-Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
+Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. Training parameter that controls the size of weight and bias changes in learning of the training algorithm. In a standard backpropagation, too low a learning rate makes the network learn very slowly,whereas a learning rate that is too high makes the weights and objective function diverge, so there is no learning at all. 
+
+We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
 
 
 In the end, we came up with the network which can be seen on Figure \ref{fig:finalnetwork}.
@@ -258,12 +261,42 @@ The discussion of results given each of the alternatives are discussed in Sectio
 
 \subsection{Feature Preparation}
 
-A series of transformations are applied to the data in order to better distinguish the different parts of a song. First, we need to we synchronise our data with with the beats detected in the musical track. sensitive to local noise signal and chord variations [25]. To reduce local variation one can apply beat synchronization, a process of summarizing (usually taking the mean/median of) frame-wise features that occur between two beats, yielding fewer but longer beat-syn- chronous frames [7], [26]. The rationale for doing this is that chord labels between two consecutive beats tend to be the same; hence, the use of a beat-synchronous frame eliminates the effect of local variation. A recent approach related to this is to consider the boundary information pro- vided by repeated segments of a song, then smoothing chroma vectors corresponding to the same repetition to re- duce variation [20].
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{Figures/myANN}
+  \end{center}
+  \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
+\label{fig:originalchroma}
+\end{wrapfigure}
+
+A series of transformations are applied to the data in order to better distinguish the different parts of a song. 
+
+First, we need to we synchronise our data with the beats detected in the musical track. This process allows to reduce local variation by summarizing (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames.
+The rationale for doing this is that many features, such as chord labels, between two consecutive beats tend to be the same. This leads to beat-synchronous chromagrams (or mfccs). A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:beatsync}.
+
+Next, a sliding median filter of size h is run against each of the beat-synchronous chromagram (mfcc) channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining section boundary precision. 
+By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. The Figure \ref{fig:slidingmedian} presents the chromagram after applying the sliding median filter.
 
 
-Moreover, we resample onset-based asynchronous chroma features (as found through The Echo Nest track API) to beats, thus reducing greatly the number of frames across the musical piece, and leading to beat-synchronous chromagrams.
-
- First, a sliding median filter of size h is run against each of the beat-synchronous chromagram channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining sec- tion boundary precision. By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. In Figure 1 we show the example of a non-filtered and its corresponding pre-filtered chromagram.
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/gsmm}
+                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
+                \label{fig:beatsync}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/imm}
+                \caption{Schematic principle of the generative IMM. At each frame, all the U sources, each filtered by K filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
+                \label{fig:slidingmedian}
+        \end{subfigure}
+          \caption{Diagram of both models presented in the paper \cite{durrieu}.}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+        \label{fig:chromaclearer}
+\end{figure}
 
 We then compute the SSM of the pre-filtered beat- synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
 where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
