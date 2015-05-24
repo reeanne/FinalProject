@@ -39,6 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var progressBar: SKSpriteNode! = nil;
     var settingsButton: SKSpriteNode! = nil;
     var muteButton: SKSpriteNode! = nil;
+    var pauseButton: SKSpriteNode! = nil;
     
     // Beats.
     var beats: [Double]! = nil;
@@ -105,6 +106,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         mute();
                     case settingsButton.name!:
                         break;
+                    case pauseButton.name!:
+                        pause(!self.paused);
                     case "Resume":
                         pause(!self.paused);
                     case "Menu":
@@ -349,8 +352,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.paused = pause;
         if (pause) {
+            pauseButton.texture = constants.settings["play"];
             songPlayer.pause();
         } else {
+            pauseButton.texture = constants.settings["pause"];
             songPlayer.play();
         }
         middleParent.hidden = !pause;
@@ -393,12 +398,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
         progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
         middleParent = self.childNodeWithName("MiddleParent")!;
+        middleParent.hidden = true;
         muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
         settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
-        println(muteButton.description + "  " + settingsButton.description)
+        pauseButton = self.childNodeWithName("Pause") as! SKSpriteNode;
         
-        middleParent.hidden = true;
-
         // createBackground();
         showStars(0);
         buttons = initialiseButtons();

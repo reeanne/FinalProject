@@ -56,7 +56,9 @@ class Constants {
     let settings: [String: SKTexture] = [
         "settings": SKTexture(imageNamed: "settings.png"),
         "mute": SKTexture(imageNamed: "mute.png"),
-        "unmute": SKTexture(imageNamed: "unmute.png")
+        "unmute": SKTexture(imageNamed: "unmute.png"),
+        "pause": SKTexture(imageNamed: "pause.png"),
+        "play": SKTexture(imageNamed: "play.png")
     ];
     
     let progressBar: [Int: SKTexture] = [
