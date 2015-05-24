@@ -29,6 +29,7 @@
 		42A67D3B1A52DCE50094808D /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D3A1A52DCE50094808D /* GameScene.swift */; };
 		42A67D3D1A52DCE50094808D /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D3C1A52DCE50094808D /* GameScene.sks */; };
 		42A67D4E1A52DCE60094808D /* FinalProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D4D1A52DCE60094808D /* FinalProjectTests.swift */; };
+		42AE097C1B1213670033E830 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AE097B1B1213670033E830 /* ProgressBar.swift */; };
 		42B183511B0F5D70002E1EE3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42B183501B0F5D70002E1EE3 /* Images.xcassets */; };
 		42EBB4D51A54AB980038845F /* LevelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EBB4D41A54AB980038845F /* LevelObject.swift */; };
 		42F1F7791ADFA4F900731127 /* UserObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F7781ADFA4F900731127 /* UserObject.swift */; };
@@ -87,6 +88,7 @@
 		42A67D471A52DCE60094808D /* FinalProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinalProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42A67D4C1A52DCE60094808D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A67D4D1A52DCE60094808D /* FinalProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalProjectTests.swift; sourceTree = "<group>"; };
+		42AE097B1B1213670033E830 /* ProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		42B183501B0F5D70002E1EE3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		42BED63E1ADF1CE400E6F32E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		42EBB4D41A54AB980038845F /* LevelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelObject.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				4292DF381AFBDD24009AC03E /* spark.png */,
 				421728581AF2DC6900AF7A55 /* Constants.swift */,
 				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
+				42AE097B1B1213670033E830 /* ProgressBar.swift */,
 				42EBB4D41A54AB980038845F /* LevelObject.swift */,
 				42F1F7781ADFA4F900731127 /* UserObject.swift */,
 				426CDCD71A54D74F006A19A6 /* MelodyObject.swift */,
@@ -335,6 +338,7 @@
 				42A67D391A52DCE50094808D /* AppDelegate.swift in Sources */,
 				426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */,
 				42016A881AE19B500046FC15 /* MenuController.swift in Sources */,
+				42AE097C1B1213670033E830 /* ProgressBar.swift in Sources */,
 				42F1F7791ADFA4F900731127 /* UserObject.swift in Sources */,
 				42F1F79C1ADFFB9F00731127 /* User.swift in Sources */,
 				42EBB4D51A54AB980038845F /* LevelObject.swift in Sources */,

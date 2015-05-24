@@ -61,20 +61,7 @@ class Constants {
         "play": SKTexture(imageNamed: "play.png")
     ];
     
-    let progressBar: [Int: SKTexture] = [
-        0: SKTexture(imageNamed: "progress0.png"),
-        10: SKTexture(imageNamed: "progress10.png"),
-        20: SKTexture(imageNamed: "progress20.png"),
-        30: SKTexture(imageNamed: "progress30.png"),
-        40: SKTexture(imageNamed: "progress40.png"),
-        50: SKTexture(imageNamed: "progress50.png"),
-        60: SKTexture(imageNamed: "progress60.png"),
-        70: SKTexture(imageNamed: "progress70.png"),
-        80: SKTexture(imageNamed: "progress80.png"),
-        90: SKTexture(imageNamed: "progress90.png"),
-        100: SKTexture(imageNamed: "progress100.png")
-    ];
-    
+      
 
     var wooshSound: SystemSoundID = 0;
     var applauseSound: SystemSoundID = 0;

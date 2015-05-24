@@ -33,10 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let offsetPresspoint: Double = 0;
     
     //let offsetPresspoint: Double = 7;
-    var scored: SKLabelNode! = nil;
-    var totalScore: SKLabelNode! = nil;
     var middleParent: SKNode! = nil;
-    var progressBar: SKSpriteNode! = nil;
     var settingsButton: SKSpriteNode! = nil;
     var muteButton: SKSpriteNode! = nil;
     var pauseButton: SKSpriteNode! = nil;
@@ -45,6 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var beats: [Double]! = nil;
     var beatsTimer: NSTimer! = nil;
     var beatsIndex = 0;
+    var waitFor: NSTimeInterval! = nil;
     
     // Mood.
     var moodIndex = 0;
@@ -61,14 +59,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var limit = 4;
     
     // Score variables.
-    var hits: Int = 0;
-    var misses: Int = 0;
-    var mistakes: Int = 0;
-    var currentNumber: Float = 10;
-    var maxCurrentNumber: Float = 20;
+    var progressBar: ProgressBar! = nil;
     
     // Settings.
-    var volume: Float = 1;
+    var volume: Float = 0;
 
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -78,15 +72,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.level = appDelegate.level;
         self.user = appDelegate.user;
-        self.physicsWorld.contactDelegate = self
+        self.physicsWorld.contactDelegate = self;
 
         beats = level.melody.beats;
         
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
         
-        
         setupSprites();
+
         
         // TODO: Fix quick Game.
         songPlayer.prepareToPlay();
@@ -173,6 +167,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case 12:
             println("q");
             if (self.paused){
+                pause(false);
                 gameOver();
             }
         case 15:
@@ -313,40 +308,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if (point is SKSpriteNode) {
                     spriteNode = point as! SKSpriteNode;
                     if (spriteNode.texture?.hashValue == texture.hashValue) {
-                        hits++;
-                        currentNumber++;
+                        progressBar.hit();
                         point.removeFromParent();
-                        updateBoard();
-                        updateProgressBar();
+                        progressBar.updateBoard();
+                        progressBar.updateProgressBar();
                         return;
                     }
                 }
             }
-            mistakes++;
-            currentNumber--;
-            updateProgressBar();
-            updateBoard();
+            progressBar.mistake();
+            progressBar.updateProgressBar();
+            progressBar.updateBoard();
         }
     }
-    
-    func updateProgressBar() {
-        var ratio: Float = 10;
-        var total: Int = Int(currentNumber);
-        var result: Int;
-        if (total < 0) {
-        //    gameOver();
-        } else {
-            ratio = currentNumber * ratio / maxCurrentNumber;
-            result = Int(ceil(ratio)) * 10;
-            total = max(0, result);
-            progressBar.texture = constants.progressBar[total];
-        }
-    }
-    
-    func updateBoard() {
-        scored.text = hits.description;
-        totalScore.text = (misses + hits).description;
-    }
+   
 
     
     func pause(pause: Bool) {
@@ -355,11 +330,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (pause) {
             pauseButton.texture = constants.settings["play"];
             songPlayer.pause();
+            waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
             beatsTimer.invalidate();
         } else {
             pauseButton.texture = constants.settings["pause"];
             songPlayer.play();
-            spawnFrets();
+            var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+            waitFor = nil;
+
         }
         middleParent.hidden = !pause;
 
@@ -397,20 +375,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setupSprites() {
-        scored = self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode;
-        totalScore = self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode;
-        progressBar = self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode;
         middleParent = self.childNodeWithName("MiddleParent")!;
         middleParent.hidden = true;
         muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
         settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
         pauseButton = self.childNodeWithName("Pause") as! SKSpriteNode;
         
+        progressBar = ProgressBar(progressBar: self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode,
+                                  scored: self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode,
+                                  totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode);
+        
         // createBackground();
         showStars(0);
         buttons = initialiseButtons();
         createPipes();
-        updateProgressBar();
+        progressBar.updateProgressBar();
         
         setupMood();
 
@@ -451,10 +430,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         node.texture = constants.textures[Colour.Grey]!["normal"]!; //
         playWoosh();
         node.zPosition = -1;
-        misses++;
-        currentNumber--;
-        updateBoard();
-        updateProgressBar();
+        progressBar.miss();
+        progressBar.updateProgressBar();
     }
     
     
@@ -527,7 +504,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func gameOver() {
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
-            SKAction.fadeOutWithDuration(3.0)])
+            SKAction.fadeOutWithDuration(1.0)])
         
         let welcomeReturn =  SKAction.runBlock({
             let transition = SKTransition.revealWithDirection(
