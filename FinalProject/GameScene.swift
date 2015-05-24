@@ -355,9 +355,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (pause) {
             pauseButton.texture = constants.settings["play"];
             songPlayer.pause();
+            beatsTimer.invalidate();
         } else {
             pauseButton.texture = constants.settings["pause"];
             songPlayer.play();
+            spawnFrets();
         }
         middleParent.hidden = !pause;
 
