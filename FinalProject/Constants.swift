@@ -15,6 +15,8 @@ class Constants {
     let musicSubPath: String = "Assets/Sounds/";
     let fretTexture: SKTexture = SKTexture(imageNamed: "grey_fret.png");
     
+    let emptyButtonTexture = SKTexture(imageNamed: "emptyButton.png");
+    
     let textures: [Colour: [String: SKTexture]] = [
         Colour.Blue: [
             "normal": SKTexture(imageNamed: Colour.normal[Colour.Blue]!),
@@ -60,8 +62,7 @@ class Constants {
         "pause": SKTexture(imageNamed: "pause.png"),
         "play": SKTexture(imageNamed: "play.png")
     ];
-    
-      
+
 
     var wooshSound: SystemSoundID = 0;
     var applauseSound: SystemSoundID = 0;

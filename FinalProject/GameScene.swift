@@ -26,7 +26,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var timeInterval: Double = 0;
     var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
-    var lastPitchSeen: Int = 0;
+    var lastButtonSeen: CGFloat = 0;
     
     // The offset needed for the buttons to come up as they are sung.
     let offsetCurrent: Double = 2;
@@ -67,29 +67,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
+
     
     override func didMoveToView(view: SKView) {
-        
-        self.level = appDelegate.level;
-        self.user = appDelegate.user;
-        self.physicsWorld.contactDelegate = self;
-
-        beats = level.melody.beats;
-        
-        songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
-        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
-        
-        setupSprites();
-
-        
-        // TODO: Fix quick Game.
-        songPlayer.prepareToPlay();
-        songPlayer.play();
-
-        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
-        
+        setupScene();
     }
-    
+
+
+    override func update(currentTime: CFTimeInterval) {
+        /* Called before each frame is rendered */
+    }
+
+
     /* Called when a mouse click occurs */
     override func mouseDown(theEvent: NSEvent) {
         var nodes = nodesAtPoint(theEvent.locationInNode(self)) as! [SKNode]
@@ -145,41 +134,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch theEvent.keyCode {
         case 0:
-            println("a");
             var colour = Colour(rawValue: 0);
             removeButtonPressed(colour!);
             buttons[0].texture = constants.textures[colour!]!["pressed"]!;
         case 1:
-            println("s");
             var colour = Colour(rawValue: 1);
             removeButtonPressed(colour!);
             buttons[1].texture = constants.textures[colour!]!["pressed"]!;
         case 2:
-            println("d");
             var colour = Colour(rawValue: 2);
             removeButtonPressed(colour!);
             buttons[2].texture = constants.textures[colour!]!["pressed"]!;
         case 3:
-            println("f");
             var colour = Colour(rawValue: 3);
             removeButtonPressed(colour!);
             buttons[3].texture = constants.textures[colour!]!["pressed"]!;
         case 12:
-            println("q");
             if (self.paused){
-                pause(false);
                 gameOver();
             }
         case 15:
-            println("r");
             if (self.paused) {
                 resetGame();
             }
         case 35:
-            println("pause");
             pause(!self.paused);
         default:
-            println(theEvent.keyCode);
             break;
         }
     }
@@ -226,28 +206,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             note.runAction(_movePipesAndRemove);
             
             _pipes.addChild(note);
-        }
-        lastPitchSeen = pitch;
-
-    }
-    
-    func createBackground() {
-        // Create ground
-        var groundTexture = SKTexture(imageNamed: "background_wave");
-        var moveGroundSprite: SKAction = SKAction.moveByX(0, y: -self.frame.size.height * 2, duration: NSTimeInterval(0.02 * groundTexture.size().height));
-        var resetGroundSprite: SKAction = SKAction.moveByX(0, y: self.frame.size.height * 2, duration: 0);
-        var moveGroundSpritesForever: SKAction = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite, resetGroundSprite]));
-        
-        for(var i: CGFloat = 0; i < 2 + self.frame.size.height / (groundTexture.size().height * 2); ++i) {
-            var sprite: SKSpriteNode = SKSpriteNode(texture: groundTexture);
-            //sprite.setScale(0.5);
-            sprite.position = CGPointMake(sprite.size.width / 2, CGFloat(i) * sprite.size.height);
-            sprite.runAction(moveGroundSpritesForever);
-            self.addChild(sprite);
+            lastButtonSeen = x;
+        } else {
+            lastButtonSeen = 0;
         }
 
     }
-    
+
+
     func createPipes() {
         var distanceToMove: CGFloat = self.frame.size.height + 2 * constants.textures[Colour.Blue]!["normal"]!.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
@@ -265,6 +231,107 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(_frets)
     }
     
+    func removeButtonPressed(colour: Colour) {
+        var points = self.nodesAtPoint(buttons[colour.rawValue].position);
+        var spriteNode: SKSpriteNode;
+        var texture: SKTexture = constants.textures[colour]!["normal"]!;
+        
+        if (points.count > 1) {
+            for point in points {
+                if (point is SKSpriteNode) {
+                    spriteNode = point as! SKSpriteNode;
+                    if (spriteNode.texture?.hashValue == texture.hashValue) {
+                        progressBar.hit();
+                        point.removeFromParent();
+                        progressBar.updateBoard();
+                        progressBar.updateProgressBar();
+                        return;
+                    }
+                }
+            }
+            progressBar.mistake();
+            progressBar.updateProgressBar();
+            progressBar.updateBoard();
+        }
+    }
+
+    func determineColour(pitch: Int) -> (SKTexture, CGFloat){
+        var smallPitch = Int(pitch / 70) % limit;
+        var colour = Colour(rawValue: smallPitch);
+        var index: CGFloat = CGFloat(smallPitch + 1);
+        var x: CGFloat = index * self.frame.size.width / overallRatio;
+        var texture: SKTexture;
+        if (x != lastButtonSeen) {
+             texture = constants.textures[colour!]!["normal"]!;
+        } else {
+            texture = constants.emptyButtonTexture;
+        }
+        return (texture, index * self.frame.size.width / overallRatio);
+    }
+
+
+
+    func setupScene() {
+        self.level = appDelegate.level;
+        self.user = appDelegate.user;
+        self.physicsWorld.contactDelegate = self
+        
+        beats = level.melody.beats;
+        
+        songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
+        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
+        setupSprites();
+        
+        // TODO: Fix quick Game.
+        songPlayer.prepareToPlay();
+        songPlayer.play();
+        
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+
+    }
+    
+    func setupSprites() {
+        middleParent = self.childNodeWithName("MiddleParent")!;
+        middleParent.hidden = true;
+        muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
+        settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
+        pauseButton = self.childNodeWithName("Pause") as! SKSpriteNode;
+        
+        progressBar = ProgressBar(progressBar: self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode,
+                                  scored: self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode,
+                                  totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode,
+                                  multiplier: self.childNodeWithName("ScoreParent")?.childNodeWithName("Multiplier") as! SKLabelNode);
+        
+        // createBackground();
+        showStars(0);
+        buttons = initialiseButtons();
+        createPipes();
+        progressBar.updateProgressBar();
+        
+        setupMood();
+
+    }
+    
+    func setupMood() {
+        let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
+        sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
+        
+        changeMood();
+        sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
+        sparkEmitter.name = "sparkEmmitter"
+        sparkEmitter.zPosition = -1;
+        sparkEmitter.targetNode = self;
+        sparkEmitter.physicsBody = nil;
+        
+        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
+        fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+        
+        self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
+            ])));
+        self.addChild(sparkEmitter)
+    }
+
+
     func initialiseButtons() -> [SKSpriteNode] {
         var colour: Colour;
         var texture: SKTexture;
@@ -294,107 +361,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         missedField.physicsBody!.collisionBitMask = 0;
         missedField.physicsBody!.pinned = true;
         self.addChild(missedField);
-
+        
         return result;
     }
-    
-    func removeButtonPressed(colour: Colour) {
-        var points = self.nodesAtPoint(buttons[colour.rawValue].position);
-        var spriteNode: SKSpriteNode;
-        var texture: SKTexture = constants.textures[colour]!["normal"]!;
-        
-        if (points.count > 1) {
-            for point in points {
-                if (point is SKSpriteNode) {
-                    spriteNode = point as! SKSpriteNode;
-                    if (spriteNode.texture?.hashValue == texture.hashValue) {
-                        progressBar.hit();
-                        point.removeFromParent();
-                        progressBar.updateBoard();
-                        progressBar.updateProgressBar();
-                        return;
-                    }
-                }
-            }
-            progressBar.mistake();
-            progressBar.updateProgressBar();
-            progressBar.updateBoard();
-        }
-    }
-   
 
-    
-    func pause(pause: Bool) {
-        
-        self.paused = pause;
-        if (pause) {
-            pauseButton.texture = constants.settings["play"];
-            songPlayer.pause();
-            waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
-            beatsTimer.invalidate();
-        } else {
-            pauseButton.texture = constants.settings["pause"];
-            songPlayer.play();
-            var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
-            waitFor = nil;
 
-        }
-        middleParent.hidden = !pause;
-
-    }
-    
-    func determineColour(pitch: Int) -> (SKTexture, CGFloat){
-        var smallPitch = Int(pitch / 70) % limit;
-        var colour = Colour(rawValue: smallPitch);
-        var texture = constants.textures[colour!]!["normal"];
-        var index: CGFloat = CGFloat(smallPitch + 1);
-        return (texture!, index * self.frame.size.width / overallRatio);
-    }
-
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
-    }
-    
-    func setupScene() {
-        self.level = appDelegate.level;
-        self.user = appDelegate.user;
-        self.physicsWorld.contactDelegate = self
-        
-        beats = level.melody.beats;
-        
-        songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
-        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
-        setupSprites();
-        
-        // TODO: Fix quick Game.
-        songPlayer.prepareToPlay();
-        songPlayer.play();
-        
-        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
-
-    }
-    
-    func setupSprites() {
-        middleParent = self.childNodeWithName("MiddleParent")!;
-        middleParent.hidden = true;
-        muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
-        settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
-        pauseButton = self.childNodeWithName("Pause") as! SKSpriteNode;
-        
-        progressBar = ProgressBar(progressBar: self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode,
-                                  scored: self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode,
-                                  totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode);
-        
-        // createBackground();
-        showStars(0);
-        buttons = initialiseButtons();
-        createPipes();
-        progressBar.updateProgressBar();
-        
-        setupMood();
-
-    }
-    
     func showStars(number: Int) {
         var star: SKNode;
         for (var i = 1; i <= number; i++) {
@@ -405,6 +376,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func moveSparkle() {
+        
+        if (beatsIndex + 4 <= beats.count) {
+            fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+            moodXposition *= -1;
+            var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
+            var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
+            sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
+        }
+    }
+
+
+    func changeMood() {
+        sparkEmitter.particleColorSequence = nil;
+        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
+            green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
+            blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
+        println("here  " + level.melody.arousal.description + level.melody.valence.description);
+        moodIndex++;
+    }
+    
+
+    
 
     /**
         Function for playing the music file.
@@ -414,7 +408,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         songPlayer.prepareToPlay();
         songPlayer.play();
     }
-    
+
+
     func didBeginContact(contact: SKPhysicsContact) {
         var node: SKSpriteNode! = nil;
         if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
@@ -433,48 +428,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         progressBar.miss();
         progressBar.updateProgressBar();
     }
-    
-    
-    func setupMood() {
-        let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
-        sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
-        
-        changeMood();
-        sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
-        sparkEmitter.name = "sparkEmmitter"
-        sparkEmitter.zPosition = -1;
-        sparkEmitter.targetNode = self;
-        sparkEmitter.physicsBody = nil;
-        
-        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
-        fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
-
-        self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
-        ])));
-        self.addChild(sparkEmitter)
-    }
-    
-    
-    func moveSparkle() {
-        
-        if (beatsIndex + 4 <= beats.count) {
-            fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
-            moodXposition *= -1;
-            var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
-            var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
-            sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
-        }
-    }
-    
-    
-    func changeMood() {
-        sparkEmitter.particleColorSequence = nil;
-        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
-            green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
-            blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
-        println("here  " + level.melody.arousal.description + level.melody.valence.description);
-        moodIndex++;
-    }
 
     
     func playWoosh() {
@@ -488,7 +441,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         appDelegate.playGameWindow();
         
     }
-    
+
+
     func mute() {
         if (songPlayer.volume == 0) {
             songPlayer.volume = volume;
@@ -500,9 +454,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             muteButton.texture = constants.settings["unmute"];
         }
     }
-    
+
+
+    func pause(pause: Bool) {
+        
+        self.paused = pause;
+        if (pause) {
+            pauseButton.texture = constants.settings["play"];
+            songPlayer.pause();
+            waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
+            beatsTimer.invalidate();
+        } else {
+            pauseButton.texture = constants.settings["pause"];
+            songPlayer.play();
+            var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+            waitFor = nil;
+            
+        }
+        middleParent.hidden = !pause;
+    }
+
 
     func gameOver() {
+        pause(false);
+
         let fadeOut = SKAction.sequence([SKAction.waitForDuration(3.0),
             SKAction.fadeOutWithDuration(1.0)])
         
@@ -516,9 +491,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.runAction(sequence)
     }
-    
-
-    
-
     
 }

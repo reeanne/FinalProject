@@ -16,6 +16,7 @@ class ProgressBar {
     var progressBar: SKSpriteNode;
     var scored: SKLabelNode;
     var totalScore: SKLabelNode;
+    var multiplier: SKLabelNode;
     
     var hits: Int = 0;
     var misses: Int = 0;
@@ -42,10 +43,11 @@ class ProgressBar {
     ];
 
 
-    init(progressBar: SKSpriteNode, scored: SKLabelNode, totalScore: SKLabelNode) {
+    init(progressBar: SKSpriteNode, scored: SKLabelNode, totalScore: SKLabelNode, multiplier: SKLabelNode) {
         self.progressBar = progressBar
         self.scored = scored;
         self.totalScore = totalScore;
+        self.multiplier = multiplier;
     }
     
     func miss() {
@@ -98,7 +100,9 @@ class ProgressBar {
             //    gameOver();
         } else if (maxLength >= 20) {
             progressBar.texture = progressBarTextures[200];
+            multiplier.hidden = false;
         } else {
+            multiplier.hidden = true;
             ratio = min(currentNumber * ratio / maxCurrentNumber, 100);
             println(ratio)
             result = Int(ceil(ratio)) * 10;
