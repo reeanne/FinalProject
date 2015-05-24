@@ -191,16 +191,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     func spawnFrets() {
-        var fret: SKSpriteNode = SKSpriteNode(texture: constants.fretTexture);
-        var tempSize = constants.fretTexture.size();
-        fret.position = CGPointMake(self.frame.size.width / overallRatio, self.frame.size.height + constants.fretTexture.size().height);
-        fret.zPosition = 0;
-        
-        fret.runAction(_movePipesAndRemove);
-        _frets.addChild(fret);
-        beatsIndex += 2;
-        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[beatsIndex]  - beats[beatsIndex-2], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
-
+        if (beatsIndex < beats.count - 2) {
+            var fret: SKSpriteNode = SKSpriteNode(texture: constants.fretTexture);
+            var tempSize = constants.fretTexture.size();
+            fret.position = CGPointMake(self.frame.size.width / overallRatio, self.frame.size.height + constants.fretTexture.size().height);
+            fret.zPosition = 0;
+            
+            fret.runAction(_movePipesAndRemove);
+            _frets.addChild(fret);
+            beatsIndex += 2;
+            beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[beatsIndex]  - beats[beatsIndex-2], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+        }
     }
     
     func spawnPipes() {
@@ -498,7 +499,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     func playWoosh() {
-        AudioServicesPlaySystemSound(constants.wooshSound);
+        if (volume == 0) {
+            AudioServicesPlaySystemSound(constants.wooshSound);
+        }
     }
     
     func resetGame() {
