@@ -18,6 +18,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var level: LevelObject! = nil;
 
     var buttons: [SKSpriteNode]! = nil;
+    var pressedButtons: [Bool]! = nil;
+    
     var _movePipesAndRemove: SKAction! = nil;
     var _notes: SKNode = SKNode();
     var _frets: SKNode = SKNode();
@@ -115,15 +117,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case 0:
             var colour = Colour(rawValue: 0);
             buttons[0].texture = constants.textures[colour!]!["hover"]!;
+            pressedButtons[0] = false;
         case 1:
             var colour = Colour(rawValue: 1);
             buttons[1].texture = constants.textures[colour!]!["hover"]!;
+            pressedButtons[1] = false;
         case 2:
             var colour = Colour(rawValue: 2);
             buttons[2].texture = constants.textures[colour!]!["hover"]!;
+            pressedButtons[2] = false;
         case 3:
             var colour = Colour(rawValue: 3);
             buttons[3].texture = constants.textures[colour!]!["hover"]!;
+            pressedButtons[3] = false;
         default:
             break;
         }
@@ -167,8 +173,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBeginContact(contact: SKPhysicsContact) {
         var node: SKSpriteNode! = nil;
         var type: String;
-        println(contact.bodyA.categoryBitMask)
-        println(contact.bodyB.categoryBitMask)
+
         if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
             contact.bodyB.categoryBitMask == missedCategory) {
                 node = contact.bodyA.node as! SKSpriteNode;
@@ -181,10 +186,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.categoryBitMask == missedCategory) {
                 node = contact.bodyA.node as! SKSpriteNode;
                 type = "long"
+                if (removeLongNote(node)) {
+                    return;
+                }
         } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
             contact.bodyB.categoryBitMask == longNoteCategory) {
                 node = contact.bodyB.node as! SKSpriteNode;
                 type = "long"
+                if (removeLongNote(node)) {
+                    return;
+                }
         } else {
             return;
         }
@@ -195,26 +206,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         node.zPosition = -1;
         progressBar.miss();
     }
-    
-    /*
-    func didEndContact(contact: SKPhysicsContact) {
-        var node: SKSpriteNode! = nil;
-        if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == longNoteCategory &&
-            contact.bodyB.categoryBitMask == missedCategory) {
-                node = contact.bodyA.node as! SKSpriteNode;
-        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
-            contact.bodyB.categoryBitMask == longNoteCategory) {
-                node = contact.bodyB.node as! SKSpriteNode;
-        } else {
-            return;
-        }
-        node.texture = constants.textures[Colour.Grey]!["normal"]!; //
-        playWoosh();
-        node.zPosition = -1;
-        progressBar.miss();
-    }
-    */
-
 
     
     func spawnFrets() {
@@ -300,6 +291,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     spriteNode = point as! SKSpriteNode;
                     if (spriteNode.texture?.hashValue == buttonTexture.hashValue) {
                         progressBar.hit();
+                        pressedButtons[colour.rawValue] = true;
                         point.removeFromParent();
                         return;
                     }
@@ -366,6 +358,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // createBackground();
         showStars(0);
         buttons = initialiseButtons();
+        pressedButtons = [Bool](count: limit, repeatedValue: false);
         createNotes();
         progressBar.updateProgressBar();
         
@@ -502,6 +495,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             songPlayer.volume = 0;
             muteButton.texture = constants.settings["unmute"];
         }
+    }
+
+
+    /** 
+        Removes the long note at the passed point if the user was in fact pressing the button when the note ends.
+    */
+    func removeLongNote(node: SKSpriteNode) -> Bool {
+        var buttonIndex: Int;
+        switch (node.texture!.hashValue) {
+            case constants.textures[Colour(rawValue: 0)!]!["long"]!.hashValue:
+                buttonIndex = 0;
+            case constants.textures[Colour(rawValue: 1)!]!["long"]!.hashValue:
+                buttonIndex = 1;
+            case constants.textures[Colour(rawValue: 2)!]!["long"]!.hashValue:
+                buttonIndex = 2;
+            case constants.textures[Colour(rawValue: 3)!]!["long"]!.hashValue:
+                buttonIndex = 3;
+            default:
+                return false;
+        }
+        if (pressedButtons[buttonIndex]) {
+            node.removeFromParent();
+            progressBar.hit();
+            return true;
+        }
+        return false;
     }
 
 
