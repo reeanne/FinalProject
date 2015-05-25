@@ -19,7 +19,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var buttons: [SKSpriteNode]! = nil;
     var _movePipesAndRemove: SKAction! = nil;
-    var _pipes: SKNode = SKNode();
+    var _notes: SKNode = SKNode();
     var _frets: SKNode = SKNode();
     var missedField: SKNode! = nil;
     var constants: Constants = Constants();
@@ -63,7 +63,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Settings.
     var volume: Float = 0;
-
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
@@ -129,7 +128,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break;
         }
     }
-    
+
+
     override func keyDown(theEvent: NSEvent) {
         
         switch theEvent.keyCode {
@@ -179,7 +179,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func spawnPipes() {
+    
+    func spawnNotes() {
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         if (index > level.melody.pitch!.count) {
             // Star Message & Score
@@ -188,13 +189,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         //if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
         if (pitch > 0) {
-            var (picture, x) = determineColour(pitch);
+            var (picture, x, zPosition) = determineColour(pitch);
             var note: SKSpriteNode = SKSpriteNode(texture: picture);
             note.position = CGPointMake(x, self.frame.size.height + picture.size().height);
-            //pipePair.zPosition = -10;
+            note.zPosition = zPosition;
             
             note.setScale(0.3);
-            
             note.physicsBody = SKPhysicsBody(rectangleOfSize: note.size);
             note.physicsBody!.dynamic = false;
             note.physicsBody!.affectedByGravity = false;
@@ -205,7 +205,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             note.runAction(_movePipesAndRemove);
             
-            _pipes.addChild(note);
+            _notes.addChild(note);
             lastButtonSeen = x;
         } else {
             lastButtonSeen = 0;
@@ -214,59 +214,66 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
 
-    func createPipes() {
+    func createNotes() {
         var distanceToMove: CGFloat = self.frame.size.height + 2 * constants.textures[Colour.Blue]!["normal"]!.size().height;
         var movePipes: SKAction = SKAction.moveByX(0, y: -distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove));
         //_pipeTexture1.filteringMode = SKTextureFilteringNearest;
-        var removePipes: SKAction = SKAction.removeFromParent();
-        _movePipesAndRemove = SKAction.sequence([movePipes, removePipes]);
+        var removeNotes: SKAction = SKAction.removeFromParent();
+        _movePipesAndRemove = SKAction.sequence([movePipes, removeNotes]);
         
-        var spawn: SKAction = SKAction.runBlock(self.spawnPipes);
+        var spawn: SKAction = SKAction.runBlock(self.spawnNotes);
         var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 2);
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
         self.runAction(spawnThenDelayForever);
         
-        self.addChild(_pipes);
+        self.addChild(_notes);
         self.addChild(_frets)
     }
-    
+
+
     func removeButtonPressed(colour: Colour) {
         var points = self.nodesAtPoint(buttons[colour.rawValue].position);
         var spriteNode: SKSpriteNode;
-        var texture: SKTexture = constants.textures[colour]!["normal"]!;
+        var buttonTexture: SKTexture = constants.textures[colour]!["normal"]!;
+        var lineTexture: SKTexture = constants.textures[colour]!["long"]!;
         
         if (points.count > 1) {
             for point in points {
                 if (point is SKSpriteNode) {
                     spriteNode = point as! SKSpriteNode;
-                    if (spriteNode.texture?.hashValue == texture.hashValue) {
+                    if (spriteNode.texture?.hashValue == buttonTexture.hashValue) {
                         progressBar.hit();
                         point.removeFromParent();
-                        progressBar.updateBoard();
-                        progressBar.updateProgressBar();
+                        return;
+                    }
+                    if (spriteNode.texture?.hashValue == lineTexture.hashValue) {
+                        point.removeFromParent();
+                        
                         return;
                     }
                 }
             }
             progressBar.mistake();
-            progressBar.updateProgressBar();
-            progressBar.updateBoard();
         }
     }
 
-    func determineColour(pitch: Int) -> (SKTexture, CGFloat){
+
+    func determineColour(pitch: Int) -> (SKTexture, CGFloat, CGFloat){
         var smallPitch = Int(pitch / 70) % limit;
         var colour = Colour(rawValue: smallPitch);
         var index: CGFloat = CGFloat(smallPitch + 1);
         var x: CGFloat = index * self.frame.size.width / overallRatio;
+        var zPosition: CGFloat;
         var texture: SKTexture;
         if (x != lastButtonSeen) {
-             texture = constants.textures[colour!]!["normal"]!;
+            texture = constants.textures[colour!]!["normal"]!;
+            zPosition = 200;
         } else {
-            texture = constants.emptyButtonTexture;
+            texture = constants.textures[colour!]!["long"]!;
+            zPosition = 100;
         }
-        return (texture, index * self.frame.size.width / overallRatio);
+        return (texture, index * self.frame.size.width / overallRatio, zPosition);
     }
 
 
@@ -305,7 +312,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // createBackground();
         showStars(0);
         buttons = initialiseButtons();
-        createPipes();
+        createNotes();
         progressBar.updateProgressBar();
         
         setupMood();
@@ -338,12 +345,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var index: CGFloat;
         var button: SKSpriteNode;
         var result = [SKSpriteNode]();
+        
         for i in 0...limit-1 {
             colour = Colour(rawValue: i)!;
             texture = constants.textures[colour]!["hover"]!;
             index = CGFloat(i + 1);
             button = SKSpriteNode(texture: texture);
-            button.zPosition = 1;
+            button.zPosition = 300;
             button.setScale(0.3)
             button.position = CGPointMake(index * self.frame.size.width / overallRatio, self.frame.size.height / 6);
             self.addChild(button);
@@ -426,7 +434,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playWoosh();
         node.zPosition = -1;
         progressBar.miss();
-        progressBar.updateProgressBar();
     }
 
     

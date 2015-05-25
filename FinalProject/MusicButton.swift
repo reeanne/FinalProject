@@ -25,7 +25,7 @@ enum Colour: Int {
         Red: "hovered_red",
         Grey: "hovered_grey",
         Brown: "hovered_brown",
-        Purple: "hovered_purple"
+        Purple: "hovered_purple",
     ];
     
     static let normal = [
@@ -47,6 +47,16 @@ enum Colour: Int {
         Brown: "pressed_brown",
         Purple: "pressed_purple"
     ];
+    
+    static let long = [
+        Blue: "long_blue",
+        Green: "long_green",
+        Yellow: "long_yellow",
+        Red: "long_red",
+        Grey: "long_grey",
+        Brown: "long_brown",
+        Purple: "long_purple"
+    ]
     
 }
 

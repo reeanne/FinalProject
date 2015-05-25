@@ -51,27 +51,35 @@ class ProgressBar {
     }
     
     func miss() {
-        self.misses++;
+        misses++;
         maxLength = 0;
         currentNumber--;
         currentNumber = max(currentNumber, 0);
+        updateProgressBar();
+        updateBoard();
     }
     
     func hit() {
-        self.hits++;
+        hits++;
         currentNumber++;
         if (currentNumber >= maxCurrentNumber) {
             maxLength++;
         }
         currentNumber = min(currentNumber, 20);
         totalScoreNum += Int(floor(maxLength / 20) + 1);
+        updateProgressBar();
+        updateBoard();
+
     }
     
     func mistake() {
-        self.mistakes++;
+        mistakes++;
         maxLength = 0;
         currentNumber--;
         currentNumber = max(currentNumber, 0);
+        updateProgressBar();
+        updateBoard();
+
     }
     
     func getMisses() -> Int {
