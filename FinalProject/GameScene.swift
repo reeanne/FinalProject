@@ -52,9 +52,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var moodChangeTimer: NSTimer! = nil;
     
     // Collision Categories.
-    let noteCategory: UInt32 = 0x1 << 0;
-    let missedCategory: UInt32 = 0x1 << 1;
-    
+    let noteCategory: UInt32 =  0b001;
+    let missedCategory: UInt32 = 0b010;
+    let longNoteCategory: UInt32 = 0b100;
+
     let overallRatio: CGFloat = 8;
     var limit = 4;
     
@@ -65,7 +66,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var volume: Float = 0;
     
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-
 
     
     override func didMoveToView(view: SKView) {
@@ -163,6 +163,58 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break;
         }
     }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        var node: SKSpriteNode! = nil;
+        var type: String;
+        println(contact.bodyA.categoryBitMask)
+        println(contact.bodyB.categoryBitMask)
+        if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
+            contact.bodyB.categoryBitMask == missedCategory) {
+                node = contact.bodyA.node as! SKSpriteNode;
+                type = "normal";
+        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
+            contact.bodyB.categoryBitMask == noteCategory) {
+                node = contact.bodyB.node as! SKSpriteNode;
+                type = "normal";
+        } else  if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == longNoteCategory &&
+            contact.bodyB.categoryBitMask == missedCategory) {
+                node = contact.bodyA.node as! SKSpriteNode;
+                type = "long"
+        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
+            contact.bodyB.categoryBitMask == longNoteCategory) {
+                node = contact.bodyB.node as! SKSpriteNode;
+                type = "long"
+        } else {
+            return;
+        }
+        node.texture = constants.textures[Colour.Grey]![type]!;
+        if (type == "normal") {
+            playWoosh();
+        }
+        node.zPosition = -1;
+        progressBar.miss();
+    }
+    
+    /*
+    func didEndContact(contact: SKPhysicsContact) {
+        var node: SKSpriteNode! = nil;
+        if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == longNoteCategory &&
+            contact.bodyB.categoryBitMask == missedCategory) {
+                node = contact.bodyA.node as! SKSpriteNode;
+        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
+            contact.bodyB.categoryBitMask == longNoteCategory) {
+                node = contact.bodyB.node as! SKSpriteNode;
+        } else {
+            return;
+        }
+        node.texture = constants.textures[Colour.Grey]!["normal"]!; //
+        playWoosh();
+        node.zPosition = -1;
+        progressBar.miss();
+    }
+    */
+
 
     
     func spawnFrets() {
@@ -199,7 +251,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             note.physicsBody!.dynamic = false;
             note.physicsBody!.affectedByGravity = false;
             note.physicsBody!.usesPreciseCollisionDetection = true
-            note.physicsBody!.categoryBitMask = noteCategory;
+            if (zPosition == 200) {         // It it is a full note.
+                note.physicsBody!.categoryBitMask = noteCategory;
+            } else if (zPosition == 100) {  // If it is a long note.
+                note.physicsBody!.categoryBitMask = longNoteCategory;
+            }
             note.physicsBody!.contactTestBitMask = missedCategory;
             missedField.physicsBody!.collisionBitMask = 0;
             
@@ -248,8 +304,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         return;
                     }
                     if (spriteNode.texture?.hashValue == lineTexture.hashValue) {
-                        point.removeFromParent();
-                        
                         return;
                     }
                 }
@@ -355,13 +409,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             button.setScale(0.3)
             button.position = CGPointMake(index * self.frame.size.width / overallRatio, self.frame.size.height / 6);
             self.addChild(button);
-            result.append(button)
+            result.append(button);
         }
         
+        initialiseDevalidatingBody(result[0].size.height);
+        return result;
+    }
+
+    
+    func initialiseDevalidatingBody(buttonHeight: CGFloat) {
+        
         missedField = SKNode();
-        missedField.position = CGPointMake(0, self.frame.size.height / 6 - 1.25 * result[0].size.height);
+        missedField.position = CGPointMake(0, self.frame.size.height / 6 - 1.1 * buttonHeight);
         missedField.physicsBody = SKPhysicsBody(
-            rectangleOfSize: CGSize(width: self.frame.size.width, height: self.frame.size.height / 6 - result[0].size.height));
+            rectangleOfSize: CGSize(width: self.frame.size.width, height: self.frame.size.height / 6 - buttonHeight));
         missedField.physicsBody!.dynamic = true;
         missedField.physicsBody!.affectedByGravity = false;
         missedField.physicsBody!.usesPreciseCollisionDetection = true
@@ -369,10 +430,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         missedField.physicsBody!.collisionBitMask = 0;
         missedField.physicsBody!.pinned = true;
         self.addChild(missedField);
-        
-        return result;
-    }
 
+    }
 
     func showStars(number: Int) {
         var star: SKNode;
@@ -398,11 +457,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func changeMood() {
         sparkEmitter.particleColorSequence = nil;
-        sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
-            green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
-            blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
-        println("here  " + level.melody.arousal.description + level.melody.valence.description);
-        moodIndex++;
+        if (moodIndex < level.melody.arousal.count) {
+            sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
+                green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
+                blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
+            println("here  " + level.melody.arousal.description + level.melody.valence.description);
+            moodIndex++;
+        }
     }
     
 
@@ -415,25 +476,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         songPlayer = AVAudioPlayer(contentsOfURL: audioURL, error: nil);
         songPlayer.prepareToPlay();
         songPlayer.play();
-    }
-
-
-    func didBeginContact(contact: SKPhysicsContact) {
-        var node: SKSpriteNode! = nil;
-        if (contact.bodyA.node is SKSpriteNode && contact.bodyA.categoryBitMask == noteCategory &&
-                contact.bodyB.categoryBitMask == missedCategory) {
-                node = contact.bodyA.node as! SKSpriteNode;
-                    
-        } else if (contact.bodyB.node is SKSpriteNode && contact.bodyA.categoryBitMask == missedCategory &&
-            contact.bodyB.categoryBitMask == noteCategory) {
-                node = contact.bodyB.node as! SKSpriteNode;
-        } else {
-            return;
-        }
-        node.texture = constants.textures[Colour.Grey]!["normal"]!; //
-        playWoosh();
-        node.zPosition = -1;
-        progressBar.miss();
     }
 
     
