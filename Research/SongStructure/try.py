@@ -6,6 +6,7 @@ import essentia
 import essentia.standard as ES
 import librosa
 from scipy.ndimage import filters
+from scipy.spatial import distance
 import json
 import os.path
 import pymf
@@ -81,11 +82,6 @@ def compute_labels(X, rank, median_size, bound_idxs, iterations=300):
 
 def filter_activation_matrix(G, median_size):
     """Filters the activation matrix G, and returns a flattened copy."""
-
-    #import pylab as plt
-    #plt.imshow(G, interpolation="nearest", aspect="auto")
-    #plt.show()
-
     idx = np.argmax(G, axis=1)
     max_idx = np.arange(G.shape[0])
     max_idx = (max_idx, idx.flatten())
@@ -303,6 +299,14 @@ def lognormalise_chroma(C):
     return C
 
 
+def compute_ssm(X, metric="seuclidean"):
+    """Computes the self-similarity matrix of X."""
+    D = distance.pdist(X, metric=metric)
+    D = distance.squareform(D)
+    D /= D.max()
+    return 1 - D
+
+
 def newfunction():
 
     print 'sdsds'
@@ -317,6 +321,7 @@ def newfunction():
     #swapped
     hpcp, mfcc, beats, dur = extract_features()
     hpcp = lognormalise_chroma(hpcp)
+    #hpcp = compute_ssm(hpcp)
 
     if hpcp.shape[0] >= H:
         # Median filter
@@ -336,6 +341,7 @@ def newfunction():
     frames = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
     est_times, est_labels = process_segmentation_level(est_idxs, est_labels,
                                                        hpcp.shape[0], frames, dur)
+    np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
     return est_times, est_labels
 
