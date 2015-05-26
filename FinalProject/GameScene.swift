@@ -226,6 +226,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnNotes() {
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         if (index > level.melody.pitch!.count) {
+            gameOver();
             return;
         }
         var pitch: Int = level.melody.pitch![index];
@@ -537,8 +538,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             pauseButton.texture = constants.settings["pause"];
             songPlayer.play();
-            var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
-            waitFor = nil;
+            if (waitFor != nil) {
+                var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo:    nil, repeats: false);
+                waitFor = nil;
+            }
             
         }
         middleParent.hidden = !pause;

@@ -301,7 +301,7 @@ def lognormalise_chroma(C):
 
 def compute_ssm(X, metric="seuclidean"):
     """Computes the self-similarity matrix of X."""
-    D = distance.pdist(X, metric=metric)
+    D = distance.pdist(X, metric='correlation')
     D = distance.squareform(D)
     D /= D.max()
     return 1 - D
@@ -321,7 +321,7 @@ def newfunction():
     #swapped
     hpcp, mfcc, beats, dur = extract_features()
     hpcp = lognormalise_chroma(hpcp)
-    #hpcp = compute_ssm(hpcp)
+    hpcp = compute_ssm(hpcp)
 
     if hpcp.shape[0] >= H:
         # Median filter
