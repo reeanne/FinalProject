@@ -31,8 +31,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lastButtonSeen: CGFloat = 0;
     
     // The offset needed for the buttons to come up as they are sung.
-    let offsetCurrent: Double = 2;
-    let offsetPresspoint: Double = 0;
+    let offsetCurrent: Double = 0;
+    var offsetPresspoint: Double = 0;
     
     //let offsetPresspoint: Double = 7;
     var middleParent: SKNode! = nil;
@@ -226,7 +226,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnNotes() {
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         if (index > level.melody.pitch!.count) {
-            // Star Message & Score
+            return;
         }
         var pitch: Int = level.melody.pitch![index];
 
@@ -328,6 +328,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.level = appDelegate.level;
         self.user = appDelegate.user;
         self.physicsWorld.contactDelegate = self
+        
+        offsetPresspoint =  0.01 * Double(self.frame.size.height + 0.5 * constants.textures[Colour.Blue]!["normal"]!.size().height);
         
         beats = level.melody.beats;
         

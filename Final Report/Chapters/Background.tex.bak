@@ -184,7 +184,7 @@ However, in our case, the term polyphonic will simply refer to any type of music
 
 \subsection{Melody}
 
-The concept of “melody” ultimately relies on the judgement of people listening. This is why it will vary depending on the application context - whether we want to determine symbolic melodic similarity or transcribe a music track. 
+The concept of “melody” ultimately relies on the judgment of people listening. This is why it will vary depending on the application context - whether we want to determine symbolic melodic similarity or transcribe a music track. 
 
 In order to have a clear framework to work within, the Music Information Retrieval (MIR) community has adopted in recent years the definition proposed by \cite{melodydef}, ``...the melody is the single (monophonic) pitch sequence that a listener might reproduce if asked to whistle or hum a piece of polyphonic music, and that a listener would recognise as being the 'essence' of that music when heard in comparison''.
 
@@ -219,7 +219,7 @@ The short time Fourier transform of a time-domain signal $y$ is denoted by the m
 			   \caption{Example of a chromagram.}
 \end{figure}
 
-A chroma feature is characterised by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches. Usually 12 pitches commonly existing in the western popular music folded into one single octave are considered, but one can use multiples of 12 to consider semi-tones or even smaller differences between tones. This is achieved by applying a constant-Q transform across the entire spectrogram. 
+A chroma feature is characterized by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches. Usually 12 pitches commonly existing in the western popular music folded into one single octave are considered, but one can use multiples of 12 to consider semi-tones or even smaller differences between tones. This is achieved by applying a constant-Q transform across the entire spectrogram. 
 
 In mathematics and signal processing, the Constant Q Transform transforms a data series to the frequency domain. It is related to the Fourier Transform,[1] and very closely related to the complex Morlet wavelet transform.[2]
 
@@ -391,11 +391,11 @@ In their paper \cite{comparison}, authors attempted to compare multiple melody e
 
 
 \begin{description}
-\item[Voicing Recall Rate] - the proportion of frames labelled as melody frames in the ground truth that are estimated as melody frames by the algorithm.
-\item[Voicing False Alarm Rate] - the proportion of the frames labelled as non-melody in the ground truth that are mistakenly estimated as melody frames by the algorithm.
+\item[Voicing Recall Rate] - the proportion of frames labeled as melody frames in the ground truth that are estimated as melody frames by the algorithm.
+\item[Voicing False Alarm Rate] - the proportion of the frames labeled as non-melody in the ground truth that are mistakenly estimated as melody frames by the algorithm.
 \item[Raw Pitch Accuracy] - the proportion of melody frames in the ground truth for which $f_{\tau}$ is considered correct (i.e. within half a semitone of the ground truth). 
 \item[Raw Chroma Accuracy] - as raw pitch accuracy, except that both the estimated and ground truth $f_{0}$ sequences are mapped onto a single octave. This gives a measure of pitch accuracy which ignores octave errors.
-\item[Overall Accuracy] - this measure combines the performance of the pitch estimation and voicing detection tasks to give an overall performance score for the system. It is defined as the proportion of all frames correctly estimated by the algorithm, where for non-melody frames this means the algorithm labelled them as non-melody, as for melody frames the algorithm both labelled them as melody frames and provided a correct $f_{0}$ estimate for the melody (again, within half a semitone of the ground truth).
+\item[Overall Accuracy] - this measure combines the performance of the pitch estimation and voicing detection tasks to give an overall performance score for the system. It is defined as the proportion of all frames correctly estimated by the algorithm, where for non-melody frames this means the algorithm labeled them as non-melody, as for melody frames the algorithm both labeled them as melody frames and provided a correct $f_{0}$ estimate for the melody (again, within half a semitone of the ground truth).
 \end{description}
 
 
@@ -462,7 +462,7 @@ Each input is sent to every neuron in the hidden layer (marked blue) and then ea
 Once a network has been structured for a particular application, it is ready to be trained. In the beginning, the initial weights are chosen randomly. 
 There are two approaches to training - supervised and unsupervised. Supervised training involves a mechanism of providing the network with the desired output either by manually ``grading'' the network's performance or by providing the desired outputs with the inputs. Unsupervised training is where the network has to make sense of the inputs without outside help.
 
-Majority of networks utilise supervised training. Unsupervised training is used to perform some initial characterisation on inputs \cite{mostcommon}.
+Majority of networks utilize supervised training. Unsupervised training is used to perform some initial characterization on inputs \cite{mostcommon}.
 
 \vspace{10pt}
 
@@ -472,7 +472,7 @@ In supervised training, both the inputs and the outputs are provided. The networ
 
 Unfortunately, some networks never learn. This could be caused by the input data not containing the specific information from which the desired output is derived. Networks can also fail to converge if there is not enough data to enable complete learning. 
 
-Ideally, there should be enough data so that part of the data can be held back as a test. Many layered networks with multiple nodes are capable of memorising data. To make sure the network is learning significant patterns rather than plainly memorising the data, supervised training needs to hold back a set of data to be used to test the system after it has undergone its training.
+Ideally, there should be enough data so that part of the data can be held back as a test. Many layered networks with multiple nodes are capable of memorizing data. To make sure the network is learning significant patterns rather than plainly memorizing the data, supervised training needs to hold back a set of data to be used to test the system after it has undergone its training.
 
 If a network simply cannot solve the problem, the designer then has to review the input and outputs, the number of layers, the number of elements per layer, the connections between the layers, the summation, transfer, and training functions, and even the initial weights themselves. Those changes required to create a successful network constitute a process wherein the ``art'' of neural networking occurs.
 
@@ -485,7 +485,7 @@ When finally the system has been correctly trained, and no further learning is n
 \vspace{10pt}
 \subsection*{Unsupervised Training}
 
-The other type of training is called unsupervised training. In unsupervised training, the network is provided with inputs but not with desired outputs. The system itself must then decide what features it will use to group the input data. This is often referred to as self-organisation or adaption.
+The other type of training is called unsupervised training. In unsupervised training, the network is provided with inputs but not with desired outputs. The system itself must then decide what features it will use to group the input data. This is often referred to as self-organization or adaption.
 
 At the present time, unsupervised learning is not well understood. This adaption to the environment is the promise which would enable science fiction types of robots to continually learn on their own as they encounter new situations and new environments. Life is filled with situations where exact training sets do not exist. Some of these situations involve military action where new combat techniques and new weapons might be encountered. Because of this unexpected aspect to life and the human desire to be prepared, there continues to be research into, and hope for, this field.
 \vspace{10pt}
@@ -515,7 +515,7 @@ It is well known that music can convey emotion and modulate mood. That is why th
 \subsection{Emotion Classification}
 \label{sec:emotionClass}
 
-Currently, there is no standard method to measure and analyse emotion in music. However, a psychological model of emotion has found increasing use in computational studies. 
+Currently, there is no standard method to measure and analyze emotion in music. However, a psychological model of emotion has found increasing use in computational studies. 
 
 In 1989, in his publication \cite{Russell}, J. A. Russell noticed that set of emotional dimensions such as displeasure, distress, depression, excitement etc. are interrelated in a highly systematic fashion. He claimed these relationships can be represented in a spacial model in which concepts fall in circle in the following order: pleasure, excitement, arousal, distress, displeasure, depression, sleepiness and relaxation. Depiction of the model is presented in Figure \ref{fig:Russell}.
 
@@ -565,7 +565,7 @@ Potentially, the second approach described seems more appropriate for our projec
 \section{Song Structure Retrieval}
 
 Automatic music structure analysis from audio signals is an interesting topic that receives a lot of attention these days. The technique can be used for music data analysis, indexing, retrieval and management. It decomposes a song
-into several sections and detects repetitive patterns since they are often semantically meaningful parts. 
+into several sections and detects repetative patterns since they are often semantically meaningful parts. 
 
 \begin{figure}[h]
 	\centering
@@ -637,14 +637,14 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 
 Many other researchers have considered the importance of patterns and repetition in music. This led to development of many algorithms for the task.
 
-For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (“similarity matrix” for short) to visualise similarities between segments of music signals. Given a song, each element of a similarity matrix represents the pairwise similarity between two respective temporal windows of acoustic features. Furthermore, Foote and Cooper \cite{FooteCooper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
+For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (“similarity matrix” for short) to visualize similarities between segments of music signals. Given a song, each element of a similarity matrix represents the pairwise similarity between two respective temporal windows of acoustic features. Furthermore, Foote and Cooper \cite{FooteCooper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
 
-Many researchers developed their methods on top of this solution, approaching the problem of the segments grouping from different angles. Some were using Gaussian Mixture Models (GMM) - a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. One can think of mixture models as generalising k-means clustering to incorporate information about the covariance structure of the data as well as the centres of the latent Gaussians.
+Many researchers developed their methods on top of this solution, approaching the problem of the segments grouping from different angles. Some were using Gaussian Mixture Models (GMM) - a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. One can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians.
 
 Another approach seen in literature is a variant of Nearest Neighbour Search
-(NSS), also known as similarity search or closest point search. It is an optimisation problem for finding closest (or most similar) points. Closeness is typically expressed in terms of a dissimilarity function: the less similar the objects, the larger the function values. Formally, the nearest-neighbour (NN) search problem is defined as follows: given a set $S$ of points in a space $M$ and a query point $q \in M$, find the closest point in $S$ to $q$.
+(NSS), also known as similarity search or closest point search. It is an optimization problem for finding closest (or most similar) points. Closeness is typically expressed in terms of a dissimilarity function: the less similar the objects, the larger the function values. Formally, the nearest-neighbor (NN) search problem is defined as follows: given a set $S$ of points in a space $M$ and a query point $q \in M$, find the closest point in $S$ to $q$.
 
-Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora \cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix V is factorised into (usually) two matrices W and H, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. Since the problem is not exactly solvable in general, it is commonly approximated numerically.
+Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora \cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix V is factorized into (usually) two matrices W and H, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. Since the problem is not exactly solvable in general, it is commonly approximated numerically.
 
 Nieto and Jehan \cite{Nieto} based their approach on the NMF method, extending it by adding a convex constrain that results in weighted cluster centroids, representing the different sections of a musical piece in a more effective manner. 
 In standard NMF, matrix factor $W \in \Re^{m \times k}_{+}$, i.e., $W$ can be anything in that space. Convex NMF [11] restricts $W$ to a be convex combination of the input data vectors  $(v_1, \cdots, v_n)$. This greatly improves the quality of data representation of W. Furthermore, the resulting matrix factor H becomes more sparse and orthogonal.

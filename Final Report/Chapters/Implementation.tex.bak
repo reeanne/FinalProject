@@ -40,7 +40,7 @@ Using Essentia library \cite{essentia}, we implemented an extractor to retrieve 
 
 \item[BPM] - beats per minute value according to detected beats. This feature should be correlated with the arousal level - intuitively, the faster the song, the more energetic it seems. 
 
-\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds \cite{timber}, and formalise it acoustically as an indication of the amount of high-frequency content in a sound. That is why we believe the spectral centroid might be related to both valence and arousal.
+\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds \cite{timber}, and formalize it acoustically as an indication of the amount of high-frequency content in a sound. That is why we believe the spectral centroid might be related to both valence and arousal.
 
 \item[spectral RMS] (root mean square) - in physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. This is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
 
@@ -56,8 +56,8 @@ There have been some research focusing on relation between spectral energy and s
 
 \item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. 
 In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being 'in' a specific key, such as ``in the key of C major or in the key of F\#''. Sometimes the terms 'major' or 'minor' are appended, as 'in the key of A minor' or 'in the key of B major'.
-Broadly speaking the phrase 'in key of C' means that C is music's harmonic centre or tonic (the first degree of the scale, or the root of the scale). 
-The terms 'major' and 'minor' further imply the use of a major scale or a minor scale. Thus the phrase 'in the key of E major' implies a piece of tonal music harmonically centred on the note E and making use of a major scale whose first note, or tonic, is E. 
+Broadly speaking the phrase 'in key of C' means that C is music's harmonic center or tonic (the first degree of the scale, or the root of the scale). 
+The terms 'major' and 'minor' further imply the use of a major scale or a minor scale. Thus the phrase 'in the key of E major' implies a piece of tonal music harmonically centered on the note E and making use of a major scale whose first note, or tonic, is E. 
 We believe that those features can have an impact on both arousal and valence - songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
 
 \item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
@@ -70,7 +70,7 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
 
 \item[pitch salience of a spectrum] - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value.  Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. We think the value could have an effect on both the valence and arousal as pitch salience is often described as the probability of noticing a tone or clarity or strength of tone sensation.
 
-\item[mean and derivative of variance of sensory dissonance] (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalised dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonance between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to low valence.
+\item[mean and derivative of variance of sensory dissonance] (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalized dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonance between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to low valence.
 
 \end{description}
 
@@ -100,11 +100,11 @@ In our exploration we decided to base our research on data collected in ``1000 S
 
 As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in Appendix A (Chapter \ref{sec:appendixa}, Section \ref{sec:bivariatediagram}) for reference. 
 
-We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and derivative of variance (dvar) of dissonance}. 
+We found significant correlation between \textbf{valence} and derivative of varriance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and dvar of dissonance}. 
 
 For \textbf{arousal}, we noticed correlation with \textit{spectral centroid, pitch salience, zero-crossing rate}, both \textit{mean} and \textit{dva}r of  \textit{silence60, spectral energy, mean dissonance} and \textit{dynamic complexity}. 
 
-Values of all the features were then normalised between 0 and 1 to prepare them for the neural network training. 
+Values of all the features were then normalized between 0 and 1 to prepare them for the neural network training. 
 
 
 \begin{wrapfigure}{l}{0.5\textwidth}
@@ -122,7 +122,7 @@ Values of all the features were then normalised between 0 and 1 to prepare them 
 
 Our goal was to train the network to predict mean participant valence and arousal values for musical excerpts. 
 Our first network implementation was a supervised, feedforward network with backpropagation. 
-The input consisted of normalised values of 8 features:
+The input consisted of normalized values of 8 features:
 \textit{spectral centroid, pitch salience, zero-crossing rate, silence60 mean  and dvar, mean dissonance, dynamic complexity} and \textit{spectral energy}. 
 The network had two outputs - arousal and valence.
 
@@ -135,7 +135,7 @@ The network was built, trained, and tested using the pyBrain python library for 
 We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
 
 
-Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
+Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalization. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
 \begin{figure}[h]
 	\centering
@@ -168,7 +168,7 @@ Hidden neurons are the neurons that are neither in the input layer nor the outpu
 \end{table}
 
 
-As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that although for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
+As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that altough for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
 To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
 
 \begin{table}
@@ -243,7 +243,7 @@ Harmonic pitch class profiles (HPCP) is a vector of features extracted from an a
 
 HPCP features can be found and used to estimate the key of a piece, to measure similarity between two musical pieces and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise, for example an ambient noise or percussive sounds, independent of timbre and instrumentation and independent of loudness and dynamics.
 
-The General HPCP feature extraction procedure is summarised as follows:
+The General HPCP feature extraction procedure is summarized as follows:
 \begin{itemize}
 \item Input musical signal.
 \item Do spectral analysis to obtain the frequency components of the music signal.
@@ -252,7 +252,7 @@ The General HPCP feature extraction procedure is summarised as follows:
 \item Do peak detection. Only the local maximum values of the spectrum are considered.
 \item Do reference frequency computation procedure. Estimate the deviation with respect to 440 Hz.
 \item Do Pitch class mapping with respect to the estimated reference frequency. This is a procedure for determining the pitch class value from frequency values. A weighting scheme with cosine function is used. It considers the presence of harmonic frequencies (harmonic summation procedure), taking account a total of 8 harmonics for each frequency. In order to map the value on a one-third of a semitone, the size of the pitch class distribution vectors has to be equal to 36.
-\item Normalise the feature frame by frame dividing through the maximum value to eliminate dependency on global loudness.
+\item Normalize the feature frame by frame dividing through the maximum value to eliminate dependency on global loudness.
 \end{itemize}
 
 The discussion of results given each of the alternatives are discussed in Section \ref{sec:structurefeatures}.
@@ -272,11 +272,11 @@ The discussion of results given each of the alternatives are discussed in Sectio
 
 A series of transformations are applied to the data in order to better distinguish the different parts of a song. 
 
-First, we need to we synchronise our data with the beats detected in the musical track. This process allows to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames.
-The rationale for doing this is that many features, such as chord labels, between two consecutive beats tend to be the same. This leads to beat-synchronous chromagrams (or MFCCs). A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:beatsync}.
+First, we need to we synchronise our data with the beats detected in the musical track. This process allows to reduce local variation by summarizing (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames.
+The rationale for doing this is that many features, such as chord labels, between two consecutive beats tend to be the same. This leads to beat-synchronous chromagrams (or mfccs). A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:beatsync}.
 
-Next, a sliding median filter of size h is run against each of the beat-synchronous chromagram (MFCCs) channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining section boundary precision. 
-By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artefacts, which are irrelevant in our con- text. The Figure \ref{fig:slidingmedian} presents the chromagram after applying the sliding median filter.
+Next, a sliding median filter of size h is run against each of the beat-synchronous chromagram (mfcc) channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining section boundary precision. 
+By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artifacts, which are irrelevant in our con- text. The Figure \ref{fig:slidingmedian} presents the chromagram after applying the sliding median filter.
 
 
 \begin{figure}
@@ -301,7 +301,7 @@ By filtering features across time, we retain the most prominent chromas within t
 We then compute the SSM of the pre-filtered beat- synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
 where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
 
-Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 empirically gave us the best results), such that close similarities will be closer and distant similarities will be more distant. This improves the contrast of the SSM and results in clearer matrix factorisation. After the exponentiation, the final step consists of normalising the entire matrix between 0 (very dissimilar) and 1 (equal). We illustrate this enhancement in Figure 1.
+Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 empirically gave us the best results), such that close similarities will be closer and distant similarities will be more distant. This improves the contrast of the SSM and results in clearer matrix factorizations. After the exponentiation, the final step consists of normalizing the entire matrix between 0 (very dissimilar) and 1 (equal). We illustrate this enhancement in Figure 1.
 
 
 \vspace{10pt}
@@ -315,7 +315,7 @@ Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 
 
 \vspace{10pt}
 
-\subsection{Labelling}
+\subsection{Labeling}
 
 \vspace{20pt}
 
