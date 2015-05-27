@@ -102,7 +102,7 @@ class ProgressBar {
     
     func updateProgressBar() {
         var ratio: Float = 10;
-        var total: Int = Int(currentNumber);
+        var total: Int = Int(currentNumber)
         var result: Int;
         if (total < 0) {
             //    gameOver();
@@ -112,13 +112,27 @@ class ProgressBar {
         } else {
             multiplier.hidden = true;
             ratio = min(currentNumber * ratio / maxCurrentNumber, 100);
-            println(ratio)
             result = Int(ceil(ratio)) * 10;
             total = max(0, result);
-            println(total)
             progressBar.texture = progressBarTextures[total];
         }
-        
+    }
+    
+    /**
+        Returns an amount of stars that the player received based on the scored points.
+    */
+    func finalCountdown() -> Int {
+        var ratio: Float = Float(scored.text.toInt()!) / Float(totalScore.text.toInt()!);
+        println(ratio);
+        if (ratio >= 0.75) {
+            return 3;
+        } else if (ratio >= 0.5) {
+            return 2;
+        } else if (ratio >= 0.25) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
     
 }

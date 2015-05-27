@@ -298,7 +298,9 @@ By filtering features across time, we retain the most prominent chromas within t
         \label{fig:chromaclearer}
 \end{figure}
 
-We then compute the SSM of the pre-filtered beat- synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
+
+
+We then compute the SSM of the pre-filtered beat-synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
 where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
 
 Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 empirically gave us the best results), such that close similarities will be closer and distant similarities will be more distant. This improves the contrast of the SSM and results in clearer matrix factorisation. After the exponentiation, the final step consists of normalising the entire matrix between 0 (very dissimilar) and 1 (equal). We illustrate this enhancement in Figure 1.

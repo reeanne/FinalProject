@@ -11,7 +11,7 @@ import AudioToolbox
 import SpriteKit
 import Foundation
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
 
     var songPlayer: AVAudioPlayer! = nil;
     var user: UserObject! = nil;
@@ -104,7 +104,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         setupScene();
                         break;
                     default:
-                        println(node.name)
                         break;
 
                 }
@@ -224,9 +223,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func spawnNotes() {
+        if (songPlayer == nil) {
+            return;
+        }
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
         if (index > level.melody.pitch!.count) {
-            gameOver();
             return;
         }
         var pitch: Int = level.melody.pitch![index];
@@ -273,11 +274,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 2);
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
-        self.runAction(spawnThenDelayForever);
+        self.runAction(spawnThenDelayForever, withKey: "notes");
         
         self.addChild(_notes);
         self.addChild(_frets)
     }
+
+    
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+        songPlayer = nil;
+        showScore();
+        println("Printing score");
+    }
+
 
 
     func removeButtonPressed(colour: Colour) {
@@ -334,7 +343,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         beats = level.melody.beats;
         
+        
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
+        songPlayer.delegate = self
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
         setupSprites();
         
@@ -344,6 +355,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
 
+    }
+    
+    func play(url: NSURL) {
+        let item = AVPlayerItem(URL: url)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: item)
+        
+        let player = AVPlayer(playerItem: item)
+        player.play()
+    }
+    
+    func playerDidFinishPlaying(note: NSNotification) {
+        showScore();
     }
     
     func setupSprites() {
@@ -384,7 +408,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
         
         self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
-            ])));
+            ])), withKey: "mood");
         self.addChild(sparkEmitter)
     }
 
@@ -431,11 +455,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func showStars(number: Int) {
         var star: SKNode;
+        var pauseImage = middleParent.childNodeWithName("MiddlePause") as! SKSpriteNode;
+
         for (var i = 1; i <= number; i++) {
              middleParent.childNodeWithName("Star" + i.description)!.hidden = false;
         }
         for (var i = number + 1; i <= 3; i++) {
              middleParent.childNodeWithName("Star" + i.description)!.hidden = true;
+        }
+        if (number == 0) {
+            pauseImage.hidden = false;
+        } else {
+            pauseImage.hidden = true;
         }
     }
     
@@ -532,19 +563,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paused = pause;
         if (pause) {
             pauseButton.texture = constants.settings["play"];
-            songPlayer.pause();
-            waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
-            beatsTimer.invalidate();
+            if (songPlayer != nil) {
+                songPlayer.pause();
+                waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
+                beatsTimer.invalidate();
+            }
         } else {
             pauseButton.texture = constants.settings["pause"];
-            songPlayer.play();
-            if (waitFor != nil) {
-                var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo:    nil, repeats: false);
+            if (songPlayer != nil) {
+                songPlayer.play();
+                if (waitFor != nil) {
+                    var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo:    nil, repeats: false);
+                }
                 waitFor = nil;
             }
             
         }
         middleParent.hidden = !pause;
+    }
+    
+    func showScore() {
+        var stars = progressBar.finalCountdown();
+        middleParent.hidden = false;
+
+        showStars(stars)
     }
 
 
@@ -558,6 +600,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let transition = SKTransition.revealWithDirection(
                 SKTransitionDirection.Down, duration: 1.0)
             self.appDelegate.showMenu()
+            self.songPlayer.stop();
+            println ("removing");
+            self.removeActionForKey("mood");
+            self.removeActionForKey("notes");
         })
         
         let sequence = SKAction.sequence([fadeOut, welcomeReturn])

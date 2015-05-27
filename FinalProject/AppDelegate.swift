@@ -51,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func showMenu() {
         menuController = MenuController(nibName: "MenuView", bundle: nil)
-        if (user != nil){
+        if (user != nil) {
           //  menuController.showLoggedUserButtons(true);
         }
         window.contentViewController = menuController;
