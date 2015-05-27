@@ -602,6 +602,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             self.appDelegate.showMenu()
             self.songPlayer.stop();
             println ("removing");
+            self.mute();
             self.removeActionForKey("mood");
             self.removeActionForKey("notes");
         })

@@ -196,7 +196,9 @@ class MenuController: NSViewController {
     
     @IBAction func newLevelUoadLevelPressed(sender: AnyObject) {
         filePath = openfiledlg("Open file",  message:"Open file");
-        newLevelFilePath.stringValue = getFileName(NSURL.fileURLWithPath(filePath)!);
+        if (filePath != "") {
+            newLevelFilePath.stringValue = getFileName(NSURL.fileURLWithPath(filePath)!);
+        }
     }
     
     @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
