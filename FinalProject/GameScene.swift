@@ -205,6 +205,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         node.zPosition = -1;
         progressBar.miss();
     }
+    
+    
+    func playSong() {
+        songPlayer.play();
+    }
 
     
     func spawnFrets() {
@@ -261,7 +266,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         }
 
     }
-
+    
 
     func createNotes() {
         var distanceToMove: CGFloat = self.frame.size.height + 2 * constants.textures[Colour.Blue]!["normal"]!.size().height;
@@ -283,6 +288,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
         songPlayer = nil;
+        stopIssuing();
         showScore();
         println("Printing score");
     }
@@ -350,22 +356,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         setupSprites();
         
         // TODO: Fix quick Game.
+        println(NSTimeInterval(offsetPresspoint))
         songPlayer.prepareToPlay();
-        songPlayer.play();
+        var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("playSong"), userInfo: nil, repeats: false);
+
+        // songPlayer.play();
         
         beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+    }
 
-    }
     
-    func play(url: NSURL) {
-        let item = AVPlayerItem(URL: url)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: item)
-        
-        let player = AVPlayer(playerItem: item)
-        player.play()
-    }
-    
+
     func playerDidFinishPlaying(note: NSNotification) {
         showScore();
     }
@@ -581,12 +582,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         }
         middleParent.hidden = !pause;
     }
-    
+
+
     func showScore() {
         var stars = progressBar.finalCountdown();
         middleParent.hidden = false;
-
+        stopIssuing();
         showStars(stars)
+    }
+
+
+    func stopIssuing() {
+        self.removeActionForKey("mood");
+        self.removeActionForKey("notes");
     }
 
 
@@ -603,8 +611,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             self.songPlayer.stop();
             println ("removing");
             self.mute();
-            self.removeActionForKey("mood");
-            self.removeActionForKey("notes");
+
         })
         
         let sequence = SKAction.sequence([fadeOut, welcomeReturn])

@@ -53,14 +53,18 @@ class MenuController: NSViewController {
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         loadingProgressIndicator.hidden = true;
         showCreateCharacterElements(false);
-        showLoggedUserButtons(false);
         showChooseLevelButtons(false);
         showSelectUserButtons(false);
         showLevelLoadButtons(false);
-        showMainMenuButtons(true);
+        if (appDelegate.user == nil) {
+            showLoggedUserButtons(false);
+            showMainMenuButtons(true);
+        } else {
+            showMainMenuButtons(false);
+            showLoggedUserButtons(true);
+        }
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
     }
-
 
 
     /********* Event handlers. ********/
