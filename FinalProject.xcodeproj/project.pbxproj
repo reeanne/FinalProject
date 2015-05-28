@@ -15,6 +15,7 @@
 		421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
 		422A80191B029247006AFDF0 /* FinalProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 422A80171B029247006AFDF0 /* FinalProject.xcdatamodeld */; };
 		424CEAE01B15E9FC0030338B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 424CEADF1B15E9FC0030338B /* Credits.rtf */; };
+		424CEAE21B1738500030338B /* MusicEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEAE11B1738500030338B /* MusicEntry.swift */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
 		4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF371AFBDD24009AC03E /* FireFlies.sks */; };
@@ -72,6 +73,7 @@
 		421728581AF2DC6900AF7A55 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		422A80181B029247006AFDF0 /* FinalProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinalProject.xcdatamodel; sourceTree = "<group>"; };
 		424CEADF1B15E9FC0030338B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		424CEAE11B1738500030338B /* MusicEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEntry.swift; sourceTree = "<group>"; };
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
 		4292DF371AFBDD24009AC03E /* FireFlies.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireFlies.sks; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				4292DF431AFBDDD7009AC03E /* Spark.sks */,
 				4292DF451AFBDDED009AC03E /* Bokeh.sks */,
 				4292DF461AFBDDED009AC03E /* bokeh.png */,
+				424CEAE11B1738500030338B /* MusicEntry.swift */,
 				4292DF381AFBDD24009AC03E /* spark.png */,
 				421728581AF2DC6900AF7A55 /* Constants.swift */,
 				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
@@ -357,6 +360,7 @@
 				421728591AF2DC6900AF7A55 /* Constants.swift in Sources */,
 				422A80191B029247006AFDF0 /* FinalProject.xcdatamodeld in Sources */,
 				42F1F79E1ADFFBA000731127 /* Melody.swift in Sources */,
+				424CEAE21B1738500030338B /* MusicEntry.swift in Sources */,
 				42016A8A1AE1C0F40046FC15 /* GameController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

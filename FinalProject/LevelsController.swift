@@ -30,6 +30,65 @@ class LevelsController: NSViewController {
     }
     
     
+    
+    func getMetaDataForSong(fileURL: NSURL) -> MusicEntry {
+        
+        var asset: AVURLAsset = AVURLAsset(URL:fileURL, options:nil);
+        var musicEntry: MusicEntry = MusicEntry();
+        for format in asset.availableMetadataFormats {
+            for item in asset.metadataForFormat(format as! String) {
+                var current = item as! AVMetadataItem;
+                if (item.commonKey == "title") {
+                    musicEntry.title = current.value() as! String;
+                }
+                if (item.commonKey == "artist") {
+                     musicEntry.artist = current.value() as! String;
+                }
+                if (item.commonKey == "albumName") {
+                     musicEntry.album = current.value() as! String;
+                }
+                if (item.commonKey == "artwork") {
+                    var data: NSData = current.value() as! NSData;
+                    musicEntry.artwork = NSImage(data: data);
+                    
+                }
+            }
+        }
+        return musicEntry;
+    }
+    
+    /*
+    for (NSString *format in [assest availableMetadataFormats]) {
+    for (AVMetadataItem *item in [assest metadataForFormat:format]) {
+    if ([[item commonKey] isEqualToString:@"title"]) {
+    musicItem.strSongTitle = (NSString *)[item value];
+    }
+    if ([[item commonKey] isEqualToString:@"artist"]) {
+    musicItem.strArtistName = (NSString *)[item value];
+    }
+    if ([[item commonKey] isEqualToString:@"albumName"]) {
+    musicItem.strAlbumName = (NSString *)[item value];
+    }
+    if ([[item commonKey] isEqualToString:@"artwork"]) {
+    UIImage *img = nil;
+    if ([item.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
+    img = [UIImage imageWithData:[item.value copyWithZone:nil]];
+    }
+    else { // if ([item.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
+    NSData *data = [(NSDictionary *)[item value] objectForKey:@"data"];
+    img = [UIImage imageWithData:data]  ;
+    }
+    musicItem.imgArtwork = img;
+    }
+    }
+    }
+    }
+
+*/
+    func getArtwork() {
+           }
+    
+    
     func initialiseGridView() {
         
     }

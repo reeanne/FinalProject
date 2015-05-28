@@ -359,8 +359,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         println(NSTimeInterval(offsetPresspoint))
         songPlayer.prepareToPlay();
         var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("playSong"), userInfo: nil, repeats: false);
-
-        // songPlayer.play();
         
         beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
     }
@@ -383,7 +381,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
                                   totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode,
                                   multiplier: self.childNodeWithName("ScoreParent")?.childNodeWithName("Multiplier") as! SKLabelNode);
         
-        // createBackground();
         showStars(0);
         buttons = initialiseButtons();
         pressedButtons = [Bool](count: limit, repeatedValue: false);
@@ -487,9 +484,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         sparkEmitter.particleColorSequence = nil;
         if (moodIndex < level.melody.arousal.count) {
             sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
-                green: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
+                green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
-            println("here  " + level.melody.arousal.description + level.melody.valence.description);
+            println("here  " + level.melody.arousal[moodIndex].description + level.melody.valence[moodIndex].description);
             moodIndex++;
         }
     }
@@ -507,6 +504,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
 
     
+    /**
+        Plays the sound effect for missed point.
+    */
     func playWoosh() {
         if (volume == 0) {
             AudioServicesPlaySystemSound(constants.wooshSound);
@@ -519,7 +519,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         
     }
 
-
+    /**
+        Detects whether the game is currently muted and unmutes it if so, mutes it otherwise.
+    */
     func mute() {
         if (songPlayer.volume == 0) {
             songPlayer.volume = volume;
@@ -559,6 +561,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
 
 
+    /**
+    */
     func pause(pause: Bool) {
         
         self.paused = pause;
@@ -583,7 +587,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         middleParent.hidden = !pause;
     }
 
-
+    /** 
+        Triggered once the song is finished.
+    */
     func showScore() {
         var stars = progressBar.finalCountdown();
         middleParent.hidden = false;
@@ -608,10 +614,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             let transition = SKTransition.revealWithDirection(
                 SKTransitionDirection.Down, duration: 1.0)
             self.appDelegate.showMenu()
-            self.songPlayer.stop();
-            println ("removing");
-            self.mute();
-
+            if (self.songPlayer != nil) {
+                self.songPlayer.stop();
+                println ("removing");
+                self.mute();
+            }
         })
         
         let sequence = SKAction.sequence([fadeOut, welcomeReturn])
