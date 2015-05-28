@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CollectionItem">
+            <connections>
+                <outlet property="artwork" destination="OqW-aB-FuK" id="HaT-bE-cgd"/>
+                <outlet property="levelName" destination="heO-Kd-4hF" id="L7A-P1-Fwp"/>
+                <outlet property="score" destination="Sje-fT-em9" id="Gmq-ev-Vtn"/>
+                <outlet property="star1" destination="y7m-fn-bM7" id="dbn-VR-Oxm"/>
+                <outlet property="star2" destination="9cU-YN-W1F" id="RnD-n1-tR3"/>
+                <outlet property="star3" destination="NA5-0r-dGF" id="RmO-CG-x4C"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customFormatter id="dhW-js-Pe5"/>
+        <customView identifier="Item" id="kqj-88-TQa" customClass="Coll">
+            <rect key="frame" x="0.0" y="0.0" width="124" height="136"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <imageView identifier="Artwork" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqW-aB-FuK">
+                    <rect key="frame" x="14" y="36" width="100" height="100"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="21S-5W-MCl"/>
+                </imageView>
+                <imageView identifier="Star1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y7m-fn-bM7">
+                    <rect key="frame" x="5" y="30" width="30" height="30"/>
+                    <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="F5Y-SM-KOA"/>
+                </imageView>
+                <imageView identifier="Star2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-YN-W1F">
+                    <rect key="frame" x="49" y="30" width="30" height="30"/>
+                    <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="Eji-xs-9UT"/>
+                </imageView>
+                <imageView identifier="Star3" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NA5-0r-dGF">
+                    <rect key="frame" x="89" y="30" width="30" height="30"/>
+                    <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="uSH-8x-dks"/>
+                </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heO-Kd-4hF">
+                    <rect key="frame" x="3" y="11" width="68" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" identifier="Name" title="Label" id="VoZ-f2-teN">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField identifier="Points" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sje-fT-em9">
+                    <rect key="frame" x="83" y="11" width="38" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="1qH-hw-oag">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <point key="canvasLocation" x="281" y="277"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="light_star.png" width="278.79071044921875" height="291.62789916992188"/>
+    </resources>
+</document>

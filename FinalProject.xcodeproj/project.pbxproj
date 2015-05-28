@@ -16,8 +16,10 @@
 		422A80191B029247006AFDF0 /* FinalProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 422A80171B029247006AFDF0 /* FinalProject.xcdatamodeld */; };
 		424CEAE01B15E9FC0030338B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 424CEADF1B15E9FC0030338B /* Credits.rtf */; };
 		424CEAE21B1738500030338B /* MusicEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEAE11B1738500030338B /* MusicEntry.swift */; };
+		424CEAE41B17A3940030338B /* CollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 424CEAE31B17A3940030338B /* CollectionItem.xib */; };
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
+		427187BF1B17AC400042A315 /* CollectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427187BE1B17AC400042A315 /* CollectionItem.swift */; };
 		4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF371AFBDD24009AC03E /* FireFlies.sks */; };
 		4292DF3A1AFBDD24009AC03E /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF381AFBDD24009AC03E /* spark.png */; };
 		4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF3B1AFBDD4F009AC03E /* Magic.sks */; };
@@ -74,8 +76,10 @@
 		422A80181B029247006AFDF0 /* FinalProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinalProject.xcdatamodel; sourceTree = "<group>"; };
 		424CEADF1B15E9FC0030338B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		424CEAE11B1738500030338B /* MusicEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEntry.swift; sourceTree = "<group>"; };
+		424CEAE31B17A3940030338B /* CollectionItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionItem.xib; sourceTree = "<group>"; };
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
+		427187BE1B17AC400042A315 /* CollectionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
 		4292DF371AFBDD24009AC03E /* FireFlies.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireFlies.sks; sourceTree = "<group>"; };
 		4292DF381AFBDD24009AC03E /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		4292DF3B1AFBDD4F009AC03E /* Magic.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Magic.sks; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				42016A921AE1D48C0046FC15 /* GameView.xib */,
 				42016A901AE1D42B0046FC15 /* MenuView.xib */,
 				42E7E3BA1B15D9CA007C1A1F /* ScoreView.xib */,
+				424CEAE31B17A3940030338B /* CollectionItem.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 				427BB9B81AE2E168006EB148 /* Views */,
 				42A67D381A52DCE50094808D /* AppDelegate.swift */,
 				42A67D3A1A52DCE50094808D /* GameScene.swift */,
+				427187BE1B17AC400042A315 /* CollectionItem.swift */,
 				4292DF371AFBDD24009AC03E /* FireFlies.sks */,
 				4292DF3B1AFBDD4F009AC03E /* Magic.sks */,
 				4292DF3D1AFBDD6A009AC03E /* Rain.sks */,
@@ -320,6 +326,7 @@
 				4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */,
 				42E7E3BB1B15D9CA007C1A1F /* ScoreView.xib in Resources */,
 				4292DF401AFBDD93009AC03E /* Smoke.sks in Resources */,
+				424CEAE41B17A3940030338B /* CollectionItem.xib in Resources */,
 				4292DF441AFBDDD7009AC03E /* Spark.sks in Resources */,
 				421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */,
 				42016A931AE1D48C0046FC15 /* GameView.xib in Resources */,
@@ -355,6 +362,7 @@
 				42016A881AE19B500046FC15 /* MenuController.swift in Sources */,
 				42AE097C1B1213670033E830 /* ProgressBar.swift in Sources */,
 				42F1F7791ADFA4F900731127 /* UserObject.swift in Sources */,
+				427187BF1B17AC400042A315 /* CollectionItem.swift in Sources */,
 				42F1F79C1ADFFB9F00731127 /* User.swift in Sources */,
 				42EBB4D51A54AB980038845F /* LevelObject.swift in Sources */,
 				421728591AF2DC6900AF7A55 /* Constants.swift in Sources */,
