@@ -37,8 +37,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
+    
     var menuController: MenuController! = nil;
     var gameController: GameController! = nil;
+    var levelsController: LevelsController! = nil;
     
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -51,9 +53,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func showMenu() {
         menuController = MenuController(nibName: "MenuView", bundle: nil)
-        if (user != nil) {
-          //  menuController.showLoggedUserButtons(true);
-        }
         window.contentViewController = menuController;
     }
     
@@ -61,6 +60,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         gameController = GameController(nibName: "GameView", bundle: nil);
         window.contentViewController = gameController;
+    }
+    
+    func showLevelSelection() {
+        levelsController = LevelsController(nibName: "ScoreView", bundle: nil);
+        window.contentViewController = levelsController;
     }
 
     

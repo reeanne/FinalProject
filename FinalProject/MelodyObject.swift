@@ -46,13 +46,13 @@ class MelodyObject {
     
     func printData() {
         var audioFile: AudioFileID = nil;
-        var id3DataSize:UInt32 = 0
+        var id3DataSize: UInt32 = 0
         var err = AudioFileGetPropertyInfo(audioFile, UInt32(kAudioFilePropertyID3Tag), &id3DataSize, nil)
         if err != Int32(noErr) {
             NSLog("AudioFileGetPropertyInfo failed for id3 tag")
         }
         
-        var piDict:NSDictionary = NSDictionary()
+        var piDict: NSDictionary = NSDictionary()
         var piDataSize : UInt32 = UInt32(sizeof(NSDictionary))
         err = AudioFileGetProperty(audioFile, UInt32(kAudioFilePropertyInfoDictionary), &piDataSize, &piDict)
         if err != Int32(noErr) {

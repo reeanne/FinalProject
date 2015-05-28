@@ -26,17 +26,61 @@ class LevelsController: NSViewController {
         super.viewDidLoad()
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
-        
+        userData = getUser(appDelegate.user.username);
+        var levelFiles = getLevelFiles(userData);
+        var musicData: MusicEntry;
+        for levelFile in levelFiles {
+            musicData = getMetaDataForSong(levelFile)!;
+        }
+
     }
     
+    func getMetaDataForSong(fileURL: NSURL) -> MusicEntry? {
+        
+        var result = MusicEntry();
+        var id3DataSize: UInt32 = 0;
+        
+        var audioFileID: AudioFileID = nil;
+        
+        var err = AudioFileOpenURL(fileURL, Int8(kAudioFileReadPermission), 0, &audioFileID)
     
+        err = AudioFileGetPropertyInfo(audioFileID, UInt32(kAudioFilePropertyID3Tag), &id3DataSize, nil)
+        if err != Int32(noErr) {
+            NSLog("AudioFileGetPropertyInfo failed for id3 tag")
+            return nil;
+        }
+        
+        var dictionary: NSDictionary = NSDictionary()
+        var piDataSize : UInt32 = UInt32(sizeof(NSDictionary))
+        err = AudioFileGetProperty(audioFileID, UInt32(kAudioFilePropertyInfoDictionary), &piDataSize, &dictionary)
+        println(dictionary.description);
+        if err != Int32(noErr) {
+            NSLog("AudioFileGetProperty failed for property info dictionary")
+        }
+        println(dictionary.debugDescription);
+        var album: AnyObject? = dictionary[NSString(string: kAFInfoDictionary_Album)];
+        var artist: AnyObject? = dictionary[NSString(string: kAFInfoDictionary_Artist)];
+        var title: AnyObject? = dictionary[NSString(string: kAFInfoDictionary_Title)];
+        
+        if (album != nil) { result.album = album as! String }
+        if (artist != nil) { result.artist = artist as! String }
+        if (title != nil) { result.title = title as! String }
+        
+        return result;
+        
+    }
+
     
+    /*
     func getMetaDataForSong(fileURL: NSURL) -> MusicEntry {
         
         var asset: AVURLAsset = AVURLAsset(URL:fileURL, options:nil);
         var musicEntry: MusicEntry = MusicEntry();
         for format in asset.availableMetadataFormats {
+            println(format)
             for item in asset.metadataForFormat(format as! String) {
+                println();
+                println(item)
                 var current = item as! AVMetadataItem;
                 if (item.commonKey == "title") {
                     musicEntry.title = current.value() as! String;
@@ -56,35 +100,8 @@ class LevelsController: NSViewController {
         }
         return musicEntry;
     }
-    
-    /*
-    for (NSString *format in [assest availableMetadataFormats]) {
-    for (AVMetadataItem *item in [assest metadataForFormat:format]) {
-    if ([[item commonKey] isEqualToString:@"title"]) {
-    musicItem.strSongTitle = (NSString *)[item value];
-    }
-    if ([[item commonKey] isEqualToString:@"artist"]) {
-    musicItem.strArtistName = (NSString *)[item value];
-    }
-    if ([[item commonKey] isEqualToString:@"albumName"]) {
-    musicItem.strAlbumName = (NSString *)[item value];
-    }
-    if ([[item commonKey] isEqualToString:@"artwork"]) {
-    UIImage *img = nil;
-    if ([item.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
-    img = [UIImage imageWithData:[item.value copyWithZone:nil]];
-    }
-    else { // if ([item.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-    NSData *data = [(NSDictionary *)[item value] objectForKey:@"data"];
-    img = [UIImage imageWithData:data]  ;
-    }
-    musicItem.imgArtwork = img;
-    }
-    }
-    }
-    }
-
 */
+    
     func getArtwork() {
            }
     
@@ -116,8 +133,8 @@ class LevelsController: NSViewController {
     /**
         Retrieves all the levels from the Core Data.
     */
-    func getLevels(owner: User?) -> [String] {
-        var levels: [String] = [];
+    func getLevelFiles(owner: User?) -> [NSURL] {
+        var levels: [NSURL] = [];
         let fetchRequest = NSFetchRequest(entityName: "Level")
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         if ((owner) != nil) {
@@ -128,10 +145,21 @@ class LevelsController: NSViewController {
         
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
             for level in fetchResults {
-                levels.append(level.name);
+                levels.append(NSURL(fileURLWithPath: level.melody.file)!);
             }
         }
         return levels;
+    }
+    
+    func getUser(name: String) -> User {
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        let predicate = NSPredicate(format: "username = %@", name)
+        fetchRequest.predicate = predicate;
+        var result: User! = nil;
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [User] {
+            result = fetchResults[0];
+        }
+        return result;
     }
 
 }

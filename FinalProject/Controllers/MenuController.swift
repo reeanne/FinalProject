@@ -138,8 +138,10 @@ class MenuController: NSViewController {
     @IBAction func loggedLoadLevelButtonPressed(sender: AnyObject) {
         if (userData == nil) {
             userData = getUser(appDelegate.user.username);
+            appDelegate.user = UserObject(userName: userData.username);
         }
-        var levels: [String] = getLevels(userData);
+        appDelegate.showLevelSelection();
+/*        var levels: [String] = getLevels(userData);
         levelSelectLevelPopup.addItemsWithTitles(levels);
         showMainMenuButtons(false);
         showCreateCharacterElements(false);
@@ -147,6 +149,7 @@ class MenuController: NSViewController {
         showSelectUserButtons(false);
         showLevelLoadButtons(false);
         showChooseLevelButtons(true);
+*/
     }
     
     /** Choose Level **/
