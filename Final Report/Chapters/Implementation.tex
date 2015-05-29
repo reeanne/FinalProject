@@ -98,7 +98,7 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
 
 In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
-As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in Appendix A (Chapter \ref{sec:appendixa}, Section \ref{sec:bivariatediagram}) for reference. 
+As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in Appendix A (Chapter \ref{AppendixA}, Section \ref{sec:bivariatediagram}) for reference. 
 
 We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and derivative of variance (dvar) of dissonance}. 
 
@@ -261,69 +261,146 @@ The discussion of results given each of the alternatives are discussed in Sectio
 
 \subsection{Feature Preparation}
 
-\begin{wrapfigure}{l}{0.5\textwidth}
-  \vspace{-30pt}
-  \begin{center}
-    \includegraphics[width=0.5\textwidth]{Figures/myANN}
-  \end{center}
-  \caption{A diagram depicting the structure of our artificial neural network for mood detection.}
-\label{fig:originalchroma}
-\end{wrapfigure}
+In this section, we will describe the process of preparation of the features for improving the performance of the algorithm. For simplicity and clarity, when talking about the features, we will first focus on analysis based on HPCPs, followed by one on MFCCs.
+We decided to investigate both possibilities as they present the track from completely different perspective. For example, the HPCP chroma might fail to distinguish vocal and instrumental parts if the underlying harmonic patterns are exactly the same. On the other hand, when working with MFCCs we expect the opposite behaviour - good performance on parts that are different in terms of timbre.
 
-A series of transformations are applied to the data in order to better distinguish the different parts of a song. 
-
-First, we need to we synchronise our data with the beats detected in the musical track. This process allows to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames.
-The rationale for doing this is that many features, such as chord labels, between two consecutive beats tend to be the same. This leads to beat-synchronous chromagrams (or MFCCs). A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:beatsync}.
-
-Next, a sliding median filter of size h is run against each of the beat-synchronous chromagram (MFCCs) channels. The median filter gives sharper edges than a regular mean filter, which is useful in obtaining section boundary precision. 
-By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artefacts, which are irrelevant in our con- text. The Figure \ref{fig:slidingmedian} presents the chromagram after applying the sliding median filter.
-
+\subsubsection*{Harmonic Pitch Class Profiles}
 
 \begin{figure}
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/gsmm}
-                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
-                \label{fig:beatsync}
+                \includegraphics[width=\textwidth]{Figures/hpcp_unsynched_chroma}
+                \caption{Example of a chromagram without any further enhancement. }
+                \label{fig:unchroma}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/imm}
-                \caption{Schematic principle of the generative IMM. At each frame, all the U sources, each filtered by K filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
-                \label{fig:slidingmedian}
+                \includegraphics[width=\textwidth]{Figures/hpcp_synched_chroma}
+                \caption{Example of a chromagram after beat-synchronisation.}
+                \label{fig:synchroma}
         \end{subfigure}
-          \caption{Diagram of both models presented in the paper \cite{durrieu}.}
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-        \label{fig:chromaclearer}
+          \caption{Harmonic pitch class profiles chroma features calculated for a song by The Beatles- ``Help!''.}
+        \label{fig:chromacomparison}
+\end{figure}
+
+A series of transformations are applied to the data in order to distinguish the different parts of a song more efficiently with preserving the accuracy.. 
+
+First, we need to we synchronise our data with the beats detected in the musical track. This process allows to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames. The rationale for doing so is that many features, such as chord labels that occur between two consecutive beats tend to be the same. Thanks to focusing on the values of the features on a per-beat basis, we manage to largely normalise variations in tempo. However, the main advantage of applying the beat-synchronisation is that we manage to reduce the amount of data to analyse, and hence, the size of the matrix, we are operating on.
+
+This leads to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/hpcp_synched_log_chroma}
+                \caption{Chroma feature after applying log normalisation.}
+                \label{fig:logchroma}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/hpcp_synched_median_chroma}
+                \caption{Chroma feature after applying sliding median filter of size h=9.}
+                \label{fig:slidingchroma}
+        \end{subfigure}
+          \caption{Beat-synchronised chroma created for song ``Help!'' by The Beatles with applied enhancements.}
+        \label{fig:chromaenhance}
+\end{figure}
+
+Following the beat-synchronisation, we apply log normalisation to the chroma feature. This allows us to reduce the effect the outliers from the trend will have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure \ref{fig:logchroma}.
+
+As the next step, we applied a sliding median filter of size h is run against each of the beat-synchronous and log-normalised chromagram channels, which can be seen in Figure \ref{fig:slidingchroma}. Thanks to the median filter, we can come up with sharper edges than with a regular mean filter. This becomes really useful in obtaining section boundary precision.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/hpcp_unsynched_ssm}
+                \caption{Similarity matrix generated from harmonic pitch class profiles chroma without further enhancement.}
+                \label{fig:unSSM}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/log_ssm_synched}
+                \caption{Similarity matrix generated from beat-synchronised harmonic pitch class profiles chroma.}
+                \label{fig:synSSM}
+        \end{subfigure}
+          \caption{Comparison of SSM generated from unprocessed and enhanced chromas.}
+        \label{fig:ssmcomparison}
+\end{figure}
+
+By filtering features across time, we retain the most prominent chromas within the h-size window and remove smaller artefacts, which are irrelevant in our con- text. The Figure \ref{fig:slidingmedian} presents the chromagram after applying the sliding median filter.
+
+We then proceed to compute the Self Similarity Matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a N x N symmetric matrix D, such that D(i, j) contains said distance. In particular, D(i, j) stores the same value ad D(j, i), and for every i D(i, i) is equal to 0.
+
+We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: euclidean, manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
+As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved is much weaker. Not only there are fewer blue spots signifying small or even no similarity between points, but the amount of points that are significantly similar is also reduced.
+
+
+\begin{figure}[b]
+        \centering
+        \begin{subfigure}[b]{0.31\textwidth}
+                \includegraphics[width=\textwidth]{Figures/ssm_euclidean}
+                \caption{Similarity matrix calculated from harmonic pitch class profiles chroma using Euclidean distance.}
+                \label{fig:euclidean}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.31\textwidth}
+                \includegraphics[width=\textwidth]{Figures/ssm_manhattan}
+                \caption{Similarity matrix calculated from harmonic pitch class profiles chroma using Manhattan distance.}
+                \label{fig:manhattan}
+        \end{subfigure}
+         \begin{subfigure}[b]{0.31\textwidth}
+                \includegraphics[width=\textwidth]{Figures/ssm_cosine}
+                \caption{Similarity matrix calculated from harmonic pitch class profiles chroma using cosine distance.}
+                \label{fig:cosine}
+        \end{subfigure}
+          \caption{Comparison of SSM computed using different distance formulas. The SSM calculated using correlation distance can be seen in Figure \ref{fig:synSSM}.}
+        \label{fig:ssmdistance}
 \end{figure}
 
 
+When we look at the SSM computed using cosine distance, we can notice that the amount of the similar points has increased, more similar to the the one generated using the correlation distance. However, the correlation distance on Figure \ref{fig:synSSM} contains more dark blue spots, implying that it exposes more beats that are, in fact, not similar. This is why, in our design of the structure retrieval of a song we decided to use SSM computed using correlation distance.
 
-We then compute the SSM of the pre-filtered beat-synchronous chromagram. The SSM gives us pair-wise com- parisons of a given set of features using a specific distance measure and stores the results in an N x N symmetric matrix D, such that D(i, j) holds the distance between the features of the beat indices i and j. In this case D(i,j) = D(j,i) and D(i,i) = 0. It is essentially a specific instance of the more generic recurrence plots [16], but using distances (or similarities) instead of binary values. In our experiments we found that the Correlation distance gave better results than other distances, including the Euclidean, Cosine or Manhat- tan distance. The correlation distance is defined as follows:
-where || dot ||2 stands for the Euclidean distance, miu x denotes the mean of the feature vector x, and · represents the dot prod- uct.
+\vspace{10pt}
 
-Finally, we enhance the SSM by using a power-law ex- pansion (using the power 2 empirically gave us the best results), such that close similarities will be closer and distant similarities will be more distant. This improves the contrast of the SSM and results in clearer matrix factorisation. After the exponentiation, the final step consists of normalising the entire matrix between 0 (very dissimilar) and 1 (equal). We illustrate this enhancement in Figure 1.
+\subsubsection*{Mel-frequency Cepstral Coefficients}
 
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/mfcc_no_log_sync}
+                \caption{Similarity matrix generated from Mel-frequency Cepstral Coefficients without log normalisation.}
+                \label{fig:unMFCC}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/mfcc_ssm_synched}
+                \caption{Similarity matrix generated from Mel-frequency Cepstral Coefficients with application of log normalisation.}
+                \label{fig:synMFCC}
+        \end{subfigure}
+          \caption{Comparison of SSM generated from unprocessed and enhanced MFCCs.}
+        \label{fig:MFCCcomparison}
+\end{figure}
+
+Similarly to the case of Harmonic Pitch Class Profiles, we start the preparation of the features by beat-synchronisation to decrease the size of the data for further analysis.
+
+Now we have to determine whether log normalisation will improve the clarity of the SSM. As we can see in Figure \ref{fig:MFCCcomparison}, the use of log normalisation could decrease the amount of segments found, as more similar points are exposed.
+
+Finally, we compute the SSM. Again, we investigated the possibility of computing it using Euclidean, Manhattan and cosine distances. The result of this process can be seen in \ref{fig:synMFCC}.
 
 \vspace{10pt}
 
 \subsection{C-NMF}
-
+We can view the score matrix as an array of column vectors. Each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. This observation pushes us to Non-negative Matrix Factorization (NMF) [11].
+The N x N score matrix is approximately factorized into product of a N x k matrix W and a k x N matrix H. The jth column of W can be viewed as the vector template for the j th segment type. The j th column of H describes the intensities of the k segment types for the jth window. An example in shown in Figure 4.
 
 \vspace{10pt}
 
 \subsection{Boundaries}
 
+
+ 
 \vspace{10pt}
 
 \subsection{Labelling}
 
 \vspace{20pt}
-
-
-
-
 
 
 

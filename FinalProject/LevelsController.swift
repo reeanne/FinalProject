@@ -19,7 +19,7 @@ class LevelsController: NSViewController {
     var filePath: String! = nil;
     var appDelegate: AppDelegate! = nil;
     var collArray: NSMutableArray! = nil;
-    var collection: NSMutableArray = NSMutableArray();
+    var collection: NSMutableArray! = nil;
     
     
     @IBOutlet var arrayController: NSArrayController!
@@ -28,6 +28,15 @@ class LevelsController: NSViewController {
     
 
     
+    override func awakeFromNib() {
+        collection = NSMutableArray();/*
+        var size = NSMakeSize(150, 150)
+        collectionView.minItemSize = size;
+        collectionView.maxItemSize = size;
+*/
+
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,14 +46,21 @@ class LevelsController: NSViewController {
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
         userData = getUser(appDelegate.user.username);
         var levelFiles = getLevelFiles(userData);
-        var item: CollectionItem;
+        var image: NSImage;
+        var title: String;
+        var score: Int = 0;
+        var size: Int = 0;
         for (index, (name, url)) in enumerate(levelFiles) {
-            item = CollectionItem();
-            item.showArtwork(getAlbumArtworkInfo(url));
-            item.showLevelName(name)
-            collArray.insertObject(item, atIndex: index)
+            image = getAlbumArtworkInfo(url);
+            title = name;
+            size = arrayController.arrangedObjects.count;
+            //arrayController.insert(item);
+            arrayController.insertObject(["LevelName": title , "Artwork": image, "Score": score], atArrangedObjectIndex: size);
         }
-
+        println(arrayController);
+        println("\n deeper")
+        println(arrayController.arrangedObjects);
+        
     }
 
 

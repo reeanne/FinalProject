@@ -12,7 +12,6 @@ import Cocoa
 
 
 class CollectionItem: NSCollectionViewItem {
-    
 
     
     @IBOutlet weak var star1: NSImageView!
@@ -49,6 +48,11 @@ class CollectionItem: NSCollectionViewItem {
         artwork.image = image;
     }
     
+    override func copyWithZone(zone: NSZone) -> AnyObject {
+        var result: CollectionItem = super.copyWithZone(zone) as! CollectionItem;
+        NSBundle.mainBundle().loadNibNamed("CollectionItem", owner: result, topLevelObjects: nil);
+        return result;
+    }
     
     
 }

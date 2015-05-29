@@ -95,6 +95,7 @@ def filter_activation_matrix(G, median_size):
 
 
 def get_segmentation(X, rank, median_size, rank_labels, R_labels, iterations=300, in_labels=None):
+    import pylab as plt
     """
     Gets the segmentation (boundaries and labels) from the factorization
     matrices.
@@ -147,6 +148,11 @@ def get_segmentation(X, rank, median_size, rank_labels, R_labels, iterations=300
                                 iterations=iterations)
     else:
         labels = np.ones(len(bound_idxs) - 1)
+
+    #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
+    #for b in bound_idxs:
+    #    plt.axvline(b, linewidth=2.0, color="k")
+    #plt.show()
 
     return bound_idxs, labels
 
@@ -228,7 +234,7 @@ def get_predominant(sampling_rate):
                                                hopSize=hopSize);
 
     # Load audio file, apply equal loudness filter, and compute predominant melody
-    audio = MonoLoader(filename = "1000.mp3")()
+    audio = MonoLoader(filename = "Help.mp3")()
     audio = EqualLoudness()(audio)
     pitch, confidence = run_predominant_melody(audio)
 
@@ -247,7 +253,7 @@ def extract_features():
     sampling_rate = 11025
 
     print("Loading the file.")
-    waveform, _ = librosa.load("1000.mp3", sr=11025)
+    waveform, _ = librosa.load("Help.mp3", sr=11025)
     print("HPSS.")
     waveform_harmonic, waveform_percussive = librosa.effects.hpss(waveform)
 
@@ -284,9 +290,25 @@ def extract_features():
         with open('data.json', 'w') as outfile:
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
+    print "unsynched"
+    imshow(mfcc.T, interpolation="nearest", aspect="auto")
+    show()
+
     print("Beat synchronising.")
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
+
+    print "synched"
+    imshow(bs_mfcc.T, interpolation="nearest", aspect="auto")
+    show()
+
+    unsynchSSM = lognormalise_chroma(mfcc)
+    unsynchSSM = compute_ssm(unsynchSSM)
+
+    print "ssm unsynch"
+    plt.imshow(unsynchSSM.T, interpolation="nearest", aspect="auto")
+    plt.show()
+
 
     return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate
 
@@ -299,8 +321,9 @@ def lognormalise_chroma(C):
     return C
 
 
-def compute_ssm(X, metric="seuclidean"):
+def compute_ssm(X):
     """Computes the self-similarity matrix of X."""
+    #D = distance.pdist(X, metric='correlation')
     D = distance.pdist(X, metric='correlation')
     D = distance.squareform(D)
     D /= D.max()
@@ -318,15 +341,29 @@ def newfunction():
     iterations = 500 
     H = 20
 
-    #swapped
+    #swap
     hpcp, mfcc, beats, dur = extract_features()
-    hpcp = lognormalise_chroma(hpcp)
-    hpcp = compute_ssm(hpcp)
+    #hpcp = lognormalise_chroma(hpcp)
+
+    print "ssm synched"
+    #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
+    #plt.show()
 
     if hpcp.shape[0] >= H:
         # Median filter
-        hpcp = median_filter(hpcp, M=20)
+        print "median filter synched"
+        hpcp = median_filter(hpcp, M=9)
+
+        #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
+        #plt.show()
+
+        print "ssm synched"
+        hpcp = compute_ssm(hpcp)
+
+        plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
+        plt.show()
         # Find the boundary indices and labels using matrix factorization
+
         print("Segmentation.")
         est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, iterations=iterations, in_labels=None)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))

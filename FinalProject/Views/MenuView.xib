@@ -82,7 +82,7 @@
                 <button verticalHuggingPriority="750" id="vLY-qc-eGD">
                     <rect key="frame" x="242" y="484" width="324" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Paulina's Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YAG-Yf-Zyy">
+                    <buttonCell key="cell" type="push" title="Tap Along" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YAG-Yf-Zyy">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system" size="28"/>
                     </buttonCell>
