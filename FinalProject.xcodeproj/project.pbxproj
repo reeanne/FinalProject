@@ -14,6 +14,7 @@
 		421728591AF2DC6900AF7A55 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421728581AF2DC6900AF7A55 /* Constants.swift */; };
 		421884A71AF1B11C00E037B0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42A67D401A52DCE60094808D /* MainMenu.xib */; };
 		422A80191B029247006AFDF0 /* FinalProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 422A80171B029247006AFDF0 /* FinalProject.xcdatamodeld */; };
+		423DA0BA1B1A2E4F0054EC15 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423DA0B91B1A2E4F0054EC15 /* CollectionView.swift */; };
 		424CEAE01B15E9FC0030338B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 424CEADF1B15E9FC0030338B /* Credits.rtf */; };
 		424CEAE21B1738500030338B /* MusicEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEAE11B1738500030338B /* MusicEntry.swift */; };
 		424CEAE41B17A3940030338B /* CollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 424CEAE31B17A3940030338B /* CollectionItem.xib */; };
@@ -74,6 +75,7 @@
 		42016A921AE1D48C0046FC15 /* GameView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameView.xib; path = Views/GameView.xib; sourceTree = "<group>"; };
 		421728581AF2DC6900AF7A55 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		422A80181B029247006AFDF0 /* FinalProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinalProject.xcdatamodel; sourceTree = "<group>"; };
+		423DA0B91B1A2E4F0054EC15 /* CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		424CEADF1B15E9FC0030338B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		424CEAE11B1738500030338B /* MusicEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEntry.swift; sourceTree = "<group>"; };
 		424CEAE31B17A3940030338B /* CollectionItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionItem.xib; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				427BB9B81AE2E168006EB148 /* Views */,
 				42A67D381A52DCE50094808D /* AppDelegate.swift */,
 				42A67D3A1A52DCE50094808D /* GameScene.swift */,
+				423DA0B91B1A2E4F0054EC15 /* CollectionView.swift */,
 				427187BE1B17AC400042A315 /* CollectionItem.swift */,
 				4292DF371AFBDD24009AC03E /* FireFlies.sks */,
 				4292DF3B1AFBDD4F009AC03E /* Magic.sks */,
@@ -186,8 +189,8 @@
 				4292DF431AFBDDD7009AC03E /* Spark.sks */,
 				4292DF451AFBDDED009AC03E /* Bokeh.sks */,
 				4292DF461AFBDDED009AC03E /* bokeh.png */,
-				424CEAE11B1738500030338B /* MusicEntry.swift */,
 				4292DF381AFBDD24009AC03E /* spark.png */,
+				424CEAE11B1738500030338B /* MusicEntry.swift */,
 				421728581AF2DC6900AF7A55 /* Constants.swift */,
 				426CDCD91A54D7B3006A19A6 /* MusicButton.swift */,
 				42AE097B1B1213670033E830 /* ProgressBar.swift */,
@@ -353,6 +356,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				423DA0BA1B1A2E4F0054EC15 /* CollectionView.swift in Sources */,
 				42AE097E1B15D55B0033E830 /* LevelsController.swift in Sources */,
 				42F1F7A21ADFFBA000731127 /* Level.swift in Sources */,
 				426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */,
@@ -487,10 +491,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = FinalProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "";
 			};
@@ -503,10 +504,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = FinalProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FinalProject/yaml-swift.swift/build",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "";
 			};

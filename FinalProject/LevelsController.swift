@@ -45,25 +45,21 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
         collectionView.maxItemSize = NSSize(width: 150, height: 150);
         
         var levelFiles = getLevelFiles(userData);
-        var image: NSImage;
-        var title: String;
-        var score: Int = 0;
         var size: Int = 0;
+        var musicEntry: MusicEntry;
         
         var sizeCol = NSMakeSize(150, 150)
-        
+
         for (index, (name, url)) in enumerate(levelFiles) {
-            image = getAlbumArtworkInfo(url);
-            title = name;
+            musicEntry = MusicEntry(levelName: name, artwork: getAlbumArtworkInfo(url), score: 0)
             size = arrayController.arrangedObjects.count;
-            arrayController.insertObject(["levelName": title , "artwork": image, "score": score], atArrangedObjectIndex: size);
+            arrayController.insertObject(musicEntry, atArrangedObjectIndex: size);
         }
         
         println("collection")
         println(collectionView.content);
-        
     }
-
+    
 
     func getAlbumArtworkInfo(fileURL: NSURL) -> NSImage {
 

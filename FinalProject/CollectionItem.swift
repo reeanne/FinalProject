@@ -24,6 +24,7 @@ class CollectionItem: NSCollectionViewItem {
     @IBOutlet weak var score: NSTextField!
     
     
+    
     func showStars(number: Int) {
         if (number < 3) {
             star3.hidden = true;

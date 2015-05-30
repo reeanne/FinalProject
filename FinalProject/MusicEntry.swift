@@ -10,21 +10,15 @@ import Foundation
 import AppKit
 
 
-class MusicEntry {
+class MusicEntry: NSObject {
     
-    var title: String! = nil;
-    var album: String! = nil;
-    var artist: String! = nil;
+    var levelName: String! = nil;
+    var score: Int = 0;
     var artwork: NSImage! = nil;
     
-    
-    init() {}
-    
-    init(title: String, album: String, artist: String,s artwork: NSImage) {
-        self.title = title;
-        self.album = album;
-        self.artist = artist;
+    init(levelName: String, artwork: NSImage, score: Int) {
+        self.levelName = levelName;
         self.artwork = artwork;
-
+        self.score = score;
     }
 }
