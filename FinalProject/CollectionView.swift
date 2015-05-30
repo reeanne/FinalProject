@@ -19,21 +19,10 @@ class CollectionView: NSCollectionView  {
         var item: MusicEntry = object as! MusicEntry;
         var newItem: CollectionItem = super.newItemForRepresentedObject(object) as! CollectionItem;
         var view = newItem.view;
-        
-        println()
-        println()
-        println()
-        println("sdfsfdsfs")
-        println(object);
-        println()
-        println()
-        println("view exposedBindings")
-        println(view.exposedBindings);
-        
 
         newItem.levelName.bind("stringValue", toObject: item, withKeyPath: "levelName", options: nil)
         newItem.score.bind("stringValue", toObject: object, withKeyPath: "score", options: nil)
-//        view.bin
+        newItem.artwork.bind("image", toObject: object, withKeyPath: "artwork", options: nil)
         return newItem;
     }
 }

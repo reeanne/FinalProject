@@ -22,6 +22,10 @@
             <rect key="frame" x="0.0" y="0.0" width="150" height="147"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <imageView identifier="Artwork" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqW-aB-FuK">
+                    <rect key="frame" x="25" y="41" width="100" height="100"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="21S-5W-MCl"/>
+                </imageView>
                 <imageView identifier="Star1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y7m-fn-bM7">
                     <rect key="frame" x="17" y="41" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="F5Y-SM-KOA"/>
@@ -50,10 +54,6 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <imageView identifier="Artwork" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqW-aB-FuK">
-                    <rect key="frame" x="25" y="41" width="100" height="100"/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="21S-5W-MCl"/>
-                </imageView>
             </subviews>
             <point key="canvasLocation" x="282" y="282.5"/>
         </customView>

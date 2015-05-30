@@ -55,9 +55,6 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
             size = arrayController.arrangedObjects.count;
             arrayController.insertObject(musicEntry, atArrangedObjectIndex: size);
         }
-        
-        println("collection")
-        println(collectionView.content);
     }
     
 
@@ -72,8 +69,6 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
             var subitem = item as! AVMetadataItem;
             if (item.keySpace == AVMetadataKeySpaceID3) {
                 var d: NSData = subitem.value().copyWithZone(nil) as! NSData;
-                println(object_getClass(d).description)
-                println(d.dynamicType);
                 currentSongArtwork = NSImage(data: d)!;
             } else if (item.keySpace == AVMetadataKeySpaceiTunes) {
                 println("iTunes song - your album retrieval failed.")
