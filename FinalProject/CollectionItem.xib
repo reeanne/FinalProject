@@ -19,27 +19,27 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customFormatter id="dhW-js-Pe5"/>
         <customView identifier="Item" id="kqj-88-TQa">
-            <rect key="frame" x="0.0" y="0.0" width="124" height="136"/>
+            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <imageView identifier="Artwork" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqW-aB-FuK">
-                    <rect key="frame" x="14" y="36" width="100" height="100"/>
+                    <rect key="frame" x="14" y="25" width="100" height="100"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="21S-5W-MCl"/>
                 </imageView>
                 <imageView identifier="Star1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y7m-fn-bM7">
-                    <rect key="frame" x="5" y="30" width="30" height="30"/>
+                    <rect key="frame" x="5" y="19" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="F5Y-SM-KOA"/>
                 </imageView>
                 <imageView identifier="Star2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-YN-W1F">
-                    <rect key="frame" x="49" y="30" width="30" height="30"/>
+                    <rect key="frame" x="49" y="19" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="Eji-xs-9UT"/>
                 </imageView>
                 <imageView identifier="Star3" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NA5-0r-dGF">
-                    <rect key="frame" x="89" y="30" width="30" height="30"/>
+                    <rect key="frame" x="89" y="19" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="uSH-8x-dks"/>
                 </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heO-Kd-4hF">
-                    <rect key="frame" x="3" y="11" width="68" height="17"/>
+                    <rect key="frame" x="3" y="5" width="68" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" identifier="Name" title="Label" id="VoZ-f2-teN">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -47,7 +47,7 @@
                     </textFieldCell>
                 </textField>
                 <textField identifier="Points" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sje-fT-em9">
-                    <rect key="frame" x="83" y="11" width="38" height="17"/>
+                    <rect key="frame" x="83" y="5" width="38" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="1qH-hw-oag">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -55,7 +55,7 @@
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="281" y="277"/>
+            <point key="canvasLocation" x="283.5" y="271.5"/>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="Mpd-eO-K9d"/>
     </objects>

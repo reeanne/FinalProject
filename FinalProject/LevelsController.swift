@@ -11,7 +11,7 @@ import Foundation
 import AVFoundation
 
 
-class LevelsController: NSViewController {
+class LevelsController: NSViewController, NSCollectionViewDelegate {
     
     var managedObjectContext: NSManagedObjectContext! = nil;
     
@@ -29,22 +29,20 @@ class LevelsController: NSViewController {
 
     
     override func awakeFromNib() {
-        collection = NSMutableArray();/*
-        var size = NSMakeSize(150, 150)
-        collectionView.minItemSize = size;
-        collectionView.maxItemSize = size;
-*/
-
+        collection = NSMutableArray();
     }
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collArray = NSMutableArray();
-
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
         userData = getUser(appDelegate.user.username);
+        collArray = NSMutableArray();
+        
+        collectionView.delegate = self
+        collectionView.minItemSize = NSSize(width: 150, height: 150);
+        collectionView.maxItemSize = NSSize(width: 150, height: 150);
         
         var levelFiles = getLevelFiles(userData);
         var image: NSImage;
@@ -52,11 +50,13 @@ class LevelsController: NSViewController {
         var score: Int = 0;
         var size: Int = 0;
         
+        var sizeCol = NSMakeSize(150, 150)
+        
         for (index, (name, url)) in enumerate(levelFiles) {
             image = getAlbumArtworkInfo(url);
             title = name;
             size = arrayController.arrangedObjects.count;
-            arrayController.insertObject(["LevelName": title , "Artwork": image, "Score": score], atArrangedObjectIndex: size);
+            arrayController.insertObject(["levelName": title , "artwork": image, "score": score], atArrangedObjectIndex: size);
         }
         
         println("collection")
@@ -65,12 +65,12 @@ class LevelsController: NSViewController {
     }
 
 
-
     func getAlbumArtworkInfo(fileURL: NSURL) -> NSImage {
 
         var asset: AVURLAsset = AVURLAsset(URL: fileURL, options:nil);
-        var artworks = AVMetadataItem.metadataItemsFromArray(asset.commonMetadata, withKey: AVMetadataCommonKeyArtwork, keySpace: AVMetadataKeySpaceCommon)
         var currentSongArtwork: NSImage = NSImage(byReferencingFile: "play.png")!;
+        var artworks = AVMetadataItem.metadataItemsFromArray(asset.commonMetadata,
+            withKey: AVMetadataCommonKeyArtwork, keySpace: AVMetadataKeySpaceCommon)
         
         for item in artworks {
             var subitem = item as! AVMetadataItem;
@@ -78,12 +78,9 @@ class LevelsController: NSViewController {
                 var d: NSData = subitem.value().copyWithZone(nil) as! NSData;
                 println(object_getClass(d).description)
                 println(d.dynamicType);
-              //  var dp: NSDictionary = subitem.value().copyWithZone(nil) as! NSDictionary;
-                //println(
                 currentSongArtwork = NSImage(data: d)!;
-               // var currentSongArtwork = NSImage(data: dp.objectForKey("data") as! NSData);
             } else if (item.keySpace == AVMetadataKeySpaceiTunes) {
-                println("siabababa")
+                println("iTunes song - your album retrieval failed.")
             } else {
                 currentSongArtwork = NSImage(byReferencingFile: "play.png")!
             }
