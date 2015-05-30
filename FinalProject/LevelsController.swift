@@ -45,21 +45,22 @@ class LevelsController: NSViewController {
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
         managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext;
         userData = getUser(appDelegate.user.username);
+        
         var levelFiles = getLevelFiles(userData);
         var image: NSImage;
         var title: String;
         var score: Int = 0;
         var size: Int = 0;
+        
         for (index, (name, url)) in enumerate(levelFiles) {
             image = getAlbumArtworkInfo(url);
             title = name;
             size = arrayController.arrangedObjects.count;
-            //arrayController.insert(item);
             arrayController.insertObject(["LevelName": title , "Artwork": image, "Score": score], atArrangedObjectIndex: size);
         }
-        println(arrayController);
-        println("\n deeper")
-        println(arrayController.arrangedObjects);
+        
+        println("collection")
+        println(collectionView.content);
         
     }
 
@@ -70,6 +71,7 @@ class LevelsController: NSViewController {
         var asset: AVURLAsset = AVURLAsset(URL: fileURL, options:nil);
         var artworks = AVMetadataItem.metadataItemsFromArray(asset.commonMetadata, withKey: AVMetadataCommonKeyArtwork, keySpace: AVMetadataKeySpaceCommon)
         var currentSongArtwork: NSImage = NSImage(byReferencingFile: "play.png")!;
+        
         for item in artworks {
             var subitem = item as! AVMetadataItem;
             if (item.keySpace == AVMetadataKeySpaceID3) {

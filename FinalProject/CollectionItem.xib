@@ -12,6 +12,7 @@
                 <outlet property="star1" destination="y7m-fn-bM7" id="dbn-VR-Oxm"/>
                 <outlet property="star2" destination="9cU-YN-W1F" id="RnD-n1-tR3"/>
                 <outlet property="star3" destination="NA5-0r-dGF" id="RmO-CG-x4C"/>
+                <outlet property="view" destination="kqj-88-TQa" id="kcS-v6-aMB"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>

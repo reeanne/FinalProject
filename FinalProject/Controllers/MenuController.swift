@@ -140,15 +140,15 @@ class MenuController: NSViewController {
             userData = getUser(appDelegate.user.username);
             appDelegate.user = UserObject(userName: userData.username);
         }
-        //appDelegate.showLevelSelection();
-        var levels: [String] = getLevels(userData);
+        appDelegate.showLevelSelection();
+        /*var levels: [String] = getLevels(userData);
         levelSelectLevelPopup.addItemsWithTitles(levels);
         showMainMenuButtons(false);
         showCreateCharacterElements(false);
         showLoggedUserButtons(false);
         showSelectUserButtons(false);
         showLevelLoadButtons(false);
-        showChooseLevelButtons(true);
+        showChooseLevelButtons(true);*/
     }
     
     /** Choose Level **/

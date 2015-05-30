@@ -47,6 +47,7 @@ def cnmf(S, rank, iterations=500, hull=False):
     nmf_mdl.factorize(niter=iterations)
     F = np.asarray(nmf_mdl.W)
     G = np.asarray(nmf_mdl.H)
+    
     return F, G
 
 
@@ -82,11 +83,12 @@ def compute_labels(X, rank, median_size, bound_idxs, iterations=300):
 
 def filter_activation_matrix(G, median_size):
     """Filters the activation matrix G, and returns a flattened copy."""
-    idx = np.argmax(G, axis=1)
-    max_idx = np.arange(G.shape[0])
-    max_idx = (max_idx, idx.flatten())
-    G[:, :] = 0
-    G[max_idx] = idx + 1
+    idx = np.argmax(G, axis=1)              #Indices of the maximum values in every row.
+    print idx
+    max_idx = np.arange(G.shape[0])         # create an array with numbers 0.. G.shape[0]
+    max_idx = (max_idx, idx.flatten())      
+    G[:, :] = 0                             # reset G
+    G[max_idx] = idx + 1                    
 
     G = np.sum(G, axis=1)
     G = median_filter(G[:, np.newaxis], median_size)
@@ -290,24 +292,24 @@ def extract_features():
         with open('data.json', 'w') as outfile:
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
-    print "unsynched"
-    imshow(mfcc.T, interpolation="nearest", aspect="auto")
-    show()
+    #print "unsynched"
+    #imshow(mfcc.T, interpolation="nearest", aspect="auto")
+    #show()
 
     print("Beat synchronising.")
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
 
-    print "synched"
-    imshow(bs_mfcc.T, interpolation="nearest", aspect="auto")
-    show()
+    #print "synched"
+    #imshow(bs_mfcc.T, interpolation="nearest", aspect="auto")
+    #show()
 
     unsynchSSM = lognormalise_chroma(mfcc)
     unsynchSSM = compute_ssm(unsynchSSM)
 
-    print "ssm unsynch"
-    plt.imshow(unsynchSSM.T, interpolation="nearest", aspect="auto")
-    plt.show()
+    #print "ssm unsynch"
+    #plt.imshow(unsynchSSM.T, interpolation="nearest", aspect="auto")
+    #plt.show()
 
 
     return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate
@@ -341,11 +343,10 @@ def newfunction():
     iterations = 500 
     H = 20
 
-    #swap
-    hpcp, mfcc, beats, dur = extract_features()
-    #hpcp = lognormalise_chroma(hpcp)
+    mfcc, hpcp, beats, dur = extract_features()
+    hpcp = lognormalise_chroma(hpcp)
 
-    print "ssm synched"
+    #print "ssm synched"
     #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
     #plt.show()
 
@@ -357,11 +358,11 @@ def newfunction():
         #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
         #plt.show()
 
-        print "ssm synched"
+        #print "ssm synched"
         hpcp = compute_ssm(hpcp)
 
-        plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
-        plt.show()
+        #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
+        #plt.show()
         # Find the boundary indices and labels using matrix factorization
 
         print("Segmentation.")

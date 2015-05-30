@@ -392,18 +392,86 @@ The result of this process can be seen in Figure \ref{fig:synMFCC}.
 
 We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorization (NMF) could be useful in our situation.
 
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{Figures/NMF}
+  \end{center}
+  \caption{Illustration of approximate non-negative matrix factorization: the matrix X is represented by the two smaller matrices W and H.}
+\label{fig:NMF}
+\end{wrapfigure}
+
 In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where \textit{k} is the rank of the composition. This can be described as $X \approx WH$. The \textit{j}th column of $W$ can be viewed as the vector template for the \textit{i}th segment type. The \textit{j}th column of $H$ describes the intensities of the \textit{k}th segment types for the \textit{j}th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
+
+However, in data mining, sometimes it can be beneficial to ensure X to contain meaningful “cluster centroids”, i.e., to restrict W to be convex combinations of data points.
+C-NMF adds a constrain to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^{T}$,... ,  $\boldsymbol{w}_{k}^{T}$),  such that its columns  $\boldsymbol{w}^{T}$  are, in fact,  convex combinations of the features of $X$:
+
+\begin{equation}
+\boldsymbol{w}_{j}^{T} = \boldsymbol{x}_{1}^{T}f_{1j} + \boldsymbol{x}_{2}^{T}f_{2j} + ... + \boldsymbol{x}_{N}^{T}f_{Nj}  \hspace{45pt}   j \in [1 : k]
+\end{equation}
+
+The linear combination is convex if all coefficients $f_{ij}$ are positive and the sum of each set of coefficients  $\boldsymbol{f}^{T}_{j}$ must be 1. Formally, this can be represented as:
+$f_{ij} \geq 0,  f_{ij} = 1 $
+
+This results in $W = XF$, where $F \in \mathbb{R}^{N \times k}$, which makes the rows $\boldsymbol{f}_{i}$ interpretable as weighted cluster centroids. The decomposition matrices $R_{j}$, are obtained as follows:  $R_{j} =  \boldsymbol{w}^{T}_{j}\boldsymbol{h}_{j}$, where $j \in [1 : k]$. Finally, C-NMF can be formally characterised as: $X \approx XFH$.
+
+In C-NMF, the matrix W is a set of convex combinations of the rows of the input matrix X, which contrasts with NMF, where no such constraint exists. This means that, each row $x_{i}$ represents similarity of the time frame i with the rest of the time frames, storing information about the time frae i across the entire song.
+
+==== maybe try to get the plots of the decomposition matrices? =====
+
+Apart from this, another important benefit of C-NMF over NMF is that matrices $F$ and $G$ become naturally sparse when adding the convex constrain. In case of NMF the $G$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation \cite{Nieto}. 
+
+
+\begin{figure}[t]
+        \centering
+        \begin{subfigure}[b]{0.30\textwidth}
+                \includegraphics[width=\textwidth]{Figures/underfitting}
+                \caption{The k value is too small - many long distances to centroids.}
+                \label{fig:euclidean}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.30\textwidth}
+                \includegraphics[width=\textwidth]{Figures/justright}
+                \caption{Good k value - distances to centroids are quite short.}
+                \label{fig:manhattan}
+        \end{subfigure}
+         \begin{subfigure}[b]{0.30\textwidth}
+                \includegraphics[width=\textwidth]{Figures/overfitting}
+                \caption{The k value is too big - little improvement in average distance.}
+                \label{fig:cosine}
+        \end{subfigure}
+          \caption{Diagrams depicting impact of the k value on the clustering result \cite{kcluster}.}
+        \label{fig:ssmdistance}
+\end{figure}
 
 
 \vspace{10pt}
 
+
+\subsection{K-means Clustering}
+
+Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
+
+K-means clustering is considered one of the simplest unsupervised learning algorithms that can solve the well know clustering problem. It follows a simple and easy way of classifying a given data set through a certain number of clusters (assume k clusters).
+
+The main idea  is to define k centres, one for each cluster. Much care should be put into their placement, as different location of centres causes different result. This is why the most intuitive solution is to put them as far apart as possible. The next step is to take one point after another from the data set and associate it with the nearest centre, 
+
+When all the points have been assigned to some centre, k new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new center. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
+
+Those two phases are repeated in a loop. As a result, we may notice that the k centers change their location step by step until no more changes are done, and the algorithm converges. 
+
+
 \subsection{Boundaries}
 
+
+
+We run k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row- vector features. We efficiently obtain the section boundaries that best divide each section of the matrices by not only look- ing at local similarities but also the global song structure due to the properties of the SSM. The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster.
+One computational advantage of applying k-means clus- tering to an NMF (either convex or not) decomposition matrix is that, when whitening the data (i.e. making it unit variance), due to the fact that we use a SSM as an input and the sim- ilarities between NMF and k-means clustering [19], we ob- tain a one-dimensional feature array of observations (i.e. all rows become equal), which makes the computational process cheaper. Once we have boundaries for each matrix, we com- bine them within a distance window of size w so that bound- aries close to each other get merged in their average location.
 
  
 \vspace{10pt}
 
 \subsection{Labelling}
+
+The main idea is to use the diagonals of the C-NMF decom- position matrices to form a new feature space from which to cluster the different sections, as described in [9], using the previously found boundaries. In this work we make use of the Euclidean distance for clustering, and put the exploration of different distance measures like the Bayesian Information Criterion (BIC) or the Mahalanobis aside for future work. The main drawback of this method is to decide on the number of sections K, which is used to cluster the new feature space and it is a highly sensitive parameter to the musical style of the dataset.
 
 \vspace{20pt}
 
