@@ -322,7 +322,7 @@ As the next step, we applied a sliding median filter of size h is run against ea
                 \caption{Similarity matrix generated from beat-synchronised harmonic pitch class profiles chroma.}
                 \label{fig:synSSM}
         \end{subfigure}
-          \caption{Comparison of SSM generated from unprocessed and enhanced chromas.}
+          \caption{Comparison of SSM generated from unprocessed and enhanced chromas, using correlation distance.}
         \label{fig:ssmcomparison}
 \end{figure}
 
@@ -374,21 +374,26 @@ When we look at the SSM computed using cosine distance, we can notice that the a
                 \caption{Similarity matrix generated from Mel-frequency Cepstral Coefficients with application of log normalisation.}
                 \label{fig:synMFCC}
         \end{subfigure}
-          \caption{Comparison of SSM generated from unprocessed and enhanced MFCCs.}
+          \caption{Comparison of SSM generated from unprocessed and enhanced MFCCs, using correlation distance.}
         \label{fig:MFCCcomparison}
 \end{figure}
 
-Similarly to the case of Harmonic Pitch Class Profiles, we start the preparation of the features by beat-synchronisation to decrease the size of the data for further analysis.
+Similarly to the case of Harmonic Pitch Class Profiles, we start the preparation of the features by beat-synchronisation to decrease the size of the data for further analysis. 
 
 Now we have to determine whether log normalisation will improve the clarity of the SSM. As we can see in Figure \ref{fig:MFCCcomparison}, the use of log normalisation could decrease the amount of segments found, as more similar points are exposed.
 
-Finally, we compute the SSM. Again, we investigated the possibility of computing it using Euclidean, Manhattan and cosine distances. The result of this process can be seen in \ref{fig:synMFCC}.
+Finally, we compute the SSM. Again, we investigated the possibility of generating it using Euclidean, Manhattan and cosine distances. The diagrams presenting our findings can be seen in Appendix B (\ref{AppendixB}). Similarly to when we were working with HPCPs, the correlation distance gave us the most contrasted, sharper images. 
+
+The result of this process can be seen in Figure \ref{fig:synMFCC}.
 
 \vspace{10pt}
 
 \subsection{C-NMF}
-We can view the score matrix as an array of column vectors. Each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. This observation pushes us to Non-negative Matrix Factorization (NMF) [11].
-The N x N score matrix is approximately factorized into product of a N x k matrix W and a k x N matrix H. The jth column of W can be viewed as the vector template for the j th segment type. The j th column of H describes the intensities of the k segment types for the jth window. An example in shown in Figure 4.
+
+We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorization (NMF) could be useful in our situation.
+
+In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where \textit{k} is the rank of the composition. This can be described as $X \approx WH$. The \textit{j}th column of $W$ can be viewed as the vector template for the \textit{i}th segment type. The \textit{j}th column of $H$ describes the intensities of the \textit{k}th segment types for the \textit{j}th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
+
 
 \vspace{10pt}
 
