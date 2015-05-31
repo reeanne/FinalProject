@@ -17,24 +17,16 @@
             <rect key="frame" x="0.0" y="0.0" width="856" height="648"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h7t-qs-ZRC">
-                    <rect key="frame" x="242" y="484" width="324" height="32"/>
-                    <buttonCell key="cell" type="push" title="Tap Along" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="D5B-ib-yRE">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="28"/>
-                    </buttonCell>
-                </button>
                 <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rZZ-at-E69">
-                    <rect key="frame" x="108" y="54" width="603" height="350"/>
+                    <rect key="frame" x="127" y="53" width="603" height="347"/>
                     <clipView key="contentView" misplaced="YES" id="7wn-Uf-OJB">
                         <rect key="frame" x="1" y="1" width="248" height="158"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView id="WSH-Wa-08p" customClass="CollectionView" customModule="FinalProject" customModuleProvider="target">
+                            <collectionView selectable="YES" id="WSH-Wa-08p" customClass="CollectionView" customModule="FinalProject" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="248" height="158"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="primaryBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.62" colorSpace="calibratedRGB"/>
-                                <color key="secondaryBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.57999999999999996" colorSpace="calibratedRGB"/>
+                                <color key="primaryBackgroundColor" red="0.37254901960784315" green="0.37254901960784315" blue="0.37254901960784315" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <binding destination="IER-Oz-V7E" name="content" keyPath="arrangedObjects" id="Jzn-iW-RZ1"/>
                                     <binding destination="IER-Oz-V7E" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="Jzn-iW-RZ1" id="bzb-Hf-thE"/>
@@ -52,8 +44,45 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="zQY-pD-pkL">
-                    <rect key="frame" x="388" y="560" width="32" height="32"/>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gWG-rD-Dxh">
+                    <rect key="frame" x="366" y="413" width="124" height="32"/>
+                    <buttonCell key="cell" type="push" title="Choose Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xt9-cp-Tr3">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="chooseLevel:" target="-2" id="Q9w-gH-tf5"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h7t-qs-ZRC">
+                    <rect key="frame" x="266" y="482" width="324" height="32"/>
+                    <buttonCell key="cell" type="push" title="Tap Along" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="D5B-ib-yRE">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system" size="28"/>
+                    </buttonCell>
+                </button>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2uX-fX-vmP">
+                    <rect key="frame" x="206" y="413" width="116" height="32"/>
+                    <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="v8n-e0-ZNF">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="deleteLevel:" target="-2" id="3hg-iJ-7Bh"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vhJ-Q8-DGT">
+                    <rect key="frame" x="530" y="413" width="116" height="32"/>
+                    <buttonCell key="cell" type="push" title="Back" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="H3D-d1-9ZR">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="back:" target="-2" id="NFh-bi-Omn"/>
+                    </connections>
+                </button>
+                <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="zQY-pD-pkL">
+                    <rect key="frame" x="412" y="210" width="32" height="32"/>
                     <accessibility description="Main Melody Processing"/>
                 </progressIndicator>
             </subviews>

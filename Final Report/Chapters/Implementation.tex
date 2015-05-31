@@ -416,62 +416,56 @@ This results in $W = XF$, where $F \in \mathbb{R}^{N \times k}$, which makes the
 
 In C-NMF, the matrix W is a set of convex combinations of the rows of the input matrix X, which contrasts with NMF, where no such constraint exists. This means that, each row $x_{i}$ represents similarity of the time frame i with the rest of the time frames, storing information about the time frae i across the entire song.
 
+By computing the C-NMF we separate basic structural parts. In the next sec- tion, we describe how the factorization via C-NMF relates to structure and show how we can use that result for music structure discovery.   ============ change ============
+
 ==== maybe try to get the plots of the decomposition matrices? =====
 
 Apart from this, another important benefit of C-NMF over NMF is that matrices $F$ and $G$ become naturally sparse when adding the convex constrain. In case of NMF the $G$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation \cite{Nieto}. 
 
-
-\begin{figure}[t]
-        \centering
-        \begin{subfigure}[b]{0.30\textwidth}
-                \includegraphics[width=\textwidth]{Figures/underfitting}
-                \caption{The k value is too small - many long distances to centroids.}
-                \label{fig:euclidean}
-        \end{subfigure}%
-        \begin{subfigure}[b]{0.30\textwidth}
-                \includegraphics[width=\textwidth]{Figures/justright}
-                \caption{Good k value - distances to centroids are quite short.}
-                \label{fig:manhattan}
-        \end{subfigure}
-         \begin{subfigure}[b]{0.30\textwidth}
-                \includegraphics[width=\textwidth]{Figures/overfitting}
-                \caption{The k value is too big - little improvement in average distance.}
-                \label{fig:cosine}
-        \end{subfigure}
-          \caption{Diagrams depicting impact of the k value on the clustering result \cite{kcluster}.}
-        \label{fig:ssmdistance}
-\end{figure}
-
-
 \vspace{10pt}
-
-
-\subsection{K-means Clustering}
-
-Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
-
-K-means clustering is considered one of the simplest unsupervised learning algorithms that can solve the well know clustering problem. It follows a simple and easy way of classifying a given data set through a certain number of clusters (assume k clusters).
-
-The main idea  is to define k centres, one for each cluster. Much care should be put into their placement, as different location of centres causes different result. This is why the most intuitive solution is to put them as far apart as possible. The next step is to take one point after another from the data set and associate it with the nearest centre, 
-
-When all the points have been assigned to some centre, k new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new center. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
-
-Those two phases are repeated in a loop. As a result, we may notice that the k centers change their location step by step until no more changes are done, and the algorithm converges. 
 
 
 \subsection{Boundaries}
 
+Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/F}
+                \caption{The cluster matrix W.}
+                \label{fig:Wmatrix}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/G}
+                \caption{The activation matrix H.}
+                \label{fig:Hmatrix}
+        \end{subfigure}
+          \caption{The result of C-NMF computed for ``Help!'' by The Beatles with rank k = 3.}
+        \label{fig:CNMFbeatles}
+\end{figure}
 
 
-We run k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row- vector features. We efficiently obtain the section boundaries that best divide each section of the matrices by not only look- ing at local similarities but also the global song structure due to the properties of the SSM. The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster.
-One computational advantage of applying k-means clus- tering to an NMF (either convex or not) decomposition matrix is that, when whitening the data (i.e. making it unit variance), due to the fact that we use a SSM as an input and the sim- ilarities between NMF and k-means clustering [19], we ob- tain a one-dimensional feature array of observations (i.e. all rows become equal), which makes the computational process cheaper. Once we have boundaries for each matrix, we com- bine them within a distance window of size w so that bound- aries close to each other get merged in their average location.
+============ Once evaluating decide whether set k = 2 or not ===============        
+        
+To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the 'types' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
 
+Once we have boundaries, we combine them within a distance window of size h so that boundaries close to each other get merged in their average location.
  
 \vspace{10pt}
 
 \subsection{Labelling}
 
-The main idea is to use the diagonals of the C-NMF decom- position matrices to form a new feature space from which to cluster the different sections, as described in [9], using the previously found boundaries. In this work we make use of the Euclidean distance for clustering, and put the exploration of different distance measures like the Bayesian Information Criterion (BIC) or the Mahalanobis aside for future work. The main drawback of this method is to decide on the number of sections K, which is used to cluster the new feature space and it is a highly sensitive parameter to the musical style of the dataset.
+In our structure retrieval, we investigated different ways of labelling of the segments.
+
+First approach built directly on our way of segmenting the song.
+Similarly to when attempting to find boundaries between segments, we decomposed our self similarity matrix X with rank increased. This allowed further differentiation between structures, for instance, if certain part of a song was thought of as a chorurs, but it is different enough to get separated in a C-NMF of a higher rank.
+
+Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$. This way, we computed initial clustering for each beat frame. To synchronise labels calculated in such way, we assigned a numerical label which occured within each of the interval between two segment to them.
+
+However, having gathered data about the main melody of the song earlier on, we could use it to more accurately predict the labels for each of the song segments, producing labels that easy to understand to a person.
+
+
 
 \vspace{20pt}
 

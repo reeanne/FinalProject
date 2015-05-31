@@ -23,33 +23,33 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <imageView identifier="Artwork" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqW-aB-FuK">
-                    <rect key="frame" x="25" y="41" width="100" height="100"/>
+                    <rect key="frame" x="29" y="26" width="94" height="94"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="21S-5W-MCl"/>
                 </imageView>
                 <imageView identifier="Star1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y7m-fn-bM7">
-                    <rect key="frame" x="17" y="41" width="30" height="30"/>
+                    <rect key="frame" x="13" y="4" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="F5Y-SM-KOA"/>
                 </imageView>
-                <imageView identifier="Star2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-YN-W1F">
-                    <rect key="frame" x="60" y="41" width="30" height="30"/>
-                    <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="Eji-xs-9UT"/>
-                </imageView>
                 <imageView identifier="Star3" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NA5-0r-dGF">
-                    <rect key="frame" x="100" y="41" width="30" height="30"/>
+                    <rect key="frame" x="71" y="4" width="30" height="30"/>
                     <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="uSH-8x-dks"/>
                 </imageView>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heO-Kd-4hF">
-                    <rect key="frame" x="6" y="20" width="68" height="19"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" identifier="Name" title="Label" id="VoZ-f2-teN">
+                <imageView identifier="Star2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-YN-W1F">
+                    <rect key="frame" x="43" y="4" width="30" height="30"/>
+                    <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="light_star.png" id="Eji-xs-9UT"/>
+                </imageView>
+                <textField identifier="Points" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sje-fT-em9">
+                    <rect key="frame" x="107" y="10" width="45" height="19"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="1qH-hw-oag">
                         <font key="font" metaFont="system" size="16"/>
                         <color key="textColor" red="1" green="1" blue="1" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField identifier="Points" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sje-fT-em9">
-                    <rect key="frame" x="96" y="20" width="45" height="19"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="1qH-hw-oag">
-                        <font key="font" metaFont="system" size="16"/>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heO-Kd-4hF">
+                    <rect key="frame" x="10" y="101" width="130" height="34"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" identifier="Name" title="Label" allowsEditingTextAttributes="YES" id="VoZ-f2-teN">
+                        <font key="font" metaFont="cellTitle"/>
                         <color key="textColor" red="1" green="1" blue="1" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>

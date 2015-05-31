@@ -57,6 +57,24 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
         }
     }
     
+    @IBAction func deleteLevel(sender: AnyObject) {
+        var indexes = collectionView.selectionIndexes;
+        println(indexes)
+        if (indexes.count > 0) {
+            println(indexes.firstIndex)
+            var cell: CollectionItem = collectionView.content[indexes.firstIndex] as! CollectionItem;
+            deleteSelectedLevel(cell.levelName.stringValue);
+        }
+    }
+    
+    @IBAction func chooseLevel(sender: AnyObject) {
+    }
+    
+    
+    
+    @IBAction func back(sender: AnyObject) {
+    }
+    
 
     func getAlbumArtworkInfo(fileURL: NSURL) -> NSImage {
 
@@ -113,5 +131,19 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
 
         return result;
     }
+    
+    func deleteSelectedLevel(name: String) {
+        let fetchRequest = NSFetchRequest(entityName: "Level")
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
+            var levels = fetchResults;
+            for lvl in levels {
+                if (lvl.name == name) {
+                    managedObjectContext?.deleteObject(lvl.melody);
+                    managedObjectContext?.deleteObject(lvl);
+                }
+            }
+        }
+    }
+
 
 }
