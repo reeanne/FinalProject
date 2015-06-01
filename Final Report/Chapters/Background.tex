@@ -8,7 +8,7 @@
 
 %----------------------------------------------------------------------------------------
 
-In this section, we investigate different types of music games \cite{gametypes}, along with a deeper look into Guitar Hero, on which we base our main concept for the gameplay. This is followed by a discussion of the most applicable publications in music analysis, on finding the main melody in a musical track in particular.
+In this section, we investigate different types of music games \cite{gametypes}, along with a deeper look into Guitar Hero, on which we base our main concept for the gameplay. This is followed by a discussion of the most applicable publications in music analysis. In particular, we present an overview of existing solutions to the problems of finding the main melody in a musical track, emotion detection and sing segmentation retrieval.
 
 \vspace{20pt}
 
@@ -138,17 +138,16 @@ As there is a clear need for custom music extension to the game, implementing a 
 
 \section{Introduction to Music Analysis}
 
-Automatic music analysis is the automated extraction of relevant perceptual information (notes, instruments, etc.) from music files (like mp3s). First attempted in the 1970s at Stanford University [Moorer], it remains an unsolved problem. The problem is highly multifaceted and interdisciplinary, requiring the extraction of musical notes, instruments, percussion, emotion, etc., and drawing from fields as varied as computer science, mathematics, biology, physics, psychology, and electrical engineering. The problem's difficulty lies in a necessity to reverse-engineer the human brain. 
+Automatic music analysis is thought of as an automated extraction of relevant perceptual information (notes, instruments, etc.) from music files (like MP3 or WAV files). First attempted in the 1970s at Stanford University \cite{Moore}, it remains an unsolved problem. The task is highly multifaceted and interdisciplinary, requiring the extraction of musical notes, instruments, percussion, emotion, etc., and drawing from fields as varied as computer science, mathematics, biology, physics, psychology, and electrical engineering. The problem's difficulty lies in a necessity to reverse-engineer the human brain. 
 
-For a long time people were researching ways of estimating the fundamental frequency, be it with monophonic music recording or multi-pitch estimation. Melody extraction differs from both of those problems — unlike monophonic pitch estimation it handles polyphonic tracks and in contrast to multi-pitch estimation, it must also include a mechanism for source identification, to spot the voice carrying the melody within the polyphony.
-To be able to evaluate the performance of the new algorithms, annual Music Information Retrieval Evaluation eXchange (MIREX) has been running since 2005. In this campaign, different models are evaluated against the same sets of music collections in order to obtain a quantitative comparison between methods and assess the accuracy of the current state-of-the-art in melody extraction \cite{comparison}.
+In this section we go over the basic terminology used in music analysis.
 
 \vspace{10pt}
 
 \subsection{Sound Spectrum}
 
 \begin{wrapfigure}{r}{0.45\textwidth}
-  \vspace{-40pt}
+  \vspace{-50pt}
 
   \begin{center}
     \includegraphics[width=0.43\textwidth]{Figures/soundspectrum}
@@ -164,27 +163,27 @@ Most sounds are made up of a complicated mixture of vibrations. A sound spectrum
 
 \subsection{Pitch, Tones, Fundamental Frequency}
 
-Pitch is the most natural way of ordering sounds on a frequency-related scale. If sounds whose frequency is clear and stable enough to be distinguished from noise, they can be compared among  one another as “lower” or “higher”. Pitch is not an objective physical property — it depends on anatomy and physiology of the auditory system, which is a subject of an extensive study called psychoacoustics. 
+Pitch is the most natural way of ordering sounds on a frequency-related scale. If sounds have a frequency which is clear and stable enough to be distinguished from noise, they can be compared between one another as “lower” or “higher”. Pitch is not an objective physical property — it depends on anatomy and physiology of the auditory system, which is a subject of an extensive study called psychoacoustics. 
 
 A semitone is the smallest musical interval commonly used in Western tonal music. Two semitones constitute a tone.
 
 The fundamental frequency $f_{\text{0}}$ is defined as the lowest frequency of a periodic waveform. A harmonic (or a harmonic partial) is any of a set of partials that are whole number multiples of a common fundamental frequency. This set includes $f_{0}$, which is a whole number multiple of itself (1 times itself).
 
-Fundamental frequency can be thought of as the physical property most closely related to perception of pitch. This is why in this context pitch and fundamental frequency can be used interchangeably.
+Fundamental frequency can be thought of as the physical property most closely related to perception of pitch. This is why in this context pitch and fundamental frequency can be used interchangeably \cite{salamon}.
 
 \vspace{10pt}
 
 \subsection{Polyphonic Music}
 
-Polyphony is a word derived from Greek poluph\={o}nosis meaning more than one sound — a texture consisting of two or more simultaneous lines of independent melody. This can be contrasted with homophony, where musical parts move generally in the same rhythm and one dominant melodic voice is accompanied by chords or monophony, where only one voice is found. 
+Polyphony is a word derived from Greek poluph\={o}nosis meaning more than one sound — a texture consisting of two or more simultaneous lines of independent melody \cite{polyphonic}. This is usually contrasted with homophony, where musical parts move in the same rhythm and one dominant melodic voice is accompanied by chords or monophony, where only one voice is found. 
 
-However, in our case, the term polyphonic will simply refer to any type of music in which two or more notes can be played simultaneously. This can be achieved either by playing in different instruments (for example, voice, guitar and bass) or a single instrument capable of playing more than one more at a time (like a piano).
+However, in our case, the term polyphonic will simply refer to any type of music in which two or more notes can be played simultaneously. This effect be achieved either by playing in different instruments (for example, voice, guitar and bass) or a single instrument capable of playing more than one more at a time (like a piano).
 
 \vspace{10pt}
 
 \subsection{Melody}
 
-The concept of “melody” ultimately relies on the judgement of people listening. This is why it will vary depending on the application context - whether we want to determine symbolic melodic similarity or transcribe a music track. 
+The concept of “melody” ultimately relies on the judgement of people listening. This is why it varies depending on the application context - whether we want to determine symbolic melodic similarity or transcribe a music track. 
 
 In order to have a clear framework to work within, the Music Information Retrieval (MIR) community has adopted in recent years the definition proposed by \cite{melodydef}, ``...the melody is the single (monophonic) pitch sequence that a listener might reproduce if asked to whistle or hum a piece of polyphonic music, and that a listener would recognise as being the 'essence' of that music when heard in comparison''.
 
@@ -213,29 +212,33 @@ The short time Fourier transform of a time-domain signal $y$ is denoted by the m
 
 \begin{figure}       
       \centering
-                \includegraphics[width=0.6\textwidth]{Figures/chromagram_example}
+                \includegraphics[width=\textwidth]{Figures/chromagram_example}
 			   \vspace{20pt}
 			   \label{fig:chromaexample}
-			   \caption{Example of a chromagram.}
+			   \caption{Example of a chromagram, generated for ``Help!'' by The Beatles.}
 \end{figure}
 
-A chroma feature is characterised by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches. Usually 12 pitches commonly existing in the western popular music folded into one single octave are considered, but one can use multiples of 12 to consider semi-tones or even smaller differences between tones. This is achieved by applying a constant-Q transform across the entire spectrogram. 
+A chroma feature is characterised by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches at said time. We usually consider the 12 pitches commonly existing in the western popular music folded into one single octave, but one can use multiples of 12 to take the semi-tones or even smaller differences between tones into account. We achieve that by applying a constant-Q transform across the entire spectrogram. 
 
-In mathematics and signal processing, the Constant Q Transform transforms a data series to the frequency domain. It is related to the Fourier Transform,[1] and very closely related to the complex Morlet wavelet transform.[2]
+In mathematics and signal processing, the Constant Q Transform transforms a data series to the frequency domain. It is related to the Fourier Transform, and very closely related to the complex Morlet wavelet transform \cite{wavelet}. 
 
-The transform can be thought of as a series of logarithmically spaced filters, with the k-th filter having a spectral width some multiple of the previous filter's width, i.e.
+The transform can be thought of as a series of logarithmically spaced filters, with the $k$th filter having a spectral width some multiple of the previous filter's width, i.e.
 
 \begin{equation}
 \delta f_k = 2^{ \frac {1}{n} } * \delta f_{k-1} = \left ( {2^{ \frac {1}{n} }} \right )^{k} * \delta f_{\mathrm{min}}
 \end{equation}
 
-where $\delta$fk is the bandwidth of the kth filter, fmin is the centre frequency of the lowest filter, and n is the number of filters per octave.
+where $\delta f_{k}$ is the bandwidth of the $k$th filter, $f_{min}$ is the centre frequency of the lowest filter, and $n$ is the number of filters per octave.
 
-Next, the spectrogram is folded into one octave comprising the M quantised pitches, where M is the number of pitches found in the chroma. When these features are stack together following the song structure in a N x M; matrix, a chromagram is generated, where N is the number of time frames in which the musical piece has been divided.
+Next, the spectrogram is folded into one octave comprising the $M$ quantised pitches, where $M$ is the number of pitches found in the chroma. When these features are stack together following the song structure in a $N \times M$; matrix, a chromagram is generated, where N is the number of time frames in which the musical piece has been divided \cite{constantQ}.
 
 \vspace{20pt}
 
 \section{Main Melody Extraction from Polyphonic Music}
+
+For a long time people were researching ways of estimating the fundamental frequency, be it with monophonic music recording or multi-pitch estimation. Melody extraction differs from both of those problems — unlike monophonic pitch estimation, it handles polyphonic tracks and in contrast to multi-pitch estimation, it must also include a mechanism for source identification, to spot the voice carrying the melody within the polyphony.
+To be able to evaluate the performance of the new algorithms, annual Music Information Retrieval Evaluation eXchange (MIREX) has been running since 2005. In this campaign, different models are evaluated against the same sets of music collections in order to obtain a quantitative comparison between methods and assess the accuracy of the current state-of-the-art in melody extraction \cite{comparison}.
+
 In this section we will go over two different approaches to the problem of main melody extraction from polyphonic music, using source separation and a salience function. Then we will compare both methods to determine which one is more suitable for our project.
 
 \vspace{10pt}
@@ -255,12 +258,15 @@ In this section we will go over two different approaches to the problem of main 
 
 In polyphonic tracks the main melody can be represented by a specific source/filter model. In case of the leading vocal part, the vocal cords are treated as a source and the voice tract as a linear acoustic filter.
 
-In their paper from 2011 \cite{durrieu}, authors presented an algorithm in which they assume that at any given time the signal observed is a mixture of two elementary signals - one corresponding to the main source and one to the background music. Therefore, the signal can be represented in an equation $x(t) = v(t) + m(t)$, where $v(t)$ stands for the source of the main melody and $m(t)$ is the background music. Interestingly, this equation also holds for the short time Fourier transform (STFT)  $X$, $V$ and $M$ respectively: $X = V + M$. The models proposed by Durrieu essentially aim at constraining the shapes of these STFT using temporal and spectral constraints. 
-
+In their paper from 2011 \cite{durrieu}, Durrieu together with Richard, David and Fevotte, presented an algorithm in which they assume that at any given time the music signal observed is a mixture of two elementary signals - one corresponding to the main source and one to the background music. Therefore, the signal can be represented in an equation $x(t) = v(t) + m(t)$, where $v(t)$ stands for the source of the main melody and $m(t)$ is the background music. Interestingly, this equation also holds for the short time Fourier transform (STFT)  $X$, $V$ and $M$ respectively: $X = V + M$. The models proposed by Durrieu aim at constraining the shapes of these STFT using temporal and spectral constraints. 
 
 The likelihood of the vocal part V is calculated using two different frameworks. 
 
-The first submission uses the source/filter Gaussian scaled mixture model (GSMM). In this model the source element refers to the excitation of the vocal folds and is therefore linked to the fundamental frequency of the sound $f_{\text{0}}$, while the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that we consider one possible filter frequency response, which is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
+The first submission uses the source/filter Gaussian scaled mixture model (GSMM). 
+
+In short, a Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians. For description of k-means clustering, we refer to Section \ref{sec:kmeans}.
+
+In this GSMM model the source element refers to the excitation of the vocal folds and is therefore linked to the fundamental frequency of the sound $f_{\text{0}}$, while the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that we consider one possible filter frequency response, which is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
 \begin{figure}
         \centering

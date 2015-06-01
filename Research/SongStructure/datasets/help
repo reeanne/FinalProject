@@ -10,3 +10,6 @@
 
 The Beatles
 Help!
+
+
+MFCCs are perceptually based spectral features originally designed for speech processing applications. Similarly to the pitch decomposition, the frequency bands are positioned logarithmically on the so-called mel scale, which approximates the response of the human auditory system. In the music context, MFCCs have turned out to be useful in capturing timbral characteristics.

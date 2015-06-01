@@ -19,18 +19,6 @@ import sklearn.cluster
 
 
 
-
-# C = sklearn.cluster.KMeans(n_clusters=n_types, tol=1e-10, n_init=100)
-#        labels = C.fit_predict(Y)
-#
-#       boundaries = 1 + np.asarray(np.where(labels[:-1] != labels[1:])).reshape((-1,))
-#
-#        boundaries = np.unique(np.concatenate([[0], boundaries, [len(labels)]]))
-#
-#        segment_deltas = np.diff(times[boundaries])
-#
-
-
 def median_filter(X, M=8):
     """ Median filter along the first axis of the feature matrix X. """
     for i in xrange(X.shape[1]):
@@ -394,6 +382,11 @@ def extract_features():
         with open('data.json', 'w') as outfile:
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
+
+    imshow(hpcp.T, interpolation="nearest", aspect="auto")
+    show()
+
+
     #print "unsynched"
     #imshow(mfcc.T, interpolation="nearest", aspect="auto")
     #show()
@@ -468,6 +461,7 @@ def newfunction():
         # Find the boundary indices and labels using matrix factorization
 
         print("Segmentation.")
+        print mfcc
         est_idxs, est_labels = get_segmentation(hpcp.T, pitch, 2, 16, 4, 16, iterations=iterations)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))
     else:
