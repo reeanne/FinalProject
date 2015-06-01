@@ -430,9 +430,10 @@ In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is bett
 
 
 \section{Introduction to Neural Networks}
-An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
+An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output \cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
-Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform one of these ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
+Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
+
 A trained neural network can be thought of as an ``expert'' in the category of information it has been given to analyse. This expert can then be used to provide projections given new situations of interest and answer ``what if'' questions.
 
 \vspace{10pt}
@@ -441,7 +442,6 @@ A trained neural network can be thought of as an ``expert'' in the category of i
 
 \begin{wrapfigure}{l}{0.5\textwidth}
   \vspace{-30pt}
-
   \begin{center}
     \includegraphics[width=0.48\textwidth]{Figures/simpleANN}
   \end{center}
@@ -449,10 +449,10 @@ A trained neural network can be thought of as an ``expert'' in the category of i
   \label{fig:examplennn}
 \end{wrapfigure}
 
-The computational systems we write are procedural; a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
+The computational systems we usually write are procedural - a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
 On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
 
-Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network. The number of them depends on a task the network is designed for.
+Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network and their number depends on a task the network is designed for.
 
 An example system depicted in Figure \ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
