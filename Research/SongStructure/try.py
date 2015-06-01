@@ -94,8 +94,6 @@ def compute_labels(X, pitch, rank, median_size, bound_idxs, iterations=300):
 
 
 
-
-
 def compute_labels_old(X, rank, median_size, bound_idxs, iterations=300):
     """ Computes the labels using the bounds. """
 
@@ -231,9 +229,8 @@ def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterati
             print "Bounds failed."
             return np.empty(0), [1]
 
-        bound_idxs = kmeans_bounds(G, F, rank+1)
-        print bound_idxs
-        #bound_idxs = straightforward_bounds(G, F, median_size)
+        #bound_idxs = kmeans_bounds(G, F, rank+1)
+        bound_idxs = straightforward_bounds(G, F, median_size)
 
         # Increase rank if we found too few boundaries
         if len(np.unique(bound_idxs)) <= 2:
@@ -245,7 +242,8 @@ def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterati
     # Add first and last boundary
     bound_idxs = np.concatenate(([0], bound_idxs, [X.shape[1] - 1]))
     bound_idxs = np.asarray(bound_idxs, dtype=int)
-    labels = compute_labels(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations)
+    #labels = compute_labels(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations)
+    labels = compute_labels_old(X, rank_labels, R_labels, bound_idxs, iterations=iterations)
 
     #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
     #for b in bound_idxs:
