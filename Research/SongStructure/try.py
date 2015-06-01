@@ -15,10 +15,24 @@ from essentia import *
 from essentia.standard import *
 from pylab import *
 import logging
+import sklearn.cluster
+
+
+
+
+# C = sklearn.cluster.KMeans(n_clusters=n_types, tol=1e-10, n_init=100)
+#        labels = C.fit_predict(Y)
+#
+#       boundaries = 1 + np.asarray(np.where(labels[:-1] != labels[1:])).reshape((-1,))
+#
+#        boundaries = np.unique(np.concatenate([[0], boundaries, [len(labels)]]))
+#
+#        segment_deltas = np.diff(times[boundaries])
+#
 
 
 def median_filter(X, M=8):
-    """Median filter along the first axis of the feature matrix X."""
+    """ Median filter along the first axis of the feature matrix X. """
     for i in xrange(X.shape[1]):
         X[:, i] = filters.median_filter(X[:, i], size=M)
     return X
@@ -49,29 +63,41 @@ def cnmf(S, rank, iterations=500, hull=False):
     F = np.asarray(nmf_mdl.W)
     G = np.asarray(nmf_mdl.H)
 
-
-    #plt.imshow(S, interpolation="nearest", aspect="auto")
-    #plt.show()
-    
-    #print "F"
-    #plt.imshow(F, interpolation="nearest", aspect="auto")
-    #plt.show()
-
-    #print "G"
-    #plt.imshow(G, interpolation="nearest", aspect="auto")
-    #plt.show()
-
     return F, G
 
 
 
 def most_frequent(x):
-    """Returns the most frequent value in x."""
+    """ Returns the most frequent value in x. """
     return np.argmax(np.bincount(x))
 
 
-def compute_labels(X, rank, median_size, bound_idxs, iterations=300):
-    """Computes the labels using the bounds."""
+def compute_labels(X, pitch, rank, median_size, bound_idxs, iterations=300):
+    vocal = "vocal"
+    semi = "semi_vocal"
+    instrumental = "instrumental"
+    mixed = "mixed"
+    labels = []
+
+    bound_intervals = zip(bound_idxs[:-1], bound_idxs[1:])
+    for interval in bound_intervals:
+        nonzero = np.count_nonzero(pitch[interval[0] : interval[1]])
+        if nonzero < (interval[1] - interval[0]) / 4:
+            labels.append(instrumental)
+        if nonzero < (interval[1] - interval[0]) / 2:
+            labels.append(mixed)
+        if nonzero < (interval[1] - interval[0]) * 3 / 4:
+            labels.append(semi)
+        else:
+            labels.append(vocal)
+    return labels
+
+
+
+
+
+def compute_labels_old(X, rank, median_size, bound_idxs, iterations=300):
+    """ Computes the labels using the bounds. """
 
     print "Computing Labels."
     try:
@@ -117,6 +143,7 @@ def merge_boundaries(F_bounds, G_bounds, window=6):
 
 
 def filter_cluster_matrix(F, median_size):
+    """ Filters the cluster matrix F, and returns a flattened copy. """
 
     indexes = np.argmax(F, axis=0)                      
     max_indexes = np.arange(F.shape[1])                 
@@ -130,7 +157,7 @@ def filter_cluster_matrix(F, median_size):
 
 
 def filter_activation_matrix(G, median_size):
-    """Filters the activation matrix G, and returns a flattened copy."""
+    """ Filters the activation matrix G, and returns a flattened copy. """
 
     indexes = np.argmax(G, axis=1)                      # Indices of the maximum values in every row, essentially the class assignment.
     max_indexes = np.arange(G.shape[0])                 # Create an array with numbers 0.. G.shape[0].
@@ -143,7 +170,35 @@ def filter_activation_matrix(G, median_size):
     return G.flatten()
 
 
-def get_segmentation(X, rank, median_size, rank_labels, R_labels, iterations=300):
+def kmeans_bounds(G, F, rank):
+    """ Calculates the borders of the segments using kmeans clustering. """
+
+    C = sklearn.cluster.KMeans(n_clusters=rank, tol=1e-8)
+
+    labelsG = C.fit_predict(G.T)
+    bound_G = np.where(np.diff(labelsG) != 0)[0] + 1   # Get the border elements
+
+    labelsF = C.fit_predict(F)
+    bound_F = np.where(np.diff(labelsF) != 0)[0] + 1   # Get the border elements
+    print bound_F, bound_G
+    return merge_boundaries(bound_F, bound_G)
+
+
+
+def straightforward_bounds(G, F, median_size):
+    """ Calculates the segment boundaries using only the C-NMF. """
+
+    G = filter_activation_matrix(G.T, median_size)
+    bound_G = np.where(np.diff(G) != 0)[0] + 1   # Get the border elements
+
+    F = filter_cluster_matrix(F.T, median_size)
+    bound_F = np.where(np.diff(F) != 0)[0] + 1
+
+    return merge_boundaries(bound_F, bound_G)
+
+
+
+def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterations=300):
     import pylab as plt
     """
     Gets the segmentation (boundaries and labels) from the factorization
@@ -176,13 +231,9 @@ def get_segmentation(X, rank, median_size, rank_labels, R_labels, iterations=300
             print "Bounds failed."
             return np.empty(0), [1]
 
-        # Filter G
-        G = filter_activation_matrix(G.T, median_size)
-        bound_G = np.where(np.diff(G) != 0)[0] + 1   # Get the border elements
-        F = filter_cluster_matrix(F.T, median_size)
-        bound_F = np.where(np.diff(F) != 0)[0] + 1
-
-        bound_idxs = merge_boundaries(bound_F, bound_G)
+        bound_idxs = kmeans_bounds(G, F, rank+1)
+        print bound_idxs
+        #bound_idxs = straightforward_bounds(G, F, median_size)
 
         # Increase rank if we found too few boundaries
         if len(np.unique(bound_idxs)) <= 2:
@@ -194,7 +245,7 @@ def get_segmentation(X, rank, median_size, rank_labels, R_labels, iterations=300
     # Add first and last boundary
     bound_idxs = np.concatenate(([0], bound_idxs, [X.shape[1] - 1]))
     bound_idxs = np.asarray(bound_idxs, dtype=int)
-    labels = compute_labels(X, rank_labels, R_labels, bound_idxs, iterations=iterations)
+    labels = compute_labels(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations)
 
     #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
     #for b in bound_idxs:
@@ -224,7 +275,8 @@ def remove_empty_segments(times, labels):
     new_intervals = []
     new_labels = []
     for inter, label in zip(intervals, labels):
-        if inter[0] < inter[1]:
+        if inter[0] < inter[1] and (inter[0] == 0 or inter[1] - inter[0] > 1):
+            print inter
             new_intervals.append(inter)
             new_labels.append(label)
     return intervals_to_times(np.asarray(new_intervals)), new_labels
@@ -255,12 +307,15 @@ def process_segmentation_level(est_idxs, est_labels, N, frame_times, dur):
     """
     assert est_idxs[0] == 0 and est_idxs[-1] == N - 1
 
-    # Add silences, if needed
+    # Add silences, if needed.
     est_times = np.concatenate(([0], frame_times[est_idxs], [dur]))
-    silence_label = np.max(est_labels) + 1
+    #silence_label = np.max(est_labels) + 1
+    #est_labels = np.concatenate(([silence_label], est_labels, [silence_label]))
+
+    silence_label = "silence"
     est_labels = np.concatenate(([silence_label], est_labels, [silence_label]))
 
-    # Remove empty segments if needed
+    # Remove empty segments if needed.
     est_times, est_labels = remove_empty_segments(est_times, est_labels)
 
     return est_times, est_labels
@@ -268,7 +323,7 @@ def process_segmentation_level(est_idxs, est_labels, N, frame_times, dur):
 
 def postprocess(est_idxs, est_labels):
     est_idxs, est_labels = remove_empty_segments(est_idxs, est_labels)
-    # Make sure the indeces are integers
+    # Make sure the indeces are integers.
     est_idxs = np.asarray(est_idxs, dtype=int)
     return est_idxs, est_labels
 
@@ -280,18 +335,14 @@ def get_predominant(sampling_rate, size):
     run_predominant_melody = PredominantMelody(frameSize=frameSize,
                                                hopSize=hopSize);
 
-    # Load audio file, apply equal loudness filter, and compute predominant melody
+    # Load audio file, apply equal loudness filter, and compute predominant melody.
     audio = MonoLoader(filename = "Help.mp3")()
     audio = EqualLoudness()(audio)
     pitch, confidence = run_predominant_melody(audio)
 
+    # Prope the pitches to make the data as small as the other.
     ratio = int(len(pitch) / size)
-    print size, len(pitch)
-    print ratio
-
-    n_frames = len(pitch)
     pitch = pitch[::ratio]
-
     pitch = pitch[:-1] if len(pitch) > size else pitch
     return pitch
 
@@ -419,7 +470,7 @@ def newfunction():
         # Find the boundary indices and labels using matrix factorization
 
         print("Segmentation.")
-        est_idxs, est_labels = get_segmentation(hpcp.T, 3, 16, 4, 16, iterations=iterations)
+        est_idxs, est_labels = get_segmentation(hpcp.T, pitch, 2, 16, 4, 16, iterations=iterations)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))
     else:
         # The track is too short. We will only output the first and last
