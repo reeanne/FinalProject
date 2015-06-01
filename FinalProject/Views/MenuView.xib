@@ -46,7 +46,7 @@
                         <action selector="mainQuickGamePressed:" target="-2" id="Wzd-aC-F3D"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="C8l-gf-sD1">
+                <button verticalHuggingPriority="750" id="C8l-gf-sD1" userLabel="Choose User">
                     <rect key="frame" x="316" y="223" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Choose a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="htQ-hl-fjT">
@@ -57,7 +57,7 @@
                         <action selector="mainChooseUserButtonPressed:" target="-2" id="mYJ-Y4-xPL"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="1Nx-WW-8Wl">
+                <button verticalHuggingPriority="750" id="1Nx-WW-8Wl" userLabel="Create User">
                     <rect key="frame" x="316" y="170" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Create a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QOy-ep-AY7">
@@ -99,10 +99,10 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button verticalHuggingPriority="750" id="5d9-XZ-fEY">
+                <button verticalHuggingPriority="750" id="5d9-XZ-fEY" userLabel="Create Song">
                     <rect key="frame" x="316" y="223" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Create Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="urK-ay-OrB">
+                    <buttonCell key="cell" type="push" title="Upload Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="urK-ay-OrB">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -110,10 +110,10 @@
                         <action selector="loggedCreateLevelButtonPressed:" target="-2" id="b9k-14-4DQ"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="2kw-RR-wIB">
+                <button verticalHuggingPriority="750" id="2kw-RR-wIB" userLabel="Load Song">
                     <rect key="frame" x="316" y="170" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Load Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9q1-VO-Ryp">
+                    <buttonCell key="cell" type="push" title="Load Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9q1-VO-Ryp">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -130,10 +130,10 @@
                         <menu key="menu" id="U1G-tN-uJQ"/>
                     </popUpButtonCell>
                 </popUpButton>
-                <button verticalHuggingPriority="750" id="bZp-7D-5Tc">
+                <button verticalHuggingPriority="750" id="bZp-7D-5Tc" userLabel="Delete Song">
                     <rect key="frame" x="316" y="170" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vbU-LB-vnQ">
+                    <buttonCell key="cell" type="push" title="Delete Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vbU-LB-vnQ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -172,10 +172,10 @@
                         <action selector="userDeleteUserButtonPressed:" target="-2" id="dvc-To-Bvo"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="Cuu-vx-LXB">
+                <button verticalHuggingPriority="750" id="Cuu-vx-LXB" userLabel="Upload File">
                     <rect key="frame" x="316" y="276" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Upload a File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sdy-q9-dfs">
+                    <buttonCell key="cell" type="push" title="Upload File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sdy-q9-dfs">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -196,10 +196,10 @@
                         <action selector="newLevelFilePathFieldPressed:" target="-2" id="9ce-b4-Vzm"/>
                     </connections>
                 </textField>
-                <button verticalHuggingPriority="750" id="Py0-B5-J2E">
+                <button verticalHuggingPriority="750" id="Py0-B5-J2E" userLabel="Create Song">
                     <rect key="frame" x="316" y="170" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Create Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jrR-5m-KGh">
+                    <buttonCell key="cell" type="push" title="Create Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jrR-5m-KGh">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -223,10 +223,10 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <accessibility description="Main Melody Processing"/>
                 </progressIndicator>
-                <button verticalHuggingPriority="750" id="Qfa-Qs-zMP">
+                <button verticalHuggingPriority="750" id="Qfa-Qs-zMP" userLabel="Play Song">
                     <rect key="frame" x="316" y="221" width="176" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Play Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nse-hy-uoq">
+                    <buttonCell key="cell" type="push" title="Play Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nse-hy-uoq">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>

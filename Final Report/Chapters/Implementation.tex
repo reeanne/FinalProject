@@ -427,22 +427,42 @@ Apart from this, another important benefit of C-NMF over NMF is that matrices $F
 
 \subsection{Boundaries}
 
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/F}
+                \caption{The cluster matrix W.}
+                \label{fig:Wmatrix}
+        \end{subfigure}%
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/G}
+                \caption{The activation matrix H.}
+                \label{fig:Hmatrix}
+        \end{subfigure}
+          \caption{The result of C-NMF computed for ``Help!'' by The Beatles with rank k = 3.}
+        \label{fig:CNMFbeatles}
+\end{figure}
+ 
+In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank k = 2 can be seen in figure \ref{fig:CNMFbeatles}.
+
+
+
 
 \subsection*{K-means Clustering}
 
-\begin{figure}[t]
+\begin{figure}[b]
         \centering
-        \begin{subfigure}[b]{0.30\textwidth}
+        \begin{subfigure}[t]{0.30\textwidth}
                 \includegraphics[width=\textwidth]{Figures/underfitting}
                 \caption{The k value is too small - many long distances to centroids.}
                 \label{fig:euclidean}
         \end{subfigure}%
-        \begin{subfigure}[b]{0.30\textwidth}
+        \begin{subfigure}[t]{0.30\textwidth}
                 \includegraphics[width=\textwidth]{Figures/justright}
                 \caption{Good k value - distances to centroids are quite short.}
                 \label{fig:manhattan}
         \end{subfigure}
-         \begin{subfigure}[b]{0.30\textwidth}
+         \begin{subfigure}[t]{0.30\textwidth}
                 \includegraphics[width=\textwidth]{Figures/overfitting}
                 \caption{The k value is too big - little improvement in average distance.}
                 \label{fig:cosine}
@@ -463,28 +483,11 @@ Those two phases are repeated in a loop. As a result, we may notice that the k c
 
 We ran k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging  values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
 
-
  
 \vspace{10pt}
 
 \subsection*{Another Approach}
 Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$
-
-\begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/F}
-                \caption{The cluster matrix W.}
-                \label{fig:Wmatrix}
-        \end{subfigure}%
-        \begin{subfigure}[b]{0.47\textwidth}
-                \includegraphics[width=\textwidth]{Figures/G}
-                \caption{The activation matrix H.}
-                \label{fig:Hmatrix}
-        \end{subfigure}
-          \caption{The result of C-NMF computed for ``Help!'' by The Beatles with rank k = 3.}
-        \label{fig:CNMFbeatles}
-\end{figure}
 
 
 ============ Once evaluating decide whether set k = 2 or not ===============        
