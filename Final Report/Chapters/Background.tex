@@ -408,9 +408,9 @@ In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is bett
 
 \section{Introduction to Neural Networks}
 
-An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output \cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
+An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A Logical Calculus of the Ideas Imminent in Nervous Activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output \cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
-Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
+Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, neural networks can tackle problems not easy to solve by a simple computer running sequential code, like facial recognition or regression analysis.
 
 A trained neural network can be thought of as an ``expert'' in the category of information it has been given to analyse. This expert can then be used to provide projections given new situations of interest and answer ``what if'' questions.
 
@@ -428,11 +428,11 @@ A trained neural network can be thought of as an ``expert'' in the category of i
 \end{wrapfigure}
 
 The computational systems we usually write are procedural - a program starts at the first line of code, executes it, and goes on to the next, following instructions in a linear fashion.
-On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Rather, information is processed collectively, in parallel throughout a network of neurons.
+On the other hand, neural network are ``connectionist'' computational systems. A true neural network does not follow a linear path. Instead, the information is processed collectively, in parallel throughout a network of neurons.
 
-Neural networks are made up of many artificial neurons. There are many different ways of connecting neurons to create a neural network and their number depends on a task the network is designed for.
+Neural networks are made up of many artificial neurons. There are many different ways of connecting them to create a neural network and the number of neurons depends on a task the network is designed for.
 
-An example system depicted in Figure \ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and they allow us to adjust our network to improve the training outcome. The weights in most neural nets can be both negative and positive, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
+An example system depicted in Figure \ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and modifying it allows us to adjust our network to improve the training outcome. The weights in most neural nets can be both positive and negative, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
 As each input enters the nucleus, it is multiplied by its weight. The nucleus then sums all these new input values which gives us the activation. If the activation is greater than a threshold value, the neuron outputs a signal. If the activation is less than the threshold, the neuron outputs zero. This is typically called a step function.
 
@@ -460,7 +460,7 @@ Ideally, there should be enough data so that part of the data can be held back a
 
 If a network simply cannot solve the problem, the designer then has to review the input and outputs, the number of layers, the number of elements per layer, the connections between the layers, the summation, transfer, and training functions, and even the initial weights themselves. Those changes required to create a successful network constitute a process wherein the ``art'' of neural networking occurs.
 
-Another part of the designer's creativity governs the rules of training. There are many laws (algorithms) used to implement the adaptive feedback required to adjust the weights during training. The most common technique is backward-error propagation, more commonly known as back-propagation, which we will describe later.
+Another part of the designer's creativity governs the rules of training. There are many laws (algorithms) used to implement the adaptive feedback required to adjust the weights during training. The most common technique is backward-error propagation, more commonly known as backpropagation, which we will describe later.
 
 Yet, training is not just a technique. It involves a ``feel'', and conscious analysis, to insure that the network is not over-trained. Initially, an artificial neural network configures itself with the general statistical trends of the data. Later, it continues to ``learn'' about other aspects of the data which may be spurious from a general viewpoint.
 
@@ -472,17 +472,28 @@ When finally the system has been correctly trained, and no further learning is n
 
 The other type of training is called unsupervised training. In unsupervised training, the network is provided with inputs but not with desired outputs. The system itself must then decide what features it will use to group the input data. This is often referred to as self-organisation or adaption.
 
-At the present time, unsupervised learning is not well understood. This adaption to the environment is the promise which would enable science fiction types of robots to continually learn on their own as they encounter new situations and new environments. Life is filled with situations where exact training sets do not exist. Some of these situations involve military action where new combat techniques and new weapons might be encountered. Because of this unexpected aspect to life and the human desire to be prepared, there continues to be research into, and hope for, this field.
+At the present time, unsupervised learning is not well understood. This adaption to the environment is the promise which would enable science fiction types of robots to continually learn on their own as they encounter new situations and new environments.
+
+Unfortunately, life is filled with situations where we are unable to extract and provide useful and valid training sets. Some of these situations could involve military action where new combat techniques and new weapons might be encountered. This unexpectedness of life and our desire to be prepared for every eventuality, there continues to be research into this field, bringing hope for future discoveries.
+
 \vspace{10pt}
 
 \subsection{Backpropagation Algorithm}
 
-A Backpropagation network is a network that learns by example. Given the desired input and output data telling the network what we want it to do, it changes its weights so that, when training is finished, it produces the required output for a particular input. 
-Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
+A Backpropagation network is a network that learns by example. Given the desired input and output data telling the network what we want it to do, it changes its weights so that, when training is finished, it produces the required output for a particular input. Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
 
-The algorithm starts by first setting up all the network's weights to be small random number. Next, the input pattern is applied and the output calculated (called the forward pass). The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated (expected output - actual output). This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the reverse pass. The process is repeated again and again until the error is minimal.
+The algorithm starts by first setting up all the network's weights to be small random number. Next, the input pattern (multiplication by the weights) is applied and the output calculated. This stage is called the \textit{forward pass}. The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated \textit{(expected output - actual output)}. This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the \textit{reverse pass}. The process is repeated again and again until the error is minimal.
 
-Backpropagation algorithm has some problems associated with it. Perhaps the best known is associated with local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will ``gets stuck'' (because it cannot go uphill) and the error will not decrease further.
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/localminima}
+  \end{center}
+  \caption{Diagram depicting the problem of the local minima. As the algorithm is greedy, once it hits the first minimum it will fail to reach the global minimum (red) due to the increase in the error it would have to experience first.}
+  \label{fig:localminima}
+\end{wrapfigure}
+
+Backpropagation algorithm has some problems associated with it. Perhaps the best known is associated with local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will ``gets stuck'' (because it cannot go uphill) and the error will not decrease further. This is depicted in Figure \ref{fig:localminima}.
 
 There are are several solutions to this problem. One is very simple and that is to reset the weights to different random numbers and try training again (this can also solve several other problems). Another solution is to add ``momentum'' to the weight change. This means that the weight change this iteration depends not just on the current error, but also on previous changes. For example: 
 \begin{equation}
@@ -535,15 +546,14 @@ Diagram \ref{fig:Thayer} depicts the relation between valence and arousal values
 Some studies have explored the relationship between physiological activity experienced by a listener and perceived emotion, be it facial expression or speech recognition of even heartbeat and respiratory changes \cite{physicalmood}.
 Others have explored the relationship between perceived emotion and the musical/acoustic features themselves.
 
-One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan \cite{moodold}. They employ Computational Media Aesthetics, that is, analysing two music dimensions to detect mood for music information retrieval tasks. The two dimensions -- tempo and articulation, are extracted from the audio signal and are mapped to one of four emotional categories; happiness, sadness, anger, and fear. 
-After that, feature called relative tempo is calculated, and after the mean and standard deviation of the feature called average silence ratio in the presented computational articulation model are calculated, a simple Back Propagation neural network classifier is trained to detect mood.
+One of the first publications on emotion detection in music is credited to Feng, Zhuang, and Pan \cite{moodold}. They employed Computational Media Aesthetics, that is, analysis of two music dimensions to detect mood for music information retrieval tasks. The two dimensions -- tempo and articulation, were extracted from the audio signal and mapped to one of four emotional categories; happiness, sadness, anger, and fear. 
+After that, they calculated a feature called relative tempo. Once the mean and standard deviation of the feature called average silence ratio in the computational articulation model was calculated, a simple Back Propagation neural network classifier was trained to detect mood.
 
-Different approach was applied by Kim and Andr\'{e} \cite{physicalmood}. To collect physiological data set, a musical induction which leads subjects to real emotional states was used over many weeks. They used four-channel biosensors to measure electromyogram, electrocardiogram, skin conductivity, and respiration changes. From that, they retrieve a wide range of physiological features and are analysed to find the best emotion-relevant ones and correlate them with emotional states. Finally, the classification of four musical emotions (positive/high arousal, negative/high arousal, negative/low arousal, and positive/low arousal) is performed by using an extended linear discriminant analysis (pLDA).
+Different approach was applied by Kim and Andr\'{e} \cite{physicalmood}. To collect physiological data set, they used musical induction which led people participating in the research to real emotional states. This collection process was ran over many weeks to exclude external emotional impact. Then the researches used four-channel biosensors to measure electromyogram, electrocardiogram, skin conductivity, and respiration changes. From that, they retrieved and analysed a wide range of physiological features to find the best emotion-relevant ones and correlated them with emotional states. Finally, the researchers performed the classification of four musical emotions (positive/high arousal, negative/high arousal, negative/low arousal, and positive/low arousal) by using an extended linear discriminant analysis (pLDA).
 
-In publication by Yang, Lin, Su and Chen \cite{mood}, the authors presented a tool which recognises a mood in a musical track, allowing a user to then choose the song they want to play by deciding on emotions it is supposed to represent.
-Specifically, the authors formulate music emotion recognition as a regression problem to predict the arousal and valence values (AV values) of each music sample directly. For this purpose, they adopt Support Vector Regression (SVR) as classifier using a number of chosen features.
+In publication by Yang, Lin, Su and Chen \cite{mood}, the authors presented a tool which recognises a mood in a musical track, allowing a user to then choose the song they want to play by deciding on emotions it is supposed to represent. Specifically, the authors formulated music emotion recognition as a regression problem to predict the arousal and valence values (AV values) of each music sample directly. For this purpose, they adopted Support Vector Regression (SVR) as a classifier using a number of chosen features.
 
-Potentially, the second approach described seems more appropriate for our project as it allows for better granularity in the melody emotion detection and, hence, wider variety of changes in the game's environment. However, this area of the project is left to be further researched.
+Potentially, the treating mood recognition as a regression problem seems more appropriate for our project as it allows for better granularity in the melody emotion detection and, hence, wider variety of changes in the game's environment.
 
 \vspace{20pt}
 
@@ -554,8 +564,8 @@ into several sections and detects repetitive patterns since they are often seman
 
 \begin{figure}[h]
 	\centering
-   \includegraphics[width=0.7\textwidth]{Figures/songstructure}
-  \caption{An example diagram of a song structure.}
+   \includegraphics[width=0.9\textwidth]{Figures/songstructure}
+  \caption{An example diagram of two different song structures.}
 \end{figure}
 
 
@@ -569,11 +579,11 @@ Most pop/rock songs have a standard structure: an introduction followed by alter
 
 However, this is not always the case as there are different types of musical structure. To describe them, let us represent the verse as A and the chorus as B. 
 
-Songs could be strophic - where all the verses are written to the same music, which could be represented as AAA... . Many folk and popular songs represent a strophic structure \cite{strophic}, including ``Barbara Allen'', ``Erie Canal'', and ``Michael Row the Boat Ashore''.
+Songs could be strophic -- where all the verses are written to the same music, which could be represented as AAA... . Many folk and popular songs represent a strophic structure, including ``Barbara Allen'', ``Erie Canal'', and ``Michael Row the Boat Ashore'' \cite{strophic}.
 
-Another song structure seen in the pop culture is thirty-two-bar form, where the structure of each repeated part is made up of four eight bar sections, in an AABA pattern. An example of a song with such a structure could be The Rolling Stones' ``Brown Sugar'' or The Police's ``Every Breath You Take''. 
+Another song structure seen in the pop culture is thirty-two-bar form, where the structure of each repeated part is made up of four eight bar sections, in an AABA pattern. An example of a song with such a structure could be The Rolling Stones' ``Brown Sugar'' or The Police's ``Every Breath You Take'' \cite{32bar}. 
 
-In contrast to thirty-two-bar form, which is focused on the verse (contrasted and prepared by the B section), in verse–chorus form it is the chorus that is highlighted (prepared and contrasted with the verse). Good example could be a song ``Be My Baby'' first recorded by the Ronettes, where the structure could be represented by ABABB(B).
+In contrast to thirty-two-bar form, which is focused on the verse (contrasted and prepared by the B section), in verse–chorus form it is the chorus that is highlighted (prepared and contrasted with the verse). Good example could be a song ``Be My Baby'' first recorded by The Ronettes, where the structure could be represented by ABABB(B) \cite{32bar}.
 
 
 
@@ -582,21 +592,21 @@ In contrast to thirty-two-bar form, which is focused on the verse (contrasted an
 A similarity matrix is a matrix of scores that represent the similarity between a number of data points. Each element of the similarity matrix contains a measure of similarity between two of the data points. Similarity matrices are strongly related to their counterparts, distance matrices and substitution matrices.
 Similarity matrices have a wide range of uses, including finding clusters of data points.
 
-Similarity between two points i, j is computed as a distance between the features of the beat indices i and j.There are many ways of computing a distance. Some of the most popular are:
+Similarity between two points $i, j$ is computed as a distance between the features of the beat indices $i$ and $j$.There are many ways of computing a distance. Some of the most popular are:
 \begin{description}
-\item[Euclidean] - for an n-dimensional space, the distance between two vectors of attributes p and q is:
+\item[Euclidean] --  for two vectors of attributes, $p$ and $q$, in an $n$-dimensional real vector space, the Euclidean distance between them is calculated as:
 \begin{equation}
 d(p, q) = \sqrt{(p_1- q_1)^2 + (p_2 - q_2)^2+\cdots+(p_i - q_i)^2+\cdots+(p_n - q_n)^2}
 \end{equation}
-\item[Cosine] = Given two vectors of attributes, p and q, the cosine similarity, cos($\theta$), is represented using a dot product and magnitude as
+\item[Cosine] --  for two vectors of attributes, $p$ and $q$, in an $n$-dimensional real vector space, the cosine distance is represented using a dot product and magnitude as:
 \begin{equation}
-\text{similarity} = \cos(\theta) = {p \cdot q \over \|p\| \|q\|} = \frac{ \sum\limits_{i=1}^{n}{p_i \times q_i} }{ \sqrt{\sum\limits_{i=1}^{n}{([_i)^2}} \times \sqrt{\sum\limits_{i=1}^{n}{(q_i)^2}} }
+d(p, q) = {p \cdot q \over \|p\| \|q\|} = \frac{ \sum\limits_{i=1}^{n}{p_i \times q_i} }{ \sqrt{\sum\limits_{i=1}^{n}{([_i)^2}} \times \sqrt{\sum\limits_{i=1}^{n}{(q_i)^2}} }
 \end{equation}
-\item[Manhattan] -  distance, d, between two vectors p, q in an n-dimensional real vector space with fixed Cartesian coordinate system, is the sum of the lengths of the projections of the line segment between the points onto the coordinate axes. More formally,
+\item[Manhattan] --  for two vectors of attributes, $p$ and $q$, in an $n$-dimensional real vector space with fixed Cartesian coordinate system, the Manhattan distance is represented as the sum of the lengths of the projections of the line segment between the points onto the coordinate axes:
 \begin{equation}
 d(p, q) = \|p - q\|_1 = \sum_{i=1}^n |p_i-q_i|,
 \end{equation}
-\item[Correlation] - distance between p and q, is defined as:
+\item[Correlation] --  for two vectors of attributes, $p$ and $q$, in an $n$-dimensional real vector space, the correlation distance is defined as:
 \begin{equation}
 d(p, q) =  {(p - \mu _{p}) \cdot (q - \mu _{q}) \over ||p -\mu _{p} ||_{2} ||q - \mu _{q}||_{2}}
 \end{equation}
@@ -606,7 +616,7 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 \vspace{10pt}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
-  \vspace{-30pt}
+  \vspace{-80pt}
 
   \begin{center}
     \includegraphics[width=0.48\textwidth]{Figures/mfcc_no_log_sync}
@@ -622,30 +632,30 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 
 Many other researchers have considered the importance of patterns and repetition in music. This led to development of many algorithms for the task.
 
-For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (“similarity matrix” for short) to visualise similarities between segments of music signals. Given a song, each element of a similarity matrix represents the pairwise similarity between two respective temporal windows of acoustic features. Furthermore, Foote and Cooper \cite{FooteCooper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
+For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (SSM for short) to visualise similarities between segments of music signals. In their algorithm, given a song, each element of a SSM represents the pairwise similarity between two respective temporal windows of acoustic features. Furthermore, Foote and Cooper \cite{FooteCooper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
 
-Many researchers developed their methods on top of this solution, approaching the problem of the segments grouping from different angles. Some were using Gaussian Mixture Models (GMM) - a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. One can think of mixture models as generalising k-means clustering to incorporate information about the covariance structure of the data as well as the centres of the latent Gaussians.
+Many researchers developed their methods on top of this solution, approaching the problem of the segments grouping from different angles. Some were using Gaussian Mixture Models (GMM) - a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. 
 
-Another approach seen in literature is a variant of Nearest Neighbour Search
-(NSS), also known as similarity search or closest point search. It is an optimisation problem for finding closest (or most similar) points. Closeness is typically expressed in terms of a dissimilarity function: the less similar the objects, the larger the function values. Formally, the nearest-neighbour (NN) search problem is defined as follows: given a set $S$ of points in a space $M$ and a query point $q \in M$, find the closest point in $S$ to $q$.
+Another approach seen in literature is a variant of the Nearest Neighbour Search (NSS), also known as similarity search or closest point search. NSS is an optimisation problem for finding the closest (or most similar) points. Closeness is typically expressed in terms of a dissimilarity function: the less similar the objects, the larger the function values. Formally, the NSS problem is defined as follows: given a set $S$ of points in a space $M$ and a query point $q \in M$, find the closest point in $S$ to $q$.
 
-Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora \cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix V is factorised into (usually) two matrices W and H, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. Since the problem is not exactly solvable in general, it is commonly approximated numerically.
+Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora \cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix $V$ is factorised into (usually) two matrices $W$ and $H$, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. As the problem is not exactly solvable in general as the problem has been shown to generalize the k-means clustering problem (which is known to be NP-complete). That is why it is commonly approximated numerically \cite{NMFNP}.
 
 Nieto and Jehan \cite{Nieto} based their approach on the NMF method, extending it by adding a convex constrain that results in weighted cluster centroids, representing the different sections of a musical piece in a more effective manner. 
-In standard NMF, matrix factor $W \in \Re^{m \times k}_{+}$, i.e., $W$ can be anything in that space. Convex NMF [11] restricts $W$ to a be convex combination of the input data vectors  $(v_1, \cdots, v_n)$. This greatly improves the quality of data representation of W. Furthermore, the resulting matrix factor H becomes more sparse and orthogonal.
-Then they efficiently extract music boundaries by clustering the decomposition matrices, which take into account the repeated parts across the song in- stead of just detecting sudden local changes.
+In standard NMF, matrix factor $W \in \Re^{m \times k}_{+}$, i.e., $W$ can be anything in that space. Convex NMF restricts $W$ to a be convex combination of the input data vectors  $(v_1, \cdots, v_n)$. This greatly improves the quality of data representation of $W$. Furthermore, the resulting matrix factor H becomes more sparse and orthogonal. Once they obtained the decomposition matrices, Nieto and Jehan efficiently extracted music boundaries by clustering the decomposition matrices, which take into account the repeated parts across the song instead of just detecting sudden local changes.
 
-Some researchers to join the grouping and boundary identification into one algorithm. For instance, Levy and Sandler used Hidden Markov Models (HMM), a generative probabilistic model, in which a sequence of observable X variable is generated by a sequence of internal hidden state Z. The hidden states can not be observed directly and the transitions between hidden states are assumed to have the form of a (first-order) Markov chain. They can be specified by the start probability vector $\Pi$ and a transition probability matrix $A$. The emission probability of an observable can be any distribution with parameters $\Theta_{i}$ conditioned on the current hidden state (e.g. multinomial, Gaussian). The HMM is completely determined by $\Pi$, $A$ and $\Theta_{i}$.
+Some researchers joined their methods for grouping and boundary identification into one algorithm. For instance, Levy and Sandler used Hidden Markov Models (HMM), a generative probabilistic model, in which a sequence of observable $X$ variables is generated by a sequence of internal hidden state $Z$. The hidden states cannot be observed directly and the transitions between hidden states are assumed to have the form of a (first-order) Markov chain. They can be specified by the start probability vector $\Pi$ and a transition probability matrix $A$. The emission probability of an observable can be any distribution with parameters $\Theta_{i}$ conditioned on the current hidden state (e.g. multinomial, Gaussian). The HMM is completely determined by $\Pi$, $A$ and $\Theta_{i}$.
 
-In their paper \cite{Peeters}, Peeters, La Burthe, and Rodet presented an algorithm which makes use of k-means clustering. The k-means clustering is a method of vector quantisation, originally from signal processing. It aims to partition n observations into k clusters in which each observation belongs to the cluster with the nearest mean, serving as a prototype of the cluster. This results in a partitioning of the data space into Voronoi cells (a partitioning of a plane into regions based on distance to points in a specific subset of the plane).
-The problem is computationally difficult (NP-hard); however, there are efficient heuristic algorithms that are commonly employed and converge quickly to a local optimum.
+Another approach was presented by Peeters, La Burthe, and Rodet. In their paper \cite{Peeters}, they presented an algorithm which makes use of k-means clustering. The k-means clustering is a method of vector quantisation, originally from signal processing. It aims to partition n observations into $k$ clusters in which each observation belongs to the cluster with the nearest mean, serving as a prototype of the cluster. This results in a partitioning of the data space into Voronoi cells (a partitioning of a plane into regions based on distance to points in a specific subset of the plane).
+As we mentioned earlier, the problem is computationally difficult (NP-hard). However, there are efficient heuristic algorithms that are commonly employed and converge quickly to a local optimum.
 
 An alternative to using any variants of SSM is using supervised learning. For instance, Turnbull and Lanckriet \cite{segmentsupervised} developed a set of difference features that indicate when there are changes in perceptual aspects (e.g., timbre, harmony, melody, rhythm) of the music. They used multiple individual difference features to detect boundaries of a song. 
 
-
-
 \vspace{20pt}
 
-\section{Level Generation}
-It is not really surprising that there is no current literature on the problem of automatically generating Guitar Hero buttons given an arbitrary piece of music.
-However, we believe an algorithm can be developed where the buttons can be mapped to the $f_{0}$ in the main melody extracted by main melody extraction algorithm.
+\section{Gameplay Generation}
+
+It is not really surprising that there is no current literature on the problem of automatically mapping melody to a series of buttons given an arbitrary piece of music. Most of the games available on the market are released with predetermined sets of songs, with sequences of buttons manually designed by the creators. This approach enables the developers to ensure high quality of the gameplay but limits the potential experience and discourages people whose music taste differs from fans of the most popular and generic music. 
+
+Any other releases or fan-made patches that enable the users to play to a wider range of music, focus on rhythmic representation of the song, disregarding the fundamental frequency of the main melody.
+
+However, we believe an algorithm can be developed where the buttons can be mapped to the $f_{0}$ in the main melody extracted by main melody extraction algorithm. Such algorithm should produce a consistent output that makes the gameplay as intuitive for the user as possible.
