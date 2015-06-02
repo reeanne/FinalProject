@@ -333,8 +333,8 @@ By filtering features across time, we retained the most prominent chromas within
 
 We then proceeded to compute the Self Similarity Matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a N x N symmetric matrix D, such that D(i, j) contains said distance. In particular, D(i, j) stores the same value ad D(j, i), and for every i D(i, i) is equal to 0.
 
-We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: euclidean, manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
-As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
+We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: Euclidean, Manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
+As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
 
 
 \begin{figure}[b]

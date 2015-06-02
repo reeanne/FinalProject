@@ -236,7 +236,8 @@ Next, the spectrogram is folded into one octave comprising the $M$ quantised pit
 
 \section{Main Melody Extraction from Polyphonic Music}
 
-For a long time people were researching ways of estimating the fundamental frequency, be it with monophonic music recording or multi-pitch estimation. Melody extraction differs from both of those problems — unlike monophonic pitch estimation, it handles polyphonic tracks and in contrast to multi-pitch estimation, it must also include a mechanism for source identification, to spot the voice carrying the melody within the polyphony.
+For a long time people were researching ways of estimating the fundamental frequency, be it with monophonic music recording or multi-pitch estimation. Melody extraction differs from both of those problems. Unlike monophonic pitch estimation, it handles polyphonic tracks. In contrast to multi-pitch estimation, it must also include a mechanism for source identification, to spot the voice carrying the melody within the polyphony, as the main focus of these algorithms is to estimate the main melody from a single source. 
+
 To be able to evaluate the performance of the new algorithms, annual Music Information Retrieval Evaluation eXchange (MIREX) has been running since 2005. In this campaign, different models are evaluated against the same sets of music collections in order to obtain a quantitative comparison between methods and assess the accuracy of the current state-of-the-art in melody extraction \cite{comparison}.
 
 In this section we will go over two different approaches to the problem of main melody extraction from polyphonic music, using source separation and a salience function. Then we will compare both methods to determine which one is more suitable for our project.
@@ -260,26 +261,26 @@ In polyphonic tracks the main melody can be represented by a specific source/fil
 
 In their paper from 2011 \cite{durrieu}, Durrieu together with Richard, David and Fevotte, presented an algorithm in which they assume that at any given time the music signal observed is a mixture of two elementary signals - one corresponding to the main source and one to the background music. Therefore, the signal can be represented in an equation $x(t) = v(t) + m(t)$, where $v(t)$ stands for the source of the main melody and $m(t)$ is the background music. Interestingly, this equation also holds for the short time Fourier transform (STFT)  $X$, $V$ and $M$ respectively: $X = V + M$. The models proposed by Durrieu aim at constraining the shapes of these STFT using temporal and spectral constraints. 
 
-The likelihood of the vocal part V is calculated using two different frameworks. 
+The likelihood of the vocal part $V$ is calculated using two different frameworks. 
 
 The first submission uses the source/filter Gaussian scaled mixture model (GSMM). 
 
 In short, a Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians. For description of k-means clustering, we refer to Section \ref{sec:kmeans}.
 
-In this GSMM model the source element refers to the excitation of the vocal folds and is therefore linked to the fundamental frequency of the sound $f_{\text{0}}$, while the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that we consider one possible filter frequency response, which is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
+In this GSMM model the source element refers to the excitation of the vocal folds. This is why it is linked to the fundamental frequency of the sound $f_{\text{0}}$. On the other hand, the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that one possible filter frequency response is considered. It is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
 \begin{figure}
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/gsmm}
-                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter k. For frame n, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
+                \caption{Schematic principle of the generative GSMM. Each source u is filtered by each filter $k$. For frame $n$, the signal is then multiplied by a  given amplitude and a ``state selector'' then chooses the active state.}
                 \label{fig:gsmm}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/imm}
-                \caption{Schematic principle of the generative IMM. At each frame, all the U sources, each filtered by K filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
+                \caption{Schematic principle of the generative IMM. At each frame, all the $U$ sources, each filtered by $K$ filters, are multiplied by amplitudes and added together to produce the leading voice signal.}
                 \label{fig:imm}
         \end{subfigure}
           \caption{Diagram of both models presented in the paper \cite{durrieu}.}
@@ -289,16 +290,18 @@ In this GSMM model the source element refers to the excitation of the vocal fold
 
 Figure \ref{fig:gsmm}  A) shows the diagram of the GSMM model for the main voice part. Each source excitation $u$ is filtered by each filter $k$. The amplitudes for a frame $n$ and for all the couples $(k, u)$ are then applied to each of the output signals. At last a ``state selector'' sets the active state for the given frame.
 
-The second model was derived from the first one to find a solution that would be more efficient to compute. The authors came up with a formulation that keep the source/filter model within an instantaneous mixture framework (IMM). In this model, for each source a set of filters is defined and at each frame, once every source is filtered and multiplied by a given amplitude, they are all added together.
+The second model was derived from the first one to find a solution that would be more efficient to compute. The authors came up with a formulation that keeps the source/filter model within an instantaneous mixture framework (IMM). In this model, for each source a set of filters is defined and at each frame, once every source is filtered and multiplied by a given amplitude, they are all added together.
 
-The background music signal $m(t)$ can be thought of as a mixture of $R$ independent Gaussian sources $m_{r}(t)$. 
-Each of the sources is centred and characterised by its power spectral density (PSD), which describes how the power of a signal or time series is distributed over the different frequencies. PSD can be estimated using a Covariance Method.
+Then the likelihood of the background music is calculated.
+
+The background music signal $m(t)$ can be thought of as a mixture of $R$ independent Gaussian sources $m_{r}(t)$. Each of the sources is centred and characterised by its power spectral density (PSD), which describes how the power of a signal or time series is distributed over the different frequencies. PSD can be estimated using a Covariance Method.
+
 Due to the linearity of the Fourier transform, $M(f,t)$, the STFT of $m$, is also the instantaneous mixture of the $R$ spectra $M_{r}(f,t)$ of the sources: $M_{r}(f,t)$.
 This together with STFT and an amplitude coefficient associated with each source is used to calculate the likelihood for each of the frequency bins. Let $M_{t}(f)$ be the STFT of the background signal at frame $t$ and frequency bin $f$, then we write its likelihood.
 
 Once the parameters are estimated using the maximum likelihood criterion for each of the model, the Viterbi smoothing of the melody line is applied, obtaining a trade-off between the smoothness of the melody and its global energy in the signal. The Viterbi algorithm is a dynamic programming algorithm for finding the most likely sequence of hidden states – called the Viterbi path – that results in a sequence of observed events \cite{viterbi}.
  
-The authors then parametrise the transitions between the possible main melody without disabling jumps from one note to the other. Using Wiener filtering - digital signal processing reducing the noise, using an statistical estimate of the signal using a desired data without such noise, a framework is implemented to separate the source. This way separated signals are obtained. Computing the energy for each frame of the separated main melody and thereafter thresholding allowed to discriminate between spurious notes and true positives.
+The authors then parametrise the transitions between the possible main melody without disabling jumps from one note to the other. Using Wiener filtering a framework is implemented to separate the source. Wiener filtering is a digital signal processing method which reduces noise level by applying a statistical estimate of the signal using a desired data without such noise. This way separated signals are obtained. Computing the energy for each frame of the separated main melody and thereafter thresholding allowed the authors to discriminate between spurious notes and true positives.
 
 \vspace{10pt}
 
@@ -489,6 +492,7 @@ Yet, training is not just a technique. It involves a ``feel'', and conscious ana
 When finally the system has been correctly trained, and no further learning is needed, the weights can, if desired, be saved. This way it can be used for predicting the output values for new, unseen data.
 
 \vspace{10pt}
+
 \subsection*{Unsupervised Training}
 
 The other type of training is called unsupervised training. In unsupervised training, the network is provided with inputs but not with desired outputs. The system itself must then decide what features it will use to group the input data. This is often referred to as self-organisation or adaption.
@@ -627,12 +631,12 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 \vspace{10pt}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
-  \vspace{-10pt}
+  \vspace{-30pt}
 
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/SSM_beat}
+    \includegraphics[width=0.48\textwidth]{Figures/mfcc_no_log_sync}
   \end{center}
-  \caption{Self similarity matrix for Bach's Prelude No. 1 in C Major, BVW.}
+  \caption{Self similarity matrix computed using MFCC feature for ``Help'' by The Beatles.}
   \label{fig:SSMbach}
 \end{wrapfigure}
 
