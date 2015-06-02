@@ -318,11 +318,11 @@ The authors then parametrise the transitions between the possible main melody wi
   \label{fig:3stepsalience}
 \end{wrapfigure}
 
-This approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it. It and can be split into several smaller stages, as seen in Figure \ref{fig:3stepsalience}. In particular, a method implemented in paper \cite{salamon} seems to be quite promising.
+This type of approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it. It and can be split into several smaller stages, as seen in Figure \ref{fig:3stepsalience}. In particular, a method implemented in paper \cite{salamon} seems to be quite promising.
 
-Usually as a first step, some sort of preprocessing is applied to the audio signal, usually to enhance the frequency content where we expect to find the melody. In particular, Salamon and G\'{o}mez apply an equal loudness filter, which enhances the frequencies to which the human ear is more perceptually sensitive, by taking a representative average of the equal loudness curves and filtering the signal by its inverse. 
+Usually in salience based approaches, as a first step some sort of pre-processing is applied to the audio signal to enhance the frequency content where one expects to find the melody. In particular, Salamon and G\'{o}mez apply an equal loudness filter, which enhances the frequencies to which the human ear is more perceptually sensitive, by taking a representative average of the equal loudness curves and filtering the signal by its inverse. 
 
-This stage is followed by spectral transform — the signal is chopped into time frames and a transform function is applied to obtain a spectral representation of each frame.
+This stage is followed by a spectral transform — the signal is chopped into time frames and a transform function is applied to obtain a spectral representation of each frame.
 This is achieved by applying the Short-Time Fourier Transform given by:
 
 \begin{equation}
@@ -331,80 +331,54 @@ X_{l}(k) = \sum_{n=0}^{M-1} w(n) \times x(n + lH) e^{-j\frac{2 \pi}{N}kn}
 
 with a window length of 46.4ms. Here, $x(n)$ is the time signal, $w(n)$ the windowing function, $l$ the frame number, $M$ the window length, $N$ the FFT length and $H$ the hop size. Thanks to choosing a relatively small hop size, Salamon and G\'{o}mez achieve sufficient frequency resolution to identify different notes while maintaining adequate time resolution to track pitch changes in the melody over a short time. 
 
-Having done this, we move to frequency/amplitude correction, where the spectral peaks are detected and used to construct a salience function. To avoid a relatively large error in the estimation of the peak frequency caused by binning them in the process of FFT, peak’s instantaneous frequency and amplitude are calculated. 
+Having done this, the authors move to frequency/amplitude correction, where the spectral peaks are detected and used to construct a salience function. To avoid a relatively large error in the estimation of the peak frequency caused by binning them in the process of FFT, peak’s instantaneous frequency and amplitude are calculated. 
 
-As we can see in Figure \ref{fig:3stepsalience}, those three steps constitute the spectral processing. But at the core of the salience based algorithms lies the multi-pitch representation, i.e. the salience function — a representation of pitch salience over time. The peaks of this function form the $f_{0}$ candidates for the main melody. In the algorithm described by Salamon and G\'{o}mez, this computation is based on harmonic summation, where the salience of  a given frequency is computed as a sum of the weighted energies found at harmonics (integer multiples) of that frequency. Using only the peaks for the summation allows the authors to discard less reliable values and apply further frequency corrections. 
-
-The salience function presented in the paper covers a pitch range of nearly five octaves from 55Hz to 1.76kHz.
-
-Peaks of the salience function at each frame are now potential $f_{0}$ of the main melody. At this point some methods for melody extraction attempt to track the melody. However, Salamon and G\'{o}mez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Now the peaks are grouped into pitch contours - time and pitch continuous sequences of salience peaks as shown in Figure \ref{fig:pitchcontours}.
-
-
-\begin{figure}[h!]
+\begin{figure}[b]
   \centering
     \includegraphics[width=0.7\textwidth]{Figures/pitchcontour}
       \caption{Pitch contours generated from excerpts of (a) vocal jazz and (b) opera. Melody contours are highlighted in bold \cite{salamon}.}
 \label{fig:pitchcontours}
 \end{figure}
 
-Having created the pitch contours, Salamon and G\'{o}mez are faced with the task of determining which one belongs to the main melody. The authors define features based on contour pitch, length and salience.
+As we can see in Figure \ref{fig:3stepsalience}, those three steps constitute the spectral processing. But at the core of the salience based algorithms lies the multi-pitch representation, i.e. the salience function. A salience function provides an estimation of the predominance of different fundamental frequencies (or pitch classes) in the audio signal at every time frame. The peaks of this function form the $f_{0}$ candidates for the main melody. In the algorithm described by Salamon and G\'{o}mez, this computation is based on harmonic summation, where the salience of  a given frequency is computed as a sum of the weighted energies found at harmonics (integer multiples) of that frequency. Using only the peaks for the summation allows the authors to discard less reliable values and apply further frequency corrections. 
 
-Given the peaks of the salience function, we now have to determine which pitch values belong to the melody. This process is initiated by grouping peaks into continuous pitch contours, out of which a melody is selected later. 
+The salience function presented in the paper covers a pitch range of nearly five octaves from 55Hz to 1.76kHz.
 
-The next main block in this algorithm shown in Figure \ref{fig:3stepsalience} is the melody selection which is comprised of three steps: voicing detection, octave error minimisation/pitch outlier removal, and final melody selection.
-As the name suggests, the aim of the voicing detection is to determine when the melody is present.
+After this step, the peaks of the salience function at each frame are potential $f_{0}$s of the main melody. At this point some methods for melody extraction attempt to track the melody. However, Salamon and G\'{o}mez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Then the peaks are grouped into pitch contours - time and pitch continuous sequences of salience peaks, as shown in Figure \ref{fig:pitchcontours}.
 
+Having created the pitch contours, Salamon and G\'{o}mez are faced with the task of determining which one belongs to the main melody. The authors define features based on contour pitch, length and salience, that will later guide the selection process. The process is initiated by grouping peaks into continuous pitch contours, out of which a melody is selected later. 
 
-To filter out these contours Salamon and G\'{o}mez take advantage of the contour mean salience distribution.
-By setting the threshold to a value slightly below the average contour mean salience of all contours in the excerpt $C_{s}$, we can filter out a considerable amount of non-melody contours. The authors define the following voicing threshold $\tau_{v}$ based on the distribution mean $C_{s}$ and its standard deviation $\sigma_{\overline{s}}$:
+The next main block in this algorithm shown in Figure \ref{fig:3stepsalience} is the melody selection which is comprised of three steps: voicing detection, octave error minimisation/pitch outlier removal, and final melody selection. The first one, the voicing detection, is tasked with determining when the main melody is present. 
+
+To filter out some of the contours that are present when the main melody is absent, Salamon and G\'{o}mez take advantage of the contour mean salience distribution. By setting the threshold to a value slightly below the average contour mean salience of all contours in the excerpt $C_{s}$, they manage to filter out a considerable amount of non-melody contours. The authors define the following voicing threshold $\tau_{v}$ based on the distribution mean $C_{s}$ and its standard deviation $\sigma_{\overline{s}}$:
 \begin{equation}
 \tau_{v} = C_{s} - v \times \sigma_{\overline{s}}
 \end{equation}
 
 The parameter $v$ determines the lenience of the filtering - a high $v$ value might keep the false melody contours and a low value might filter out the melody contours.
 
-\begin{wrapfigure}{l}{0.5\textwidth}
-  \vspace{-30pt}
-
-  \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/salamon4blocksdiagram}
-  \end{center}
-  \caption{Block diagram of four main blocks of the system by Salamon and G\'{o}mez: sinusoid extraction, salience function computation, pitch contour creation and melody selection \cite{salamon}.}
-  \label{fig:salomondetailed}
-\end{wrapfigure}
-
-
-
 It is also important to note that detecting certain characteristics in the contour increases a probability of it being the melody contour, for example in case of detecting a vibrato -  a regular, pulsating change of pitch, used to add expression to vocal and instrumental music. \cite{vibrato}
 
-Next step in the melody selection described by Salamon and G\'{o}mez in their paper is octave errors and pitch outliers removal.  
+Next step in the melody selection, described by Salamon and G\'{o}mez in their paper, is octave errors and pitch outliers removal. In particular, the octave errors are the main sources of errors in melody extraction systems, when a multiple or sub-multiple of $f_{0}$ is reported as the main melody. To detect such errors, contour trajectories are compared by computing distance between their values on a per-frame for the region they overlap in and computing the mean over this region. If the mean distance is within $1200\pm50$ cents, the contours are considered octave duplicates.
 
-In particular, the octave errors are the main sources of errors in melody extraction systems, when a multiple or sub-multiple of $f_{0}$ is reported as the main melody. 
+Secondly, Salamon and G\'{o}mez use the relationship between contours neighbouring in time to decide which of the duplicates is the correct one. Their approach is based on two assumptions: firstly, that most (though not all) of the time the correct contour will have greater salience than its duplicate (the salience function parameters were optimised to this end). Secondly, that melodies tend to have a continuous pitch trajectory avoiding large jumps, in accordance with voice leading principles.
 
-To detect such errors, contour trajectories are compared by computing distance between their values on a per-frame for the region they overlap in and computing the mean over this region.
-If the mean distance is within $1200\pm50$ cents, the contours are considered octave duplicates.
-
-Secondly, Salamon and G\'{o}mez use the relationship between neighbouring contours (in time) to decide which of the duplicates is the correct one. Their approach is based on two assumptions: firstly, that most (though not all) of the time the correct contour will have greater salience than its duplicate (the salience function parameters were optimised to this end). Secondly, that melodies tend to have a continuous pitch trajectory avoiding large jumps, in accordance with voice leading principles.
-
-The method iteratively computes the $\overline{P(t)}$ - pitch trajectory that represents the time evolution of the melody's pitch.
-It then detects and removes an octave duplicate as well as  the ``pitch outliers'' – contours more than one octave above or below the pitch mean and then it is recalculated. Authors empirically discovered that 2 iterations of this process are enough to get a good approximation of the true trajectory of the melody, which is then passed to the final stage of the model - the final melody selection.
+The method iteratively computes the $\overline{P(t)}$ - pitch trajectory that represents the time evolution of the melody's pitch. It then detects and removes an octave duplicate as well as  the ``pitch outliers'' – contours more than one octave above or below the pitch mean and then it is recalculated. Authors empirically discovered that 2 iterations of this process are enough to get a good approximation of the true trajectory of the melody, which is then passed to the final stage of the model - the final melody selection.
 
 At this stage, there is often only one peak to be chosen as the main melody. When there is still more than one contour present in a frame, the melody is selected as the peak belonging to the contour with the highest total salience $C_{\sum s}$. If no contour is present the frame is regarded as unvoiced.
 
 \vspace{10pt}
 
-
 \subsection{Comparison of both approaches}
 
 In their paper \cite{comparison}, authors attempted to compare multiple melody extraction algorithms created since 2005. One of the methods, used also by MIREX, is based on the per-frame comparison, considering different measures:
 
-
 \begin{description}
 \item[Voicing Recall Rate] - the proportion of frames labelled as melody frames in the ground truth that are estimated as melody frames by the algorithm.
 \item[Voicing False Alarm Rate] - the proportion of the frames labelled as non-melody in the ground truth that are mistakenly estimated as melody frames by the algorithm.
-\item[Raw Pitch Accuracy] - the proportion of melody frames in the ground truth for which $f_{\tau}$ is considered correct (i.e. within half a semitone of the ground truth). 
+\item[Raw Pitch Accuracy] - the proportion of melody frames in the ground truth for which $f_{\tau}$ (fundamental frequency estimated by the algorithm) is considered correct (i.e. within half a semitone of the ground truth). 
 \item[Raw Chroma Accuracy] - as raw pitch accuracy, except that both the estimated and ground truth $f_{0}$ sequences are mapped onto a single octave. This gives a measure of pitch accuracy which ignores octave errors.
-\item[Overall Accuracy] - this measure combines the performance of the pitch estimation and voicing detection tasks to give an overall performance score for the system. It is defined as the proportion of all frames correctly estimated by the algorithm, where for non-melody frames this means the algorithm labelled them as non-melody, as for melody frames the algorithm both labelled them as melody frames and provided a correct $f_{0}$ estimate for the melody (again, within half a semitone of the ground truth).
+\item[Overall Accuracy] - this measure combines the performance of the pitch estimation and voicing detection tasks to give an overall performance score for the system. It is defined as the proportion of all frames correctly estimated by the algorithm, where for non-melody frames this means the algorithm labelled them as non-melody, as for melody frames the algorithm both labelled them as melody frames and provided a correct $f_{\tau}$ estimate for the melody (again, within half a semitone of the ground truth).
 \end{description}
 
 
@@ -419,20 +393,21 @@ In their paper \cite{comparison}, authors attempted to compare multiple melody e
 In Figure \ref{fig:comparison}. the authors presented results obtained by the algorithms evaluated at MIREX. To get a general idea of the performance of the algorithms, it is sufficient to focus on two evaluation measures.
 The raw pitch accuracy, presented in Figure \ref{fig:comparison} a) represents how well the algorithm tracks the pitch of the melody. The overall accuracy on the other hand, as shown in Figure \ref{fig:comparison} b), combines this measure with the efficiency of the algorithm's voicing detection, meaning the voicing-related measures are also reflected in this measure.
 
-As we can see, some collections are generally hard to analyse (for example MIREX09 -5db), in general the collections yield different results for different algorithms. This allows us to spot pros and cons of each approach investigated.
+As we can see, some collections are generally hard to analyse (for example MIREX09 -5db). In general the collections yield different results for different algorithms. This allows us to spot pros and cons of each approach investigated.
 
 We can also notice that the raw pitch accuracy gradually improved from 2005 to 2009, after which it stayed relatively unchanged. Overall we can see that the average pitch accuracy over a collection lies between 70-80\%.
 
-On the other hand, when it comes to overall accuracy, the performance goes down compared to the raw pitch accuracy for all algorithms due to voicing detection being factored into the results. The importance of this step depends on the intended use of the algorithm. Generally, the overall accuracy results lie between 65-70\%.
+On the other hand, when it comes to overall accuracy, the performance is lower compared to the raw pitch accuracy for all algorithms due to voicing detection being factored into the results. The importance of performance of this step depends on the intended use of the algorithm. Generally, the overall accuracy results lie between 65-70\%.
 
 Finally, an important factor in assessment of an algorithm is its complexity. While deriving O-notation is too complex for some of the algorithms, generally it is observed that algorithms involving source separation are significantly more computationally complex than salience based approaches Unfortunately, there is no specific data provided by Salamon and G\'{o}mez [9] or by Durrieu [5] on their algorithms.
 
-In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly, as seen in Figure \ref{fig:comparison}. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game designing as we do not want to keep the user waiting for a long time for his level to generate and load.
+In conclusion, we believe the solution proposed by Salamon and G\'{o}mez is better fitted to the purpose of this project. The paper presents it in a much clearer way and, what is most important, it outperforms the one created by Durrieu significantly, as seen in Figure \ref{fig:comparison}. In addition to this, according to tendency it is less computationally expensive, which is quite important when it comes to game design, as we do not want to keep the user waiting for a long time to generate and load a song they want to play.
 
 \vspace{20pt}
 
 
 \section{Introduction to Neural Networks}
+
 An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A logical calculus of the ideas imminent in nervous activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output \cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
 Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, they can tackle problems not easy to solve by a simple computer, like facial recognition or regression analysis.
