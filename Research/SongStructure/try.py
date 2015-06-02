@@ -337,7 +337,7 @@ def get_energy(audio, frame_size, hop_size):
     pool = Pool()
     w = Windowing()
     spec = Spectrum()
-    centroid = essentia.SpectralCentroid()
+    centroid = SpectralCentroid()
 
     # compute the centroid for all frames in our audio and add it to the pool
     for frame in FrameGenerator(audio, frameSize = frame_size, hopSize = hop_size):

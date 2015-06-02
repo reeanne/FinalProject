@@ -139,7 +139,7 @@ Hidden neurons are the neurons that are neither in the input layer nor the outpu
 \begin{figure}[h]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/nodesperf}
-\caption{Data presented in table \ref{table:rsmetable}, plotted on a diagram.}
+\caption{Data presented in Table \ref{table:rsmetable}, plotted on a diagram.}
 \end{figure}
 
 
@@ -192,7 +192,7 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 \begin{figure}[h]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/learningrate}
-\caption{Data presented in table \ref{table:learningrate}, plotted on a diagram.}
+\caption{Data presented in Table \ref{table:learningrate}, plotted on a diagram.}
 \end{figure}
 
 
@@ -446,8 +446,17 @@ Apart from this, another important benefit of C-NMF over NMF is that matrices $F
         \label{fig:CNMFbeatles}
 \end{figure}
  
-In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank k = 2 can be seen in figure \ref{fig:CNMFbeatles}.
+In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank k = 2 can be seen in Figure \ref{fig:CNMFbeatles}.
 
+\subsubsection*{Pure C-NMF Approach}
+\label{sec:finalBounds}
+Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
+        
+To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the 'types' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
+
+Once we have boundaries, we combine them within a distance window of size h so that boundaries close to each other get merged in their average location.
+
+This method, although quite simple, produced a neat and quite accurate output, with a few, but meaningful segments. In the next section we describe an attempt of improving our results that did not yield results we hoped for, and hence was left out in the final implementation.
 
 \subsubsection*{K-means Clustering}
 \label{sec:kmeans}
@@ -483,20 +492,9 @@ When all the points have been assigned to some centre, k new centroids are calcu
 
 Those two phases are repeated in a loop. As a result, we may notice that the k centers change their location step by step until no more changes are done, and the algorithm converges. 
 
-We ran k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging  values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
+We ran k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
 
- 
 \vspace{10pt}
-
-\subsubsection*{Another Approach}
-\label{sec:finalBounds}
-Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
-        
-To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the 'types' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
-
-Once we have boundaries, we combine them within a distance window of size h so that boundaries close to each other get merged in their average location.
-
-This method, although much simpler, produced much neater output, with fewer, but more meaningful segments.
 
 
 \subsection{Labelling}
@@ -531,6 +529,8 @@ A visualisation of our segmentation and labelling using only vocal/instrumental 
 However, this way alone, we lose the distinction between the vocal parts, for instance, between the verse and the chorus. We could implement a system of heuristics to assign labels like chorus or verse, but unfortunately there is no straightforward way of doing so as the song structures differ greatly across the popular music. For instance, many songs drop the verse-chorus structure to start with a chorus, like ``She Loves You'' by The Beatles.
 
 Our final approach was to merge the two approaches mentioned earlier into one algorithm. Ideally, we wanted to preserve the variation in the vocal parts, as it was presented in the first approach where multiple parts were classified with the same class, while being able to tell when the main melody of is present, and when it is not. Moverover, we had to find a solution to the problem of determining which segments contain chorus, which ones represent the verse and which should be classified otherwise.
+
+
 
 
 
