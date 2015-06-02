@@ -2,8 +2,6 @@ import os
 import sys
 import subprocess
 import numpy as np
-import essentia
-import essentia.standard as ES
 import librosa
 from scipy.ndimage import filters
 from scipy.spatial import distance
@@ -13,6 +11,7 @@ import pymf
 import sys, csv
 from essentia import *
 from essentia.standard import *
+import essentia
 from pylab import *
 import logging
 import sklearn.cluster
@@ -314,7 +313,7 @@ def postprocess(est_idxs, est_labels):
     return est_idxs, est_labels
 
 
-def get_predominant(sampling_rate, size):
+def get_predominant(audio, sampling_rate, size):
 
     hopSize = 512
     frameSize = 2048
@@ -322,7 +321,6 @@ def get_predominant(sampling_rate, size):
                                                hopSize=hopSize);
 
     # Load audio file, apply equal loudness filter, and compute predominant melody.
-    audio = MonoLoader(filename = "Help.mp3")()
     audio = EqualLoudness()(audio)
     pitch, confidence = run_predominant_melody(audio)
 
@@ -333,7 +331,30 @@ def get_predominant(sampling_rate, size):
     return pitch
 
 
+def get_energy(audio, frame_size, hop_size):
+
+    # create the pool and the necessary algorithms
+    pool = Pool()
+    w = Windowing()
+    spec = Spectrum()
+    centroid = essentia.SpectralCentroid()
+
+    # compute the centroid for all frames in our audio and add it to the pool
+    for frame in FrameGenerator(audio, frameSize = frame_size, hopSize = hop_size):
+        c = centroid(spec(w(frame)))
+        pool.add('lowlevel.centroid', c)
+
+    # aggregate the results
+    aggrpool = PoolAggregator(defaultStats = [ 'mean', 'var' ])(pool)
+
+    print pool
+    print aggrpool
+    return pool
+
+
 def extract_features():
+
+    path = "Help.mp3"
 
     frame_size = 2048
     hop_size = 512
@@ -341,41 +362,45 @@ def extract_features():
     mfcc_coeff = 14
     sampling_rate = 11025
 
-    print("Loading the file.")
-    waveform, _ = librosa.load("Help.mp3", sr=11025)
-    print("HPSS.")
+    print "Loading the file for Essentia."
+    audio = MonoLoader(filename=path)()
+
+    print "Loading the file for Librosa."
+    waveform, _ = librosa.load(path, sr=11025)
+    print "HPSS."
     waveform_harmonic, waveform_percussive = librosa.effects.hpss(waveform)
 
-    print("Beats.")
+    print "Beats."
     tempo, beats_idx = librosa.beat.beat_track(y=waveform_percussive, sr=sampling_rate, hop_length=hop_size)
     #frame_time = librosa.frames_to_time(beats_idx, sr=sampling_rate, hop_length=hop_size)
 
-    print("Melspectrogram.")
+    print "Melspectrogram."
     S = librosa.feature.melspectrogram(waveform,
                                        sr=sampling_rate,
                                        n_fft=frame_size,
                                        hop_length=hop_size,
                                        n_mels=n_mels)
 
-    print("MFCCs.")
+    print "MFCCs."
     log_S = librosa.logamplitude(S, ref_power=np.max)
     mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=14).T
     print(len(mfcc))
 
 
-    print("Predominant.")
-    pitch = get_predominant(sampling_rate, len(mfcc))
+    energy = get_energy(audio, frame_size, hop_size)
+    print "Predominant."
+    pitch = get_predominant(audio, sampling_rate, len(mfcc))
     print len(pitch)
 
 
     if os.path.isfile('data.json'):
         with open('data.json') as data_file:    
-            print("HPCP 1")
+            print "HPCP 1"
             data = json.load(data_file)
             hpcp = np.array(data["hpcp"])
             print(len(hpcp))
     else:
-        print("HPCP 2")
+        print "HPCP 2"
         hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate,
                                           hop_length=hop_size).T
         print(len(hpcp))
@@ -391,7 +416,7 @@ def extract_features():
     #imshow(mfcc.T, interpolation="nearest", aspect="auto")
     #show()
 
-    print("Beat synchronising.")
+    print "Beat synchronising."
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
     bs_pitch = librosa.feature.sync(pitch.T, beats_idx, pad=False).flatten()
@@ -437,6 +462,7 @@ def newfunction():
     sampling_rate = 11025
     iterations = 500 
     H = 20
+    path = "Help.mp3"
 
     mfcc, hpcp, beats, dur, pitch = extract_features()
     hpcp = lognormalise_chroma(hpcp)
@@ -460,7 +486,7 @@ def newfunction():
         #plt.show()
         # Find the boundary indices and labels using matrix factorization
 
-        print("Segmentation.")
+        print "Segmentation."
         print mfcc
         est_idxs, est_labels = get_segmentation(hpcp.T, pitch, 2, 16, 4, 16, iterations=iterations)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))

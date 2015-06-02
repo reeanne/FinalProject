@@ -215,7 +215,7 @@ The short time Fourier transform of a time-domain signal $y$ is denoted by the m
                 \includegraphics[width=\textwidth]{Figures/chromagram_example}
 			   \vspace{20pt}
 			   \label{fig:chromaexample}
-			   \caption{Example of a chromagram, generated for ``Help!'' by The Beatles.}
+			   \caption{Example of a chromagram, generated for ``Help!'' by The Beatles. The blue spots represent small amount of energy and the dark red stand for the high energy in each pitch at given time.}
 \end{figure}
 
 A chroma feature is characterised by a 12-dimensional vector representing the amount of energy that can be found in each of different pitches at said time. We usually consider the 12 pitches commonly existing in the western popular music folded into one single octave, but one can use multiples of 12 to take the semi-tones or even smaller differences between tones into account. We achieve that by applying a constant-Q transform across the entire spectrogram. 
