@@ -39,6 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var settingsButton: SKSpriteNode! = nil;
     var muteButton: SKSpriteNode! = nil;
     var pauseButton: SKSpriteNode! = nil;
+    var sectionLabel: SKLabelNode! = nil;
     
     // Beats.
     var beats: [Float]! = nil;
@@ -232,7 +233,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             return;
         }
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
-        if (index > level.melody.pitch.count) {
+        if (index >= level.melody.pitch.count) {
             return;
         }
         var pitch: Int = level.melody.pitch[index];
@@ -370,6 +371,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
     
     func setupSprites() {
+        sectionLabel = self.childNodeWithName("SectionLabel") as! SKLabelNode;
         middleParent = self.childNodeWithName("MiddleParent")!;
         middleParent.hidden = true;
         muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
@@ -402,7 +404,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         sparkEmitter.targetNode = self;
         sparkEmitter.physicsBody = nil;
         
-        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
+        println(level.melody.boundaries);
+        
+        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[1] - level.melody.boundaries[1]),
+            target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
         
         self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(NSTimeInterval(fourIntervals)), SKAction.runBlock(moveSparkle)
@@ -481,17 +486,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
 
 
     func changeMood() {
+        
         sparkEmitter.particleColorSequence = nil;
-        if (moodIndex < level.melody.arousal.count) {
+        if (moodIndex < level.melody.arousal.count && moodChangeTimer != nil) {
+            sectionLabel.text = level.melody.labels[max(0, moodIndex - 1)]
             sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
             println("here  " + level.melody.arousal[moodIndex].description + level.melody.valence[moodIndex].description);
             moodIndex++;
+            moodChangeTimer.invalidate();
+            moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex]),
+                target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         }
     }
-    
-
     
 
     /**
