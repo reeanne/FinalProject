@@ -158,7 +158,7 @@ class MenuController: NSViewController {
         if (levelName != nil) {
             var levelData = getLevel(levelName!);
             var melodyData = levelData!.melody;
-            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Double], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float]);
+            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Float], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float], labels: melodyData.labels as [String], boundaries: melodyData.boundaries as [Float]);
             var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
             var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
             appDelegate.level = levelObject;
@@ -194,8 +194,10 @@ class MenuController: NSViewController {
     @IBAction func userDeleteUserButtonPressed(sender: AnyObject) {
         var username = userSelectUserPopup.selectedItem?.title;
         appDelegate.user = nil;
-        deleteUser(username!);
-        userSelectUserPopup.removeItemWithTitle(username!);
+        if (username != nil) {
+            deleteUser(username!);
+            userSelectUserPopup.removeItemWithTitle(username!);
+        }
     }
     
     /** New level **/
@@ -402,7 +404,7 @@ class MenuController: NSViewController {
         userData = getUser(appDelegate.user.username);
         
         if let moc = self.managedObjectContext {
-            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch!, beats: melody.beats!, arousal: melody.arousal, valence: melody.valence);
+            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch, beats: melody.beats, arousal: melody.arousal, valence: melody.valence, labels: melody.labels, boundaries: melody.boundaries);
             Level.createInManagedObjectContext(moc, name: currentLevel.name, user: userData, melody: melodyData);
         }
         

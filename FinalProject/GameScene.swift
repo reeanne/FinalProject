@@ -41,7 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var pauseButton: SKSpriteNode! = nil;
     
     // Beats.
-    var beats: [Double]! = nil;
+    var beats: [Float]! = nil;
     var beatsTimer: NSTimer! = nil;
     var beatsIndex = 0;
     var waitFor: NSTimeInterval! = nil;
@@ -50,7 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var moodIndex = 0;
     var sparkEmitter: SKEmitterNode! = nil;
     var moodXposition: Float = 1/3;
-    var fourIntervals: Double = 0;
+    var fourIntervals: Float = 0;
     var moodChangeTimer: NSTimer! = nil;
     
     // Collision Categories.
@@ -222,7 +222,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             fret.runAction(_movePipesAndRemove);
             _frets.addChild(fret);
             beatsIndex += 2;
-            beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[beatsIndex]  - beats[beatsIndex-2], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+            beatsTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(beats[beatsIndex]  - beats[beatsIndex-2]), target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
         }
     }
     
@@ -232,10 +232,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             return;
         }
         var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
-        if (index > level.melody.pitch!.count) {
+        if (index > level.melody.pitch.count) {
             return;
         }
-        var pitch: Int = level.melody.pitch![index];
+        var pitch: Int = level.melody.pitch[index];
 
         //if (abs(pitch - lastPitchSeen) > 50 && pitch > 0) {
         if (pitch > 0) {
@@ -276,7 +276,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         _movePipesAndRemove = SKAction.sequence([movePipes, removeNotes]);
         
         var spawn: SKAction = SKAction.runBlock(self.spawnNotes);
-        var delay: SKAction = SKAction.waitForDuration((beats[1] - beats[0]) / 2);
+        var delay: SKAction = SKAction.waitForDuration((NSTimeInterval(beats[1] - beats[0]) / 2));
         var spawnThenDelay: SKAction = SKAction.sequence([spawn, delay]);
         var spawnThenDelayForever: SKAction = SKAction.repeatActionForever(spawnThenDelay);
         self.runAction(spawnThenDelayForever, withKey: "notes");
@@ -352,7 +352,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         songPlayer.delegate = self
-        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch!.count);
+        timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch.count);
         setupSprites();
         
         // TODO: Fix quick Game.
@@ -360,7 +360,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         songPlayer.prepareToPlay();
         var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("playSong"), userInfo: nil, repeats: false);
         
-        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(beats[2] - beats[0], target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(beats[2] - beats[0]), target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
     }
 
     
@@ -405,7 +405,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: Selector("changeMood"), userInfo: nil, repeats: true);
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
         
-        self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.runBlock(moveSparkle)
+        self.runAction(SKAction.repeatActionForever(SKAction.sequence([SKAction.waitForDuration(NSTimeInterval(fourIntervals)), SKAction.runBlock(moveSparkle)
             ])), withKey: "mood");
         self.addChild(sparkEmitter)
     }
@@ -475,7 +475,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             moodXposition *= -1;
             var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
             var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
-            sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(fourIntervals), SKAction.moveTo(CGPoint(x: x, y: y), duration: fourIntervals)]));
+            sparkEmitter.runAction(SKAction.sequence([SKAction.waitForDuration(NSTimeInterval(fourIntervals)), SKAction.moveTo(CGPoint(x: x, y: y), duration: NSTimeInterval(fourIntervals))]));
         }
     }
 

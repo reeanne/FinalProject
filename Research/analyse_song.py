@@ -9,7 +9,8 @@ output_file = "analysis.json"
 
 def main():
 	file = sys.argv[1]
-	bounds, labels, pitch = structure.process_track(file)
+	output_file = sys.argv[2]
+	bounds, labels, pitch, beat_times = structure.process_track(file)
 	filtered_bounds, filtered_labels = structure.merge_bounds(bounds, labels)
 	mood = extract_and_predict.process_track(file, filtered_bounds)
 
@@ -17,7 +18,7 @@ def main():
 
 	output = {"bounds": bounds.tolist(), "labels": labels, "pitch": pitch.tolist(), 
 			  "filtered_bounds": filtered_bounds, "filtered_labels": filtered_labels,
-			   "mood": mood}
+			   "mood": mood, "beats": beat_times.tolist()}
 
 	with open(output_file, 'w') as outfile:
 		json.dump(output, outfile)

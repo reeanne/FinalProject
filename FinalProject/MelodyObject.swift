@@ -17,28 +17,27 @@ enum MoodObject: Int {
 class MelodyObject {
     
     var audioURL: NSURL;
-    var pitch: [Int]?;
-    var beats: [Double]?;
+    var pitch: [Int] = [];
+    var beats: [Float] = [];
     var arousal: [Float] = [];
     var valence: [Float] = [];
-    
+    var labels: [String] = [];
+    var boundaries: [Float] = [];
     
     init(audioURL: NSURL) {
         self.audioURL = audioURL;
-        self.pitch = getPredominantMelody(audioURL);
-        self.beats = getBeats(audioURL);
-        (self.arousal, self.valence) = getMood(audioURL);
+        extractFeatures(audioURL);
     }
     
-    init(audioURL: NSURL, pitch: [Int], beats: [Double], arousal: [Float], valence: [Float]) {
+    init(audioURL: NSURL, pitch: [Int], beats: [Float], arousal: [Float], valence: [Float], labels: [String], boundaries: [Float]) {
         self.audioURL = audioURL;
         self.pitch = pitch;
         self.beats = beats;
         self.arousal = arousal
         self.valence = valence;
+        self.labels = labels;
+        self.boundaries = boundaries;
     }
-    
- 
     
     /**
         Temporary method for printing data of the audiofile.
@@ -66,93 +65,53 @@ class MelodyObject {
         
     }
     
-    func getBeats(audioURL: NSURL) -> [Double] {
+    /**
+        Function running external process to retrieve all data for the new song to be generated.
+    */
+    func extractFeatures(audioURL: NSURL) {
         var task: NSTask = NSTask();
-        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/beat_output.json";
-        
-        // TODO: Change the paths to adjust to different users, not just mine...
-        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_beattracker_multifeature_mirex2013";
-        task.arguments = [audioURL, outputFile];
-        task.launch();
-        task.waitUntilExit();
-        var status = task.terminationStatus;
-        
-        if (status == 0) {
-            NSLog("Task succeeded.");
-            var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
-            inputStream.open();
-            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
-            var rhythm = json["rhythm"] as! [String: AnyObject];
-            var ticks = rhythm["ticks"] as! [Double];
-            return ticks;
-        } else {
-            NSLog("Task failed.");
-            return [];
-        }
-    }
-    
-    
-    func getMood(audioURL: NSURL) -> ([Float],[Float]) {
-        var task: NSTask = NSTask();
-        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/gamepredictions.json";
-        var programPath: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/extract_and_predict.py"
-        
-        // TODO: Change the paths to adjust to different users, not just mine...
+        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.json"
+        var programPath: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/analyse_song.py";
+        task.arguments = [programPath, audioURL, outputFile];
         task.launchPath = "/usr/local/bin/python";
-        task.arguments = [programPath, audioURL, "300"];
         task.launch();
         task.waitUntilExit();
         var status = task.terminationStatus;
+        
         if (status == 0) {
             NSLog("Task succeeded.");
             
             var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
             inputStream.open();
-            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [[Float]];
+            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
+            
+            // Parse mood.
+            var mood = json["mood"] as! [[Float]];
             var arousalData = [Float](count:json.count, repeatedValue: 0.0);
             var valenceData = [Float](count:json.count, repeatedValue: 0.0);
             for (var i = 0; i < json.count; i++) {
-                arousalData[i]  = json[i][0];
-                valenceData[i] = json[i][1];
+                arousalData[i]  = mood[i][0];
+                valenceData[i] = mood[i][1];
             }
-            println("asasasa", arousalData.description, "asasasasa", valenceData.description)
-            return (arousalData, valenceData);
-            //return ([], [])
-        } else {
-            NSLog("Task failed.");
-            return ([], []);
-        }
-
-    }
-    
-    
-    /**
-        Calls an external executable determining a predominant melody.
-    */
-    func getPredominantMelody(audioURL: NSURL) -> [Int] {
-        var task: NSTask = NSTask();
-        var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.json";
-        
-        // TODO: Change the paths to adjust to different users, not just mine...
-        task.launchPath = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/essentia-master/build/src/examples/streaming_predominantmelody";
-        task.arguments = [audioURL, outputFile];
-        task.launch();
-        task.waitUntilExit();
-        var status = task.terminationStatus;
-        
-        if (status == 0) {
-            NSLog("Task succeeded.");
+            self.arousal = arousalData;
+            self.valence = valenceData;
             
-            var inputStream: NSInputStream = NSInputStream(fileAtPath: outputFile)!;
-            inputStream.open();
-            let json = NSJSONSerialization.JSONObjectWithStream(inputStream, options: nil, error: nil) as! [String: AnyObject];
-            var tonal = json["tonal"] as! [String: AnyObject];
-            var predominant = tonal["predominant_melody"] as! [String: AnyObject];
-            var pitch = predominant["pitch"] as! [Int];
-            return pitch;
+            // Parse beats.
+            var beats = json["beats"] as! [Float];
+            self.beats = beats;
+            
+            // Parse predominant.
+            var predominant = json["pitch"] as! [Int];
+            self.pitch = predominant;
+            
+            // Parse structure.
+            var labels = json["labels"] as! [String];
+            var boundaries = json["bounds"] as! [Float];
+            self.labels = labels;
+            self.boundaries = boundaries;
+            
         } else {
             NSLog("Task failed.");
-            return [];
         }
     }
 

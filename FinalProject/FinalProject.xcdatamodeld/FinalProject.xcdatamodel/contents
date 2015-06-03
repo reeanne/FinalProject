@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Level" representedClassName="FinalProject.Level" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="melody" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Melody" inverseName="level" inverseEntity="Melody" syncable="YES"/>
@@ -8,7 +8,9 @@
     <entity name="Melody" representedClassName="FinalProject.Melody" syncable="YES">
         <attribute name="arousal" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="beats" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="boundaries" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="file" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="labels" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="pitch" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="valence" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="level" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Level" inverseName="melody" inverseEntity="Level" syncable="YES"/>
@@ -29,7 +31,7 @@
     </entity>
     <elements>
         <element name="Level" positionX="-261" positionY="-180" width="128" height="90"/>
-        <element name="Melody" positionX="-234" positionY="72" width="128" height="135"/>
+        <element name="Melody" positionX="-234" positionY="72" width="128" height="165"/>
         <element name="Mood" positionX="115" positionY="93" width="128" height="90"/>
         <element name="User" positionX="52" positionY="-153" width="128" height="73"/>
     </elements>

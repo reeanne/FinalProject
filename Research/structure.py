@@ -434,7 +434,8 @@ def process_track(path):
                                                        hpcp.shape[0], frames, dur)
     np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
-    return est_times, est_labels, pitch
+    beat_times = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
+    return est_times, est_labels, pitch, beat_times
 
 
 def merge_bounds(bounds, labels):

@@ -13,21 +13,24 @@ class Melody: NSManagedObject {
 
     @NSManaged var file: String
     @NSManaged var pitch: [Int];
-    @NSManaged var beats: [Double];
+    @NSManaged var beats: [Float];
     @NSManaged var arousal: [Float];
     @NSManaged var valence: [Float];
     @NSManaged var level: Level;
+    @NSManaged var labels: [String];
+    @NSManaged var boundaries: [Float]
     
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, filePath: String, pitch: [Int], beats: [Double],
-                                    arousal: [Float], valence: [Float]) -> Melody {
-        let newItem = NSEntityDescription.insertNewObjectForEntityForName("Melody", inManagedObjectContext: moc) as! Melody
-        newItem.file = filePath;
-        newItem.pitch = pitch;
-        newItem.beats = beats;
-        newItem.arousal = arousal;
-        newItem.valence = valence;
-        
-        return newItem
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, filePath: String, pitch: [Int], beats: [Float],
+        arousal: [Float], valence: [Float], labels: [String], boundaries: [Float]) -> Melody {
+            let newItem = NSEntityDescription.insertNewObjectForEntityForName("Melody", inManagedObjectContext: moc) as! Melody;
+            newItem.file = filePath;
+            newItem.pitch = pitch;
+            newItem.beats = beats;
+            newItem.arousal = arousal;
+            newItem.valence = valence;
+            newItem.labels = labels;
+            newItem.boundaries = boundaries;
+            return newItem
     }
 
 }
