@@ -17,6 +17,11 @@ import logging
 import sklearn.cluster
 
 
+def show_matrix(matrix, print_statement):
+    import pylab as plt
+    print print_statement
+    plt.imshow(matrix, interpolation="nearest", aspect="auto")
+    plt.show()
 
 def median_filter(X, M=8):
     """ Median filter along the first axis of the feature matrix X. """
@@ -26,24 +31,7 @@ def median_filter(X, M=8):
 
 
 def cnmf(S, rank, iterations=500, hull=False):
-    """(Convex) Non-Negative Matrix Factorization.
-    Parameters
-    ----------
-    S: np.array(p, N)
-        Features matrix. p row features and N column observations.
-    rank: int
-        Rank of decomposition
-    iterations: int
-        Number of iterations to be used
-    Returns
-    -------
-    F: np.array
-        Cluster matrix (decomposed matrix)
-    G: np.array
-        Activation matrix (decomposed matrix)
-        (s.t. S ~= F * G)
-    """
-
+    """ Convex Non-Negative Matrix Factorization. """
     nmf_mdl = pymf.CNMF(S, num_bases=rank)  
     nmf_mdl.factorize(niter=iterations)
 
@@ -184,27 +172,7 @@ def straightforward_bounds(G, F, median_size):
 
 
 def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterations=300):
-    import pylab as plt
-    """
-    Gets the segmentation (boundaries and labels) from the factorization
-    matrices.
-    Parameters
-    ----------
-    X: np.array()
-        Features matrix (e.g. chromagram)
-    rank: int
-        Rank of decomposition
-    R: int
-        Size of the median filter for activation matrix
-    iterations: int
-        Number of iterations for k-means
-    Returns
-    -------
-    bounds_idx: np.array
-        Bound indeces found
-    labels: np.array
-        Indeces of the labels representing the similarity between segments.
-    """
+    """ Gets the segmentation (boundaries and labels) from the factorization matrices. """
 
 
     # Find non filtered boundaries
@@ -241,16 +209,7 @@ def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterati
 
 
 def intervals_to_times(intervals):
-    """Given a set of intervals, convert them into times.
-    Parameters
-    ----------
-    intervals: np.array(N-1, 2)
-        A set of intervals.
-    Returns
-    -------
-    times: np.array(N)
-        A set of times.
-    """
+    """ Given a set of intervals, convert them into times. """
     return np.concatenate((intervals.flatten()[::2], [intervals[-1, -1]]), axis=0)
 
 
@@ -268,28 +227,7 @@ def remove_empty_segments(times, labels):
 
 
 def process_segmentation_level(est_idxs, est_labels, N, frame_times, dur):
-    """Processes a level of segmentation, and converts it into times.
-
-    Parameters
-    ----------
-    est_idxs: np.array
-        Estimated boundaries in frame indeces.
-    est_labels: np.array
-        Estimated labels.
-    N: int
-        Number of frames in the whole track.
-    frame_times: np.array
-        Time stamp for each frame.
-    dur: float
-        Duration of the audio track.
-
-    Returns
-    -------
-    est_times: np.array
-        Estimated segment boundaries in seconds.
-    est_labels: np.array
-        Estimated labels for each segment.
-    """
+    """ Processes a level of segmentation, and converts it into times. """
     assert est_idxs[0] == 0 and est_idxs[-1] == N - 1
 
     # Add silences, if needed.
@@ -308,7 +246,6 @@ def process_segmentation_level(est_idxs, est_labels, N, frame_times, dur):
 
 def postprocess(est_idxs, est_labels):
     est_idxs, est_labels = remove_empty_segments(est_idxs, est_labels)
-    # Make sure the indeces are integers.
     est_idxs = np.asarray(est_idxs, dtype=int)
     return est_idxs, est_labels
 
@@ -331,26 +268,6 @@ def get_predominant(audio, sampling_rate, size):
     return pitch
 
 
-def get_energy(audio, frame_size, hop_size):
-
-    # create the pool and the necessary algorithms
-    pool = Pool()
-    w = Windowing()
-    spec = Spectrum()
-    centroid = SpectralCentroid()
-
-    # compute the centroid for all frames in our audio and add it to the pool
-    for frame in FrameGenerator(audio, frameSize = frame_size, hopSize = hop_size):
-        c = centroid(spec(w(frame)))
-        pool.add('lowlevel.centroid', c)
-
-    # aggregate the results
-    aggrpool = PoolAggregator(defaultStats = [ 'mean', 'var' ])(pool)
-
-    print pool
-    print aggrpool
-    return pool
-
 
 def extract_features():
 
@@ -372,7 +289,6 @@ def extract_features():
 
     print "Beats."
     tempo, beats_idx = librosa.beat.beat_track(y=waveform_percussive, sr=sampling_rate, hop_length=hop_size)
-    #frame_time = librosa.frames_to_time(beats_idx, sr=sampling_rate, hop_length=hop_size)
 
     print "Melspectrogram."
     S = librosa.feature.melspectrogram(waveform,
@@ -387,7 +303,6 @@ def extract_features():
     print(len(mfcc))
 
 
-    energy = get_energy(audio, frame_size, hop_size)
     print "Predominant."
     pitch = get_predominant(audio, sampling_rate, len(mfcc))
     print len(pitch)
@@ -408,30 +323,21 @@ def extract_features():
             json.dump({"hpcp": hpcp.tolist()}, outfile)
 
 
-    imshow(hpcp.T, interpolation="nearest", aspect="auto")
-    show()
 
-
-    #print "unsynched"
-    #imshow(mfcc.T, interpolation="nearest", aspect="auto")
-    #show()
+    #show_matrix(hpcp.T, "unsynched hpcp")
+    #show_matrix(mfcc.T, "unsynched mfcc")
 
     print "Beat synchronising."
     bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
     bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
     bs_pitch = librosa.feature.sync(pitch.T, beats_idx, pad=False).flatten()
 
-    #print "synched"
-    #imshow(bs_mfcc.T, interpolation="nearest", aspect="auto")
-    #show()
-
-    unsynchSSM = lognormalise_chroma(mfcc)
-    unsynchSSM = compute_ssm(unsynchSSM)
-
-    #print "ssm unsynch"
-    #plt.imshow(unsynchSSM.T, interpolation="nearest", aspect="auto")
-    #plt.show()
-
+    #show_matrix(bs_hpcp.T, "synched hpcp")
+    #show_matrix(bs_mfcc.T, "synched mfcc")
+    
+    #unsynchSSM = lognormalise_chroma(mfcc)
+    #unsynchSSM = compute_ssm(unsynchSSM)
+    #show_matrix(unsynchSSM, "unsynched ssm")
 
     return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate, bs_pitch
 
@@ -467,23 +373,16 @@ def newfunction():
     mfcc, hpcp, beats, dur, pitch = extract_features()
     hpcp = lognormalise_chroma(hpcp)
 
-    #print "ssm synched"
-    #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
-    #plt.show()
-
+    #show_matrix(hpcp.T, "ssm synched")
+    
     if hpcp.shape[0] >= H:
         # Median filter
-        print "median filter synched"
         hpcp = median_filter(hpcp, M=9)
 
-        #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
-        #plt.show()
+        #show_matrix(hpcp.T, "median filter")
 
-        print "SSM computed."
         hpcp = compute_ssm(hpcp)
-
-        #plt.imshow(hpcp.T, interpolation="nearest", aspect="auto")
-        #plt.show()
+        #show_matrix(hpcp.T, "SSM")
         # Find the boundary indices and labels using matrix factorization
 
         print "Segmentation."

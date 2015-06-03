@@ -1,46 +1,45 @@
-% Chapter Template
+% Design & Implementation
 
-\chapter{Design and Implementation} % Main chapter title
+\chapter{Design and Implementation} 
 
-\label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter5} 
 
-\lhead{Chapter 5. \emph{Design \& Implementation}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+\lhead{Chapter 5. \emph{Design \& Implementation}} 
 
+In this chapter we go over the implementation process of the project. We describe various choices we made, justifying them in the context of our objectives. 
 
-In this chapter we will go over the implementation process of the project. We will describe various choices we made, justifying them in the context of our objectives. 
+First, we describe our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track, which is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
 
-First we will describe our solution to the mood detection problem. We first try to determine which musical features are the most correlated to the AV values of the music's emotion. Then, by training a neural network with data containing chosen features we will create a way of determining the arousal and valence value of any musical track, which will be later used in the implementation of our game. In addition to this, by investigating the impact of different parameters we will make sure out network has as good performance and accuracy as possible.
+Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ ===== INSERT ===== to further process the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay.
 
-Next, we will move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We will evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project.
+The next section describes our attempt to automated music segmentation. We investigate the possibility of using two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation to it to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
 
-The next section will describe our attempt to automated music segmentation.
-
-Last, but not least, we will talk about the game itself, its architecture, flow of use and design choices made.
+Last, but not least, we talk about the game itself, its architecture, flow of use and design choices made. We describe the algorithm for generating buttons that constitute the main part of the gameplay. We also detail the way we tie in the music analysis performed into the game to make the most of it.
 
 \vspace{20pt}
 
 \section{Mood Detection}
 
-A common reason for engaging in music listening is that music is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are commonalities in perceived emotion across different listeners based on the characteristics of the music. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
+A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
 
 As we described in Section \ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the moods perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
 \vspace{10pt}
 
 \subsection{Choice of Features}
-Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we would expect to have certain impact on the perceived mood of a musical piece:
+Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we expected to have certain impact on the perceived mood of a musical piece:
 
 \begin{description}
 
-\item[average loudness] - dynamic range descriptor. It rescales average loudness into the [0,1] interval on a per window basis. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks.
+\item[average loudness] - dynamic range (the ratio between the largest and smallest possible values of the signal) descriptor. It rescales average loudness into the [0,1] interval on a per window basis. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
 
-\item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks we have noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter.
+\item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
 
-\item[dynamic complexity] - computed on 2 second windows with 1 second overlap. The dynamic complexity is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on both examined values. However, similarly to the loudness level, arousal should be influenced more - as more dynamic songs (excited or angry) are more likely to suffer from loudness changes, whereas more phlegmatic ones (sad or peaceful) tend to keep the same dynamic complexity level.
+\item[dynamic complexity] - is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on both examined values. However, similarly to the loudness level, arousal should be influenced more - as more dynamic songs (excited or angry) are more likely to suffer from loudness changes, whereas more phlegmatic ones (sad or peaceful) tend to keep the same dynamic complexity level.
 
 \item[BPM] - beats per minute value according to detected beats. This feature should be correlated with the arousal level - intuitively, the faster the song, the more energetic it seems. 
 
-\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds \cite{timber}, and formalise it acoustically as an indication of the amount of high-frequency content in a sound. That is why we believe the spectral centroid might be related to both valence and arousal.
+\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
 
 \item[spectral RMS] (root mean square) - in physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. This is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
 
