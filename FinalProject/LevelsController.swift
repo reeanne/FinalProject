@@ -150,8 +150,8 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
     /**
         Retrieves all the levels from the Core Data.
     */
-    func getLevelFiles(owner: User?) -> [String: (NSURL, Int, Int)] {
-        var levels: [String: (NSURL, Int, Int)] = [String : (NSURL, Int, Int)]();
+    func getLevelFiles(owner: User?) -> [String: (NSURL, Int32, Int32)] {
+        var levels: [String: (NSURL, Int32, Int32)] = [String : (NSURL, Int32, Int32)]();
         let fetchRequest = NSFetchRequest(entityName: "Level")
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         if ((owner) != nil) {

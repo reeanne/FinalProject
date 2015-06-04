@@ -31,7 +31,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var lastButtonSeen: CGFloat = 0;
     
     // The offset needed for the buttons to come up as they are sung.
-    let offsetCurrent: Double = 0;
+
     var offsetPresspoint: Double = 0;
     
     //let offsetPresspoint: Double = 7;
@@ -232,7 +232,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         if (songPlayer == nil) {
             return;
         }
-        var index = Int((Double(songPlayer.currentTime) + offsetCurrent + offsetPresspoint) / timeInterval);
+        var index = max(0, Int((Double(songPlayer.currentTime) + offsetPresspoint) / timeInterval));
+        //var index = Int(Double((songPlayer.currentTime) + 2) / timeInterval)
         if (index >= level.melody.pitch.count) {
             return;
         }
@@ -345,18 +346,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         self.level = appDelegate.level;
         self.user = appDelegate.user;
         self.physicsWorld.contactDelegate = self
-        
-        offsetPresspoint =  0.01 * Double(self.frame.size.height + 0.5 * constants.textures[Colour.Blue]!["normal"]!.size().height);
-        
+
         beats = level.melody.beats;
-        
-        
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         songPlayer.delegate = self
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch.count);
+        println(timeInterval)
+        println(songPlayer.duration)
+        println(level.melody.pitch.count)
+    
         setupSprites();
+        offsetPresspoint =  0.01 * Double(self.frame.size.height + 0.5 * constants.textures[Colour.Blue]!["normal"]!.size().height);
         
-        // TODO: Fix quick Game.
+               // TODO: Fix quick Game.
         println(NSTimeInterval(offsetPresspoint))
         songPlayer.prepareToPlay();
         var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("playSong"), userInfo: nil, repeats: false);
@@ -494,9 +496,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
             println("here  " + level.melody.arousal[moodIndex].description + level.melody.valence[moodIndex].description);
+            println(level.melody.boundaries[moodIndex].description +  "    " + songPlayer.currentTime.description);
             moodIndex++;
             moodChangeTimer.invalidate();
-            moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex]),
+            moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex]),  // Error.
                 target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         }
     }

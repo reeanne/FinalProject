@@ -304,13 +304,19 @@ def get_predominant(audio, sampling_rate, size):
 
     # Load audio file, apply equal loudness filter, and compute predominant melody.
     audio = EqualLoudness()(audio)
-    pitch, confidence = run_predominant_melody(audio)
+    real_pitch, confidence = run_predominant_melody(audio)
 
+
+    for (i, conf) in enumerate(confidence):
+        if conf < 0:
+            real_pitch[i] = 0;
+
+    pitch = real_pitch[:]
     # Prope the pitches to make the data as small as the other.
     ratio = int(len(pitch) / size)
     pitch = pitch[::ratio]
     pitch = pitch[:-1] if len(pitch) > size else pitch
-    return pitch
+    return pitch, real_pitch
 
 
 def extract_hpcp(queue, waveform_harmonic, sampling_rate, hop_size, beats_idx):
@@ -361,7 +367,7 @@ def extract_features(path):
     hpcp, bs_hpcp = q2.get()
 
     print "Predominant."
-    pitch = get_predominant(audio, sampling_rate, len(mfcc))
+    pitch, real_pitch = get_predominant(audio, sampling_rate, len(mfcc))
     bs_pitch = librosa.feature.sync(pitch.T, beats_idx, pad=False).flatten()
     print len(pitch)
 
@@ -376,7 +382,7 @@ def extract_features(path):
     #unsynchSSM = compute_ssm(unsynchSSM)
     #show_matrix(unsynchSSM, "unsynched ssm")
 
-    return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate, bs_pitch
+    return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate, pitch, real_pitch
 
 
 def lognormalise_chroma(C):
@@ -406,7 +412,7 @@ def process_track(path):
     H = 20
 
     # swapped 
-    mfcc, hpcp, beats, dur, pitch = extract_features(path)
+    mfcc, hpcp, beats, dur, pitch, real_pitch = extract_features(path)
     hpcp = lognormalise_chroma(hpcp)
     #show_matrix(hpcp.T, "ssm synched")
     
@@ -435,7 +441,7 @@ def process_track(path):
     np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
     beat_times = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
-    return est_times, est_labels, pitch, beat_times
+    return est_times, est_labels, real_pitch, beat_times
 
 
 def merge_bounds(bounds, labels):

@@ -13,11 +13,11 @@ import AppKit
 class MusicEntry: NSObject {
     
     var levelName: String! = nil;
-    var score: Int = 0;
-    var stars: Int = 0
+    var score: Int32 = 0;
+    var stars: Int32 = 0
     var artwork: NSImage! = nil;
     
-    init(levelName: String, artwork: NSImage, score: Int, stars: Int) {
+    init(levelName: String, artwork: NSImage, score: Int32, stars: Int32) {
         self.levelName = levelName;
         self.artwork = artwork;
         self.score = score;
