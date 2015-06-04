@@ -87,8 +87,8 @@ class MelodyObject {
             
             // Parse mood.
             var mood = json["mood"] as! [[Float]];
-            var arousalData = [Float](count:json.count, repeatedValue: 0.0);
-            var valenceData = [Float](count:json.count, repeatedValue: 0.0);
+            var arousalData = [Float](count:mood.count, repeatedValue: 0.0);
+            var valenceData = [Float](count:mood.count, repeatedValue: 0.0);
             for (var i = 0; i < json.count; i++) {
                 arousalData[i]  = mood[i][0];
                 valenceData[i] = mood[i][1];

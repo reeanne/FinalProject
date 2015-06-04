@@ -54,13 +54,6 @@
                         <action selector="chooseLevel:" target="-2" id="Q9w-gH-tf5"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h7t-qs-ZRC">
-                    <rect key="frame" x="266" y="482" width="324" height="32"/>
-                    <buttonCell key="cell" type="push" title="Tap Along" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="D5B-ib-yRE">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="28"/>
-                    </buttonCell>
-                </button>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2uX-fX-vmP">
                     <rect key="frame" x="206" y="413" width="116" height="32"/>
                     <buttonCell key="cell" type="push" title="Delete Level" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="v8n-e0-ZNF">
@@ -85,10 +78,18 @@
                     <rect key="frame" x="412" y="210" width="32" height="32"/>
                     <accessibility description="Main Melody Processing"/>
                 </progressIndicator>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h7t-qs-ZRC">
+                    <rect key="frame" x="266" y="493" width="324" height="32"/>
+                    <buttonCell key="cell" type="push" title="Tap Along" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="D5B-ib-yRE">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system" size="28"/>
+                    </buttonCell>
+                </button>
             </subviews>
             <connections>
                 <binding destination="-2" name="hidden" keyPath="collArray" id="kiC-pH-tUz"/>
             </connections>
+            <point key="canvasLocation" x="542" y="-82"/>
         </visualEffectView>
         <viewController id="uvq-Qx-5hw" customClass="LevelsController" customModule="FinalProject" customModuleProvider="target"/>
         <collectionViewItem id="4hf-e0-Wmr" customClass="CollectionItem" customModule="FinalProject" customModuleProvider="target">

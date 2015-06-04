@@ -14,11 +14,13 @@ class MusicEntry: NSObject {
     
     var levelName: String! = nil;
     var score: Int = 0;
+    var stars: Int = 0
     var artwork: NSImage! = nil;
     
-    init(levelName: String, artwork: NSImage, score: Int) {
+    init(levelName: String, artwork: NSImage, score: Int, stars: Int) {
         self.levelName = levelName;
         self.artwork = artwork;
         self.score = score;
+        self.stars = max(0, min(3, stars));
     }
 }

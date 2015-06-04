@@ -33,6 +33,7 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
     }
 
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
@@ -47,34 +48,82 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
         var levelFiles = getLevelFiles(userData);
         var size: Int = 0;
         var musicEntry: MusicEntry;
+        var score: Int = 0;
+        var stars: Int = 0;
         
         var sizeCol = NSMakeSize(150, 150)
 
-        for (index, (name, url)) in enumerate(levelFiles) {
-            musicEntry = MusicEntry(levelName: name, artwork: getAlbumArtworkInfo(url), score: 0)
+        for (index, (name, (url, score, stars))) in enumerate(levelFiles) {
+            musicEntry = MusicEntry(levelName: name, artwork: getAlbumArtworkInfo(url), score: score, stars: stars)
             size = arrayController.arrangedObjects.count;
             arrayController.insertObject(musicEntry, atArrangedObjectIndex: size);
         }
     }
     
     @IBAction func deleteLevel(sender: AnyObject) {
-        var indexes = collectionView.selectionIndexes;
-        println(indexes)
-        if (indexes.count > 0) {
-            println(indexes.firstIndex)
-            var cell: CollectionItem = collectionView.content[indexes.firstIndex] as! CollectionItem;
-            deleteSelectedLevel(cell.levelName.stringValue);
+        var entry: MusicEntry? = getSelectedEntry();
+        if (entry != nil) {
+            deleteSelectedLevel(entry!.levelName);
         }
     }
     
     @IBAction func chooseLevel(sender: AnyObject) {
+        var entry: MusicEntry? = getSelectedEntry();
+        if (entry != nil) {
+            playSelectedLevel(entry!);
+        }
     }
-    
-    
     
     @IBAction func back(sender: AnyObject) {
+        self.appDelegate.showMenu()
     }
     
+    func getSelectedEntry() -> MusicEntry? {
+        var cell: MusicEntry? = nil;
+        var indexes = collectionView.selectionIndexes;
+        if (indexes.count > 0) {
+            cell = collectionView.content[indexes.firstIndex] as? MusicEntry;
+        }
+        return cell;
+    }
+    
+    
+    func playSelectedLevel(cell: MusicEntry) {
+        var levelName = cell.levelName;
+        println(levelName)
+        if (levelName != nil) {
+            var levelData = getLevel(levelName);
+            var melodyData = levelData!.melody;
+            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Float], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float], labels: melodyData.labels as [String], boundaries: melodyData.boundaries as [Float]);
+            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
+            var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+            appDelegate.level = levelObject;
+            println(melodyData.pitch);
+            appDelegate.playGameWindow();
+        }
+
+    }
+    
+    /**
+        Retrieves a level with specified name from the Core Data.
+    */
+    func getLevel(name: String) -> Level? {
+        let fetchRequest = NSFetchRequest(entityName: "Level")
+        println(name)
+        let predicate = NSPredicate(format: "name = %@", name)
+        fetchRequest.predicate = predicate;
+        var result: Level! = nil;
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
+            println("akdhja")
+            println(fetchResults.description);
+            if (fetchResults.count > 0) {
+                result = fetchResults[0];
+            }
+        }
+        return result;
+        
+    }
+
 
     func getAlbumArtworkInfo(fileURL: NSURL) -> NSImage {
 
@@ -101,8 +150,8 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
     /**
         Retrieves all the levels from the Core Data.
     */
-    func getLevelFiles(owner: User?) -> [String: NSURL] {
-        var levels: [String: NSURL] = [String : NSURL]();
+    func getLevelFiles(owner: User?) -> [String: (NSURL, Int, Int)] {
+        var levels: [String: (NSURL, Int, Int)] = [String : (NSURL, Int, Int)]();
         let fetchRequest = NSFetchRequest(entityName: "Level")
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         if ((owner) != nil) {
@@ -114,7 +163,9 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
             for level in fetchResults {
                 var url = NSURL(fileURLWithPath: level.melody.file);
-                levels.updateValue(url!, forKey: level.name);
+                var stars = level.stars;
+                var score = level.score
+                levels.updateValue((url!, score, stars) , forKey: level.name);
             }
         }
         return levels;

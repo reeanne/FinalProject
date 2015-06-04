@@ -2,6 +2,8 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Level" representedClassName="FinalProject.Level" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="score" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="stars" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="melody" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Melody" inverseName="level" inverseEntity="Melody" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="levels" inverseEntity="User" syncable="YES"/>
     </entity>
@@ -30,7 +32,7 @@
         </compoundIndexes>
     </entity>
     <elements>
-        <element name="Level" positionX="-261" positionY="-180" width="128" height="90"/>
+        <element name="Level" positionX="-261" positionY="-180" width="128" height="120"/>
         <element name="Melody" positionX="-234" positionY="72" width="128" height="165"/>
         <element name="Mood" positionX="115" positionY="93" width="128" height="90"/>
         <element name="User" positionX="52" positionY="-153" width="128" height="73"/>

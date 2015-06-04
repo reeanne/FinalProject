@@ -569,8 +569,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
 
 
-    /**
-    */
     func pause(pause: Bool) {
         
         self.paused = pause;
@@ -594,12 +592,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         }
         middleParent.hidden = !pause;
     }
+    
+    func saveScoreData(score: Int, stars: Int) {
+        var fetchRequest = NSFetchRequest(entityName: "Level")
+        fetchRequest.predicate = NSPredicate(format: "(name = %@) AND (owner.username = %@)", level.name, user.username)
+        
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [NSManagedObject] {
+            if fetchResults.count != 0{
+                var managedObject = fetchResults[0]
+                managedObject.setValue(score, forKey: "score")
+                managedObject.setValue(stars, forKey: "stars")
+                managedObjectContext!.save(nil)
+            }
+        }
+    }
 
     /** 
         Triggered once the song is finished.
     */
     func showScore() {
         var stars = progressBar.finalCountdown();
+        var score = progressBar.finalScore();
+        saveScoreData(score, stars: stars);
         middleParent.hidden = false;
         stopIssuing();
         showStars(stars)
