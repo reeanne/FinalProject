@@ -48,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var waitFor: NSTimeInterval! = nil;
     
     // Mood.
-    var moodIndex = 0;
+    var moodIndex = 1;
     var sparkEmitter: SKEmitterNode! = nil;
     var moodXposition: Float = 1/3;
     var fourIntervals: Float = 0;
@@ -354,19 +354,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         println(timeInterval)
         println(songPlayer.duration)
         println(level.melody.pitch.count)
-    
-        setupSprites();
         offsetPresspoint =  0.01 * Double(self.frame.size.height + 0.5 * constants.textures[Colour.Blue]!["normal"]!.size().height);
+
+        setupSprites();
         
                // TODO: Fix quick Game.
         println(NSTimeInterval(offsetPresspoint))
         songPlayer.prepareToPlay();
-        var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("playSong"), userInfo: nil, repeats: false);
+        var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("spawnFretsandSong"), userInfo: nil, repeats: false);
         
-        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(beats[2] - beats[0]), target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+        
     }
 
-    
+    func spawnFretsandSong(){
+        beatsTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(beats[2] - beats[0]), target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
+        playSong();
+    }
 
     func playerDidFinishPlaying(note: NSNotification) {
         showScore();
@@ -385,7 +388,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
                                   totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode,
                                   multiplier: self.childNodeWithName("ScoreParent")?.childNodeWithName("Multiplier") as! SKLabelNode);
         
-        showStars(0);
+        showStars(-1);
         buttons = initialiseButtons();
         pressedButtons = [Bool](count: limit, repeatedValue: false);
         createNotes();
@@ -399,7 +402,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
         sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
         
-        changeMood();
         sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
         sparkEmitter.name = "sparkEmmitter"
         sparkEmitter.zPosition = -1;
@@ -407,8 +409,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         sparkEmitter.physicsBody = nil;
         
         println(level.melody.boundaries);
-        
-        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[1] - level.melody.boundaries[1]),
+
+        moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[1] + Float(offsetPresspoint) - level.melody.boundaries[0]),
             target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
         
@@ -458,9 +460,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
 
     }
 
-    func showStars(number: Int) {
+    func showStars(num: Int) {
         var star: SKNode;
         var pauseImage = middleParent.childNodeWithName("MiddlePause") as! SKSpriteNode;
+        var number = num;
+        
+        if (number == -1) {
+            pauseImage.hidden = false;
+        } else {
+            pauseImage.hidden = true;
+        }
+        if (number == -1) {
+            number++;
+        }
 
         for (var i = 1; i <= number; i++) {
              middleParent.childNodeWithName("Star" + i.description)!.hidden = false;
@@ -468,17 +480,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         for (var i = number + 1; i <= 3; i++) {
              middleParent.childNodeWithName("Star" + i.description)!.hidden = true;
         }
-        if (number == 0) {
-            pauseImage.hidden = false;
-        } else {
-            pauseImage.hidden = true;
-        }
     }
     
     func moveSparkle() {
         
-        if (beatsIndex + 4 <= beats.count) {
-            fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
+        if (beatsIndex + 4 < beats.count) {
+            fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];  // ArrayIndex out of bounds
             moodXposition *= -1;
             var x = CGFloat(0.5 + moodXposition) * self.frame.size.width;
             var y = CGFloat(arc4random_uniform((UInt32)(self.frame.size.height * 4 / 6))) + self.frame.size.height * 1 / 6;
@@ -488,10 +495,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
 
 
     func changeMood() {
-        
+        println("CHANGING MOOD hopefully")
         sparkEmitter.particleColorSequence = nil;
-        if (moodIndex < level.melody.arousal.count && moodChangeTimer != nil) {
-            sectionLabel.text = level.melody.labels[max(0, moodIndex - 1)]
+        if (moodIndex + 1 < level.melody.arousal.count && moodChangeTimer != nil) {
+            sectionLabel.text = level.melody.labels[max(0, moodIndex)]
             sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
@@ -499,7 +506,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             println(level.melody.boundaries[moodIndex].description +  "    " + songPlayer.currentTime.description);
             moodIndex++;
             moodChangeTimer.invalidate();
-            moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex]),  // Error.
+            println(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex])
+            moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex] - level.melody.boundaries[moodIndex-1]),  // Error.
                 target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         }
     }
@@ -615,7 +623,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     */
     func showScore() {
         var stars = progressBar.finalCountdown();
-        var score = progressBar.finalScore();
+        var score = progressBar.getHits();
         saveScoreData(score, stars: stars);
         middleParent.hidden = false;
         stopIssuing();

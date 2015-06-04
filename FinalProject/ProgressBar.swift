@@ -122,10 +122,6 @@ class ProgressBar {
         Returns an amount of stars that the player received based on the scored points.
     */
     
-    func finalScore() -> Int {
-        return totalScore.text.toInt()!;
-    }
-    
     
     func finalCountdown() -> Int {
         var ratio: Float = Float(scored.text.toInt()!) / Float(totalScore.text.toInt()!);

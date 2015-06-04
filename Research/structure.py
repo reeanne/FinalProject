@@ -401,18 +401,7 @@ def compute_ssm(X):
     return 1 - D
 
 
-def process_track(path):
-    """ Processes the file to get the section boundaries and labels. """
-    frame_size = 2048
-    hop_size = 512
-    n_mels = 128
-    mfcc_coeff = 14
-    sampling_rate = 11025
-    iterations = 500 
-    H = 20
-
-    # swapped 
-    mfcc, hpcp, beats, dur, pitch, real_pitch = extract_features(path)
+def process_for_feature(queue, hpcp, pitch, iterations, sampling_rate, hop_size, dur, H, frames):
     hpcp = lognormalise_chroma(hpcp)
     #show_matrix(hpcp.T, "ssm synched")
     
@@ -435,9 +424,43 @@ def process_track(path):
   
     # Post process estimations
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
-    frames = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
     est_times, est_labels = process_segmentation_level(est_idxs, est_labels,
                                                        hpcp.shape[0], frames, dur)
+    queue.put((est_times, est_labels))
+
+
+def process_track(path):
+    """ Processes the file to get the section boundaries and labels. """
+    frame_size = 2048
+    hop_size = 512
+    n_mels = 128
+    mfcc_coeff = 14
+    sampling_rate = 11025
+    iterations = 500 
+    H = 20
+
+    mfcc, hpcp, beats, dur, pitch, real_pitch = extract_features(path)
+    q1, q2 = Queue(), Queue()
+    frames = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
+
+
+    Thread(target=process_for_feature, args=(q1, mfcc, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start()
+    Thread(target=process_for_feature, args=(q2, hpcp, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start() 
+
+    mfcc_times, mfcc_labels = q1.get()
+    hpcp_times, hpcp_labels = q2.get()
+
+    print mfcc_times, mfcc_labels
+    print hpcp_times, hpcp_labels
+
+    mfcc_newtimes, mfcc_newlabels = merge_bounds(mfcc_times, mfcc_labels)
+    hpcp_newtimes, hpcp_newlabels = merge_bounds(hpcp_times, hpcp_labels)
+
+    if len(mfcc_newlabels) < len(hpcp_newlabels):
+        est_times, est_labels = hpcp_times, hpcp_labels
+    else:        
+        est_times, est_labels = mfcc_times, mfcc_labels
+
     np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
     beat_times = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
@@ -465,6 +488,6 @@ def main():
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
-        path = "Help.mp3"
-    bounds, labels, _ = process_track(path)
+        path = "SongStructure/Titanic.mp3"
+    bounds, labels, _, _ = process_track(path)
 
