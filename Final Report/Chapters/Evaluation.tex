@@ -103,7 +103,34 @@ In totall, we manually labelled 11 songs:
 \item["Back in the USSR"] by The Beatles (Rock)
 \end{description}
 
-For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data,
+For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data, we averages each bound to create ground truth with reference boundaries and labels.
+
+To be able to fully evaluate the performance of our algorithm in comparison with state-of-the-art solutions already existing, we also gathered data produced by two other algorithms. The first one, described by Foote and Cooper \cite{FooteCooper}, is a classic approach applying a "“checkerboard” kernel over the diagonal of a self similarity-matrix (SSM). The other one is an approach published by Kaiser and Sikora \cite{Sikora}, with use of non-negative matrix factorisation on only one feature. 
+
+We conducted two types of studies to determine the performance of our bound finding algorithm. First and the most intuitive one is the comparison of amount of boundaries detected. 
+
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c | } \hline 
+Song  					& checkerboard 		&  NMF 		& Ours \\ \hline \hline
+The Number of The Beast 	& 	9  			&  15 		&  20 (15)   	\\ \hline
+Rock With You					&  9  			&  15 		& 17 (13)   	\\ \hline
+Blitzkrieg Bop 					&  9  			&  14 		& 14 (12)   	\\ \hline
+This Land Is Your Land 		&  9    		&  12 		& 7 (7)   		\\ \hline
+One More Time					&  9    		&  14 		& 20 (17)  / 8 (8)   \\ \hline
+Smooth								&  9  			&  14 		& 16 (11)  		\\ \hline
+Crazy In Love					&  9  			&  13 / 14 	& 16(12) / 12 (12) / 16 (13)   \\ \hline
+The Show Must Go On		&  10		  	&	16   		& 27 (22)   	\\ \hline
+Help!									&  9		   	&  17 		& 12 (12)   	\\ \hline
+Respect								&  9  			&  14 		& 12 (12)   	\\ \hline
+Back In the USSR				&  9  			&  13		    	& 14 (14) 		 \\ \hline
+\end{tabular}
+\caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
+\label{table:rsmetablefinal}
+\end{center}
+\end{table}
 
 
 

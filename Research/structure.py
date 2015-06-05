@@ -90,6 +90,9 @@ def find_label_relation(dictionary, labels):
     most_common = c.most_common(2)
     chorus, verse, intro, outro, intro_outro = None, None, None, None, None
 
+    if len(most_common) < 2:
+        return chorus, verse, intro, outro, intro_outro
+
     if dictionary[most_common[0][0]] > dictionary[most_common[1][0]]:
         chorus = most_common[0][0]
         verse = most_common[1][0]
@@ -145,6 +148,8 @@ def compute_vocal_extent(pitch, interval):
     """ Computes the fraction of frames containing main melody in them. """
 
     nonzero = np.count_nonzero(pitch[interval[0] : interval[1]])
+    if interval[1] - interval[0] == 0:
+        return 0
     return float(nonzero) / (interval[1] - interval[0])
     
 
@@ -490,4 +495,9 @@ def main():
     else:
         path = "SongStructure/Titanic.mp3"
     bounds, labels, _, _ = process_track(path)
+    print len(bounds)
+
+main()
+
+
 
