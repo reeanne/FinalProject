@@ -615,16 +615,6 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 
 \vspace{10pt}
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-  \vspace{-80pt}
-
-  \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/mfcc_no_log_sync}
-  \end{center}
-  \caption{Self similarity matrix computed using MFCC feature for ``Help'' by The Beatles.}
-  \label{fig:SSMbach}
-\end{wrapfigure}
-
 
 \vspace{10pt}
 
@@ -633,6 +623,15 @@ where $|| \cdot ||_{2}$ stands for the Euclidean distance, $\mu _{x}$ denotes th
 Many other researchers have considered the importance of patterns and repetition in music. This led to development of many algorithms for the task.
 
 For instance, Foote \cite{Foote} proposed the use of a self-similarity matrix (SSM for short) to visualise similarities between segments of music signals. In their algorithm, given a song, each element of a SSM represents the pairwise similarity between two respective temporal windows of acoustic features. Furthermore, Foote and Cooper \cite{FooteCooper} developed a music segmentation technique using an audio novelty measure. That is, the local similarity of adjacent musical signals within a coherent section is used to determine section boundaries. Then, all detected sections are compared with each other for their pairwise similarity and clustered into different patterns.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/mfcc_no_log_sync}
+  \end{center}
+  \caption{Self similarity matrix computed using MFCC feature for ``Help'' by The Beatles.}
+  \label{fig:SSMbach}
+\end{wrapfigure}
+
 
 Many researchers developed their methods on top of this solution, approaching the problem of the segments grouping from different angles. Some were using Gaussian Mixture Models (GMM) - a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. 
 

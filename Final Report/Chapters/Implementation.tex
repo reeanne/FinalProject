@@ -73,23 +73,21 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
 
 \end{description}
 
-\begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.48\textwidth}
-                \includegraphics[width=\textwidth]{Figures/spectralcentroid-valence}
-                \caption{A graph representing a correlation between spectral centroid and valence values.}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.48\textwidth}
-                \includegraphics[width=\textwidth]{Figures/zerocrossing-arousal}
-                \caption{A graph representing a correlation between zero-crossing rate and arousal values.}
-        \end{subfigure}
-          \caption{Chosen results of bivariate correlation with multiple regression.}
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-                        \label{fig:bivariateNN}
-
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.6\textwidth]{Figures/spectralcentroid-valence}
+\caption{A graph representing a correlation between spectral centroid and valence values.}
+\label{fig:bivariate-valence}
 \end{figure}
+
+
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.6\textwidth]{Figures/zerocrossing-arousal}
+ \caption{A graph representing a correlation between zero-crossing rate and arousal values.}
+\label{fig:bivariate-arousal}
+\end{figure}
+
 
 \vspace{10pt}
 
@@ -135,13 +133,6 @@ We trained our network for 1000 epochs with many different sizes of the hidden l
 
 Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
-\begin{figure}[h]
-	\centering
-   \includegraphics[width=0.7\textwidth]{Figures/nodesperf}
-\caption{Data presented in Table \ref{table:rsmetable}, plotted on a diagram.}
-\end{figure}
-
-
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | l | l | l | l |} \hline 
@@ -166,6 +157,14 @@ Hidden neurons are the neurons that are neither in the input layer nor the outpu
 \end{table}
 
 
+
+\begin{figure}[b]
+	\centering
+   \includegraphics[width=0.7\textwidth]{Figures/nodesperf}
+\caption{Data presented in Table \ref{table:rsmetable}, plotted on a diagram.}
+\end{figure}
+
+
 As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that although for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
 To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
 
@@ -188,7 +187,7 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 \end{center}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[b]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/learningrate}
 \caption{Data presented in Table \ref{table:learningrate}, plotted on a diagram.}
@@ -284,11 +283,7 @@ We decided to investigate both possibilities as they present the track from comp
 
 A series of transformations were applied to the data in order to distinguish the different parts of a song more efficiently with preserving the accuracy.
 
-First, we needed to we synchronise our data with the beats detected in the musical track. This process allowed to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames. The rationale for doing so is that many features, such as chord labels that occur between two consecutive beats tend to be the same. Thanks to focusing on the values of the features on a per-beat basis, we managed to largely normalise variations in tempo. However, the main advantage of applying the beat-synchronisation was that we managed to reduce the amount of data to analyse, and hence, the size of the matrix, we were operating on.
-
-This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
-
-\begin{figure}[htp]
+\begin{figure}[b]
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_synched_log_chroma}
@@ -303,6 +298,11 @@ This led us to beat-synchronous chromagrams. A diagram of a chromagram after bea
           \caption{Beat-synchronised chroma created for song ``Help!'' by The Beatles with applied enhancements.}
         \label{fig:chromaenhance}
 \end{figure}
+
+
+First, we needed to we synchronise our data with the beats detected in the musical track. This process allowed to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames. The rationale for doing so is that many features, such as chord labels that occur between two consecutive beats tend to be the same. Thanks to focusing on the values of the features on a per-beat basis, we managed to largely normalise variations in tempo. However, the main advantage of applying the beat-synchronisation was that we managed to reduce the amount of data to analyse, and hence, the size of the matrix, we were operating on.
+
+This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
 
 Following the beat-synchronisation, we applied log normalisation to the chroma feature. This allowed us to reduce the effect the outliers from the trend would have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure \ref{fig:logchroma}.
 
@@ -332,7 +332,7 @@ We investigated the influence of the type of the distance calculated on the SSM 
 As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
 
 
-\begin{figure}[b]
+\begin{figure}[t]
         \centering
         \begin{subfigure}[b]{0.31\textwidth}
                 \includegraphics[width=\textwidth]{Figures/ssm_euclidean}
@@ -358,9 +358,7 @@ When we look at the SSM computed using cosine distance, we can notice that the a
 
 \vspace{10pt}
 
-\subsubsection*{Mel-frequency Cepstral Coefficients}
-
-\begin{figure}
+\begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/mfcc_no_log_sync}
@@ -375,6 +373,9 @@ When we look at the SSM computed using cosine distance, we can notice that the a
           \caption{Comparison of SSM generated from unprocessed and enhanced MFCCs, using correlation distance.}
         \label{fig:MFCCcomparison}
 \end{figure}
+
+\subsubsection*{Mel-frequency Cepstral Coefficients}
+
 
 Similarly to the case of Harmonic Pitch Class Profiles, we started the preparation of the features by beat-synchronisation to decrease the size of the data for further analysis. 
 
@@ -525,19 +526,21 @@ However, this way alone, we lose the distinction between the vocal parts, for in
 
 Our final approach was to merge the two approaches mentioned earlier into one algorithm. Ideally, we wanted to preserve the variation in the vocal parts, as it was presented in the first approach where multiple parts were classified with the same class, while being able to tell when the main melody of is present, and when it is not. Moverover, we had to find a solution to the problem of determining which segments contain chorus, which ones represent the verse and which should be classified otherwise.
 
-To make it possible, we first employed our initial labelling algorithm to retrieve numerical labels for each of the detected segments. This way we were able to find relationships between different segments. Once we know which segments bear high similarity, we average the amount of percentage of voiced frames per segment. Having done that, we look at the two most repeated segments. The one with the higher average of the voiced frames is labelled as a chorus, and the other one is determined to be a verse. The first segment is labelled an intro if it bears not similarity to other segments. If it is classified the same way the last segment is, we label both if them as "intro/outro". If our algorithm finds another segment similar to any of them, they are marked as the bridge.
 
-\vspace{10pt}
-
-
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.55\textwidth}
 \vspace{-30pt}
   \begin{center}
-    \includegraphics[width=0.46\textwidth]{Figures/Structure-Retrieval}
+    \includegraphics[width=0.52\textwidth]{Figures/Structure-Retrieval}
   \end{center}
   \caption{Depiction of the final design of our structure retrieval system.}
 \label{fig:NMF}
 \end{wrapfigure}
+
+
+To make it possible, we first employed our initial labelling algorithm to retrieve numerical labels for each of the detected segments. This way we were able to find relationships between different segments. Once we know which segments bear high similarity, we average the amount of percentage of voiced frames per segment. Having done that, we look at the two most repeated segments. The one with the higher average of the voiced frames is labelled as a chorus, and the other one is determined to be a verse. The first segment is labelled an intro if it bears not similarity to other segments. If it is classified the same way the last segment is, we label both if them as "intro/outro". If our algorithm finds another segment similar to any of them, they are marked as the bridge.
+
+\vspace{10pt}
+
 
 \subsection{Final Design}
 
@@ -596,7 +599,7 @@ Once the user has created an account or chosen an existing one, they can either 
 
 \subsection{Level Description}
 
-Once we move on to playing a game, the \verb\dfrac{•}{•}|GameViewController| unpacks the \verb|GameScene| - an object representing a scene of content in Sprite Kit.
+Once we move on to playing a game, the \verb|GameViewController| unpacks the \verb|GameScene| - an object representing a scene of content in Sprite Kit.
 
 Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
 
