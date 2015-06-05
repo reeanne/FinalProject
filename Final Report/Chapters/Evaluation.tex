@@ -68,8 +68,6 @@ Results from the static network indicate that a network can be trained to identi
 0.24  &  0.35  &  0.304314 & 0.461078   \\ \hline
 0.47	&  0.5    &  0.711224 & 0.572459   \\ \hline
 0.34	&  0.31  &  0.416320 & 0.319491   \\ \hline
-
-
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
 \label{table:rsmetablefinal}
@@ -81,6 +79,33 @@ Results from the static network indicate that a network can be trained to identi
 To evaluate our implementation of the melody extraction algorithms we can use the technique used at Music Information Evaluation eXchange, described in section 2.4.3 of the report. In particular, we can compare the performance of our implementation when tested on the samples used during MIREX to the official statistics presented in papers \cite{salamon, comparison}.
 
 Another way of evaluating the game is creating a set of songs and generating levels for them. After that a trained Guitar Hero player can play those levels. If the buttons were consistently on time with the notes then the melody extraction and game synchronisation techniques are considered to work.
+
+
+\subsection{Segmentation}
+
+The first towards the evaluation of the segmentation algorithm was to gather the ground truth data to test against. To remove bias caused by personal preferences in music, we sought external sources for help in selection of the tracks. This is why we consulted the top charts created by music magazines and online portals such as Rolling Stone, Billboard, Gibson etc. The full list can be found in \cite{toplists}.
+
+Once we have retrieved the lists with the most popular songs across genres, we selected one song per top list based on our familiarity. Although this might introduced some sort of personal preference into the dataset, it also allowed us to more intuitively create the ground truth data, as the familiarity with a song makes the manual labelling more obvious. For instance, in “Blitzkrieg Bop” by The Ramones, the bridge is repeates as often as verse and chorus, which is bound to introduce confusion to a person who hears the song for the first time and is asked to segment and label it.
+
+In totall, we manually labelled 11 songs:
+\begin{description}
+\item[“The Number of The Beast”] by Iron Maiden (Metal)
+\item[“Rock With You”] by Michael Jackson (Soul/R\& B)
+\item[“Blitzkrieg Bop”] by The Ramones (Punk Rock)
+\item[“This Land is Your Land“] by Woody Guthrie (Folk)
+\item[“One More Time”] by Daft Punk (Dance)
+\item[“Smooth”] by Santana (featuring Rob Thomas) (Pop)
+\item[ “Crazy in Love”] by Beyonce (featuring Jay-Z) (Pop / Rap)
+\item[ ”The Show Must Go On”] by Queen (Rock)
+\item["Help!"] by The Beatles (Rock)
+\item["Respect"] by Aretha Franklin (R\& B)
+\item["Back in the USSR"] by The Beatles (Rock)
+\end{description}
+
+For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data,
+
+
+\end{description}
 
 \section{Qualitative}
 Qualitative research is conducted to gain understanding of effects and benefit of the project. They focus on people's own experiences and provide insights and trends in thoughts on a given matter. They can be unstructured or semi-structured, conducted as group discussions, surveys or individual interviews.
