@@ -187,13 +187,6 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 \end{center}
 \end{table}
 
-\begin{figure}[b]
-	\centering
-   \includegraphics[width=0.7\textwidth]{Figures/learningrate}
-\caption{Data presented in Table \ref{table:learningrate}, plotted on a diagram.}
-\end{figure}
-
-
 Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. Training parameter that controls the size of weight and bias changes in learning of the training algorithm. In a standard backpropagation, too low a learning rate makes the network learn very slowly,whereas a learning rate that is too high makes the weights and objective function diverge, so there is no learning at all. 
 
 We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
@@ -201,9 +194,82 @@ We started our search by setting it to 0.3 and reducing it over time. The result
 
 In the end, we came up with the network which can be seen on Figure \ref{fig:finalnetwork}.
 
+\begin{figure}[h]
+	\centering
+   \includegraphics[width=0.7\textwidth]{Figures/learningrate}
+\caption{Data presented in Table \ref{table:learningrate}, plotted on a diagram.}
+\end{figure}
+
 \vspace{20pt}
 
-\section{Main Melody Extraction}
+\section{Main Melody Retrieval}
+
+As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two different algorithms for main melody extraction. The first one, implementing the source separation based approach, was designed by Durrieu \cite{durrieu}, and the other one, using the salience approach, by Salamon and G\'{o}mez \cite{salamon}. In this section, we evaluate the performance of each of the algorithms in light of usefulness in our project. Furthermore, we present a way of post-processing of the chosen algorithm to further smooth out the estimated pitches of the main melody estimated.
+
+\subsection{Accuracy}
+
+Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this purpose, we ran both melody extraction methods agains the songs considered the best \cite{toplists}.
+
+To generate the ground truth, we used midi versions of files, created with separable channels so that the main melody is easily extracted. As a first step, we computed the voicing recall (the fraction of voiced frames in the ground truth reference indicated as voiced in the estimation) and false alarm rates (the fraction of unvoiced frames in the ground truth reference indicated as voiced in the estimation).
+Our findings are shown in Table \ref{table:voicedunvoiced}.
+
+\begin{table}
+\begin{center}
+\begin{tabular} {| p{5cm}| p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} |} \hline
+Title 	& Durrieu Recall & Durrieu False Alarm 	& Salamon Recall 	& Salamon False Alarm \\ \hline \hline
+Imagine						& 0.			& 0.		& 0.604			& 0.490		\\	\hline
+Johnny B. Goode		& 0.			& 0.		& 0.834			& 0.528		\\ 	\hline
+Like a Rolling Stone	& 0.			& 0.		& 0.634			& 0.581		\\ 	\hline
+Respect						& 0.			& 0.		& 0.652			& 0.198		\\ 	\hline
+Satisfaction				& 0.			& 0.		& 0.778			& 0.583		\\	\hline
+\end{tabular}
+\caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
+\label{table:voicedunvoiced}
+\end{center}
+\end{table}
+
+As we can see from the Table \ref{table:voicedunvoiced}, although initially the recall rate of Durrieu's implementation looked promising, the rate of the false alarms makes us think that the algorithm, in fact, does not filter out the unvoiced frames at all and detects the $f_{0}$ of the main melody everywhere. On the other hand, Salamon's solution did have a higher miss rate, but at the same time, its false alarm rate never exceeded 0.7.
+
+Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms have by analysing the main melody for vocal features such as vibratos, are underutilised. 
+
+In addition to this, we analised each of the tracks 
+
+
+
+\begin{table}
+\begin{center}
+\begin{tabular} {| p{5cm}| p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} |} \hline
+Title 	& Durrieu Pitch & Durrieu Chroma & Salamon Pitch & Salamon Chroma \\ \hline \hline
+Imagine						& 0.			& 0.		& 0.124			& 0.434		\\	\hline
+Johnny B. Goode		& 0.			& 0.		& 0.727			& 0.769		\\ 	\hline
+Like a Rolling Stone	& 0.			& 0.		& 0.018			& 0.313		\\ 	\hline
+Respect						& 0.			& 0.		& 0.260			& 0.365		\\ 	\hline
+Satisfaction				& 0.			& 0.		& 0.071			& 0.527		\\	\hline
+\end{tabular}
+\caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
+\label{table:voicedunvoiced}
+\end{center}
+\end{table}
+
+
+
+\subsection{Performance}
+
+
+\begin{table}
+\begin{center}
+\begin{tabular} {| p{5cm}| p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} |} \hline
+Title 	& Durrieu Recall & Durrieu False Alarm 	& Salamon Recall 	& Salamon False Alarm \\ \hline \hline
+
+\end{tabular}
+\caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
+\label{table:voicedunvoiced}
+\end{center}
+\end{table}
+
+
+
+
 
 \vspace{10pt}
 
