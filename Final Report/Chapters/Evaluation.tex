@@ -87,7 +87,8 @@ The first towards the evaluation of the segmentation algorithm was to gather the
 
 Once we have retrieved the lists with the most popular songs across genres, we selected one song per top list based on our familiarity. Although this might introduced some sort of personal preference into the dataset, it also allowed us to more intuitively create the ground truth data, as the familiarity with a song makes the manual labelling more obvious. For instance, in “Blitzkrieg Bop” by The Ramones, the bridge is repeates as often as verse and chorus, which is bound to introduce confusion to a person who hears the song for the first time and is asked to segment and label it.
 
-In totall, we manually labelled 11 songs:
+In totall, we manually labelled 10 songs:
+\vspace{-10pt}
 \begin{description}
 \itemsep0em 
 \item[“The Number of The Beast”] by Iron Maiden (Metal)
@@ -97,7 +98,6 @@ In totall, we manually labelled 11 songs:
 \item[“One More Time”] by Daft Punk (Dance)
 \item[“Smooth”] by Santana (featuring Rob Thomas) (Pop)
 \item[ “Crazy in Love”] by Beyonce (featuring Jay-Z) (Pop / Rap)
-\item[ ”The Show Must Go On”] by Queen (Rock)
 \item["Help!"] by The Beatles (Rock)
 \item["Respect"] by Aretha Franklin (R\& B)
 \item["Back in the USSR"] by The Beatles (Rock)
@@ -107,30 +107,60 @@ For each of the songs, we conducted 5 measurements to manually detect the bounda
 
 To be able to fully evaluate the performance of our algorithm in comparison with state-of-the-art solutions already existing, we also gathered data produced by two other algorithms. The first one, described by Foote and Cooper \cite{FooteCooper}, is a classic approach applying a "“checkerboard” kernel over the diagonal of a self similarity-matrix (SSM). The other one is an approach published by Kaiser and Sikora \cite{Sikora}, with use of non-negative matrix factorisation on only one feature. 
 
-We conducted two types of studies to determine the performance of our bound finding algorithm. First and the most intuitive one is the comparison of amount of boundaries detected. 
+We conducted two types of studies to determine the performance of our bound finding algorithm.
+
+
+\begin{wrapfigure}{r}{0.55\textwidth}
+\vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.52\textwidth]{Figures/count}
+  \end{center}
+  \caption{Depiction of the final design of our structure retrieval system.}
+\label{fig:boundcount}
+\end{wrapfigure}
+
+
+First and the most intuitive one is the comparison of amount of boundaries detected. If an algorithm returns a smaller amount of segments it means that most probably its detection system is not sensitive enough - it merges some of bounds into bigger ones. And vice versa - if the algorithm returns more boundaries than the ground truth, it means it picked on song segments that differ in a less obvious way and, hence, its output is too granular.
+
 
 
 
 \begin{table}
 \begin{center}
-\begin{tabular}{| c | c | c | c | } \hline 
-Song  					& checkerboard 		&  NMF 		& Ours \\ \hline \hline
-The Number of The Beast 	& 	9  			&  15 		&  20 (15)   	\\ \hline
-Rock With You					&  9  			&  15 		& 17 (13)   	\\ \hline
-Blitzkrieg Bop 					&  9  			&  14 		& 14 (12)   	\\ \hline
-This Land Is Your Land 		&  9    		&  12 		& 7 (7)   		\\ \hline
-One More Time					&  9    		&  14 		& 20 (17)  / 8 (8)   \\ \hline
-Smooth								&  9  			&  14 		& 16 (11)  		\\ \hline
-Crazy In Love					&  9  			&  13 / 14 	& 16(12) / 12 (12) / 16 (13)   \\ \hline
-The Show Must Go On		&  10		  	&	16   		& 27 (22)   	\\ \hline
-Help!									&  9		   	&  17 		& 12 (12)   	\\ \hline
-Respect								&  9  			&  14 		& 12 (12)   	\\ \hline
-Back In the USSR				&  9  			&  13		    	& 14 (14) 		 \\ \hline
+\begin{tabular}{| c | c | c | c | c | } \hline 
+Song  								& Ground	& checkerboard 		&  NMF 		& Ours \\ \hline \hline
+The Number of The Beast 	&	17			& 	9  						&  15 		&  20   	\\ \hline
+Rock With You					&	11			&  9			  			&  15 		& 17   	\\ \hline
+Blitzkrieg Bop 					&	14			&  9  						&  14 		& 14   	\\ \hline
+This Land Is Your Land 		&	11			&  9				    		&  12 		& 7    	\\ \hline
+One More Time					&	13			&  9    					&  14 		& 17   	\\ \hline
+Smooth								&	14			&  9  						&  14 		& 16  	\\ \hline
+Crazy In Love					&	17			&  9  						&  13  		& 16   	\\ \hline
+Help!									&	10			&  9		   				&  17 		& 12   	\\ \hline
+Respect								&	12			&  9  						&  14 		& 12  	\\ \hline
+Back In the USSR				&	15			&  9  						&  13		    	& 14		 \\ \hline \hline
+RMSE								&	N/A		& 4.98					&  3.08		& 2.95	 \\ \hline 
+
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
-\label{table:rsmetablefinal}
+\label{table:evalStructureCount}
 \end{center}
 \end{table}
+
+
+
+
+The results of our investigation can be seen in Table \ref{table:evalStructureCount}. By calculating the root mean square error for outputs of every algorithm, we noticed that our algorithm has a slightly better performance than the simple non-negative matrix factorisation one. On the other hand, checkerboard designed by Foote and Cooper consistently returned 9 labels, and hence yielding the worst performance.
+
+
+
+Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments
+
+If we look at Figure \ref{fig:boundcount}, we can see that in the light of our previous observations, the checkerboard yields a dramatically worse performance than nmf and our algorithm. In contrast, the latter two exhibit the same proportion of over- and under-segmenting.
+
+
+
+
 
 
 
