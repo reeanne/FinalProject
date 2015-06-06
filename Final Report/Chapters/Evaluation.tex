@@ -123,8 +123,6 @@ We conducted two types of studies to determine the performance of our bound find
 First and the most intuitive one is the comparison of amount of boundaries detected. If an algorithm returns a smaller amount of segments it means that most probably its detection system is not sensitive enough - it merges some of bounds into bigger ones. And vice versa - if the algorithm returns more boundaries than the ground truth, it means it picked on song segments that differ in a less obvious way and, hence, its output is too granular.
 
 
-
-
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | } \hline 
@@ -148,16 +146,34 @@ RMSE								&	N/A		& 4.98					&  3.08		& 2.95	 \\ \hline
 \end{table}
 
 
-
-
 The results of our investigation can be seen in Table \ref{table:evalStructureCount}. By calculating the root mean square error for outputs of every algorithm, we noticed that our algorithm has a slightly better performance than the simple non-negative matrix factorisation one. On the other hand, checkerboard designed by Foote and Cooper consistently returned 9 labels, and hence yielding the worst performance.
-
-
 
 Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments
 
 If we look at Figure \ref{fig:boundcount}, we can see that in the light of our previous observations, the checkerboard yields a dramatically worse performance than nmf and our algorithm. In contrast, the latter two exhibit the same proportion of over- and under-segmenting.
 
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | } \hline 
+Song  								& 0.5s 				& 3s						&  deviation \\ \hline \hline
+The Number of The Beast 	&	Foote			& 	Foote  				&  Ours 	\\ \hline
+Rock With You					&	Ours				&  Ours			  		&  Ours\\ \hline
+Blitzkrieg Bop 					&	NMF				&  Ours  				&  Ours 		\\ \hline
+This Land Is Your Land 		&	Ours				&  Foote			  	&  Foote 		\\ \hline
+One More Time					&	Foote			&  Foote    				&  Ours 		\\ \hline
+Smooth								&	Foote			& Foote  				&  Ours 		\\ \hline
+Crazy In Love					&	Ours				&  Ours  				&  Ours  		\\ \hline
+Help!									&	Ours				&  Foote		   		&  Ours 		\\ \hline
+Respect								&	Foote			&  Ours  				&  Ours 		\\ \hline
+Back In the USSR				&	Ours/NMF		&  Ours/NMF  		&  Ours		    	\\ \hline \hline
+
+\end{tabular}
+\caption{Table showing the best performing algorithm in each category for all the songs.}
+\label{table:evalStructureRank}
+\end{center}
+\end{table}
 
 
 
