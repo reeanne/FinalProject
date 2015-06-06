@@ -27,17 +27,45 @@ def evaluate_file(file, reference):
 
 def parse_file(file, minimum):
     name = os.path.splitext(file)[0]
-    f = open(str(name))
     name = name + '_formatted.txt'
     result = open(str(name), 'w+')
     with open(file) as datafile:
 		data = json.load(datafile)
 		for i in range(0, minimum):
-			print i, minimum
 			pitches = data["tonal"]["predominant_melody"]["pitch"]
 			to_write = str(i / float(minimum)) + '\t' + str(pitches[i]) + '\n'
 			result.write(to_write)
 		return name
+
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+
+def parse_ground(file, len):
+	name = os.path.splitext(file)[0]
+	name = name + '_formatted2.txt'
+	result = open(str(name), 'w+')
+	with open(file) as input:
+		for (i, line) in enumerate(input):
+			if i % 2 == 0 and i <= len:
+				result.write(line)
+		return name
+
+
+def parse_durrieu(file, len):
+	name = os.path.splitext(file)[0]
+	name = name + '_formatted2.txt'
+	result = open(str(name), 'w+')
+	with open(file) as input:
+		for (i, line) in enumerate(input):
+			to_write = str(i / float(len)) + '\t'  + str(line.strip().split('\t')[1]) + '\n'
+			result.write(to_write)
+		return name
+
 
 
 def parse_files(file1, file2):
@@ -56,6 +84,14 @@ def parse_files(file1, file2):
 def main():
 	estimation_file = sys.argv[1]
 	ground_truth_file = sys.argv[2]
+
+	len1, len2 = file_len(estimation_file), file_len(ground_truth_file)
+	print len1
+	print len2
+	ground_truth_file = parse_ground(ground_truth_file, len1)
+	estimation_file = parse_durrieu(estimation_file, len1)
+
+	print file_len(ground_truth_file)
 
 	evaluate_file(estimation_file, ground_truth_file)
 

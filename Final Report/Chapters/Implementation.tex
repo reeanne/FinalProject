@@ -232,8 +232,10 @@ As we can see from the Table \ref{table:voicedunvoiced}, although initially the 
 
 Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms have by analysing the main melody for vocal features such as vibratos, are underutilised. 
 
-In addition to this, we analised each of the tracks 
+In addition to this, we analised the accuracy of pitch prediction for each of the algorithms. 
+To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table \ref{table:melodypitchchroma}.
 
+Compute the raw chroma accuracy given two pitch (frequency) sequences in cents and matching voicing indicator sequences. The first pitch and voicing arrays are treated as the reference (truth), and the second two as the estimate (prediction). All 4 sequences must be of the same length.
 
 
 \begin{table}
@@ -247,7 +249,7 @@ Respect						& 0.			& 0.		& 0.260			& 0.365		\\ 	\hline
 Satisfaction				& 0.			& 0.		& 0.071			& 0.527		\\	\hline
 \end{tabular}
 \caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
-\label{table:voicedunvoiced}
+\label{table:melodypitchchroma}
 \end{center}
 \end{table}
 
@@ -255,17 +257,22 @@ Satisfaction				& 0.			& 0.		& 0.071			& 0.527		\\	\hline
 
 \subsection{Performance}
 
-
 \begin{table}
 \begin{center}
-\begin{tabular} {| p{5cm}| p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} |} \hline
-Title 	& Durrieu Recall & Durrieu False Alarm 	& Salamon Recall 	& Salamon False Alarm \\ \hline \hline
-
+\begin{tabular} {| c | c | c | c |} \hline
+Title 							& Length 		& Durrieu  						& Salamon  	\\ \hline \hline
+Imagine						& 3m 12s		&	0		& 26s 422ms		\\	\hline
+Johnny B. Goode		& 2m 20s		&	0		& 29s 932ms		\\ 	\hline
+Like a Rolling Stone	& 1m 32s		&	1h 59m 52s 630ms		& 9s 193ms		\\ 	\hline
+Respect						& 2m 35s		&	0		& 12s 597ms		\\ 	\hline
+Satisfaction				& 3m 43s		& 	0		& 15s 65ms		\\	\hline
 \end{tabular}
 \caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
-\label{table:voicedunvoiced}
+\label{table:melodytiming}
 \end{center}
 \end{table}
+
+Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song he will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}.
 
 
 
