@@ -81,7 +81,7 @@ To evaluate our implementation of the melody extraction algorithms we can use th
 Another way of evaluating the game is creating a set of songs and generating levels for them. After that a trained Guitar Hero player can play those levels. If the buttons were consistently on time with the notes then the melody extraction and game synchronisation techniques are considered to work.
 
 
-\subsection{Segmentation}
+\subsection{Boundary Detection}
 
 The first towards the evaluation of the segmentation algorithm was to gather the ground truth data to test against. To remove bias caused by personal preferences in music, we sought external sources for help in selection of the tracks. This is why we consulted the top charts created by music magazines and online portals such as Rolling Stone, Billboard, Gibson etc. The full list can be found in \cite{toplists}.
 
@@ -109,38 +109,27 @@ To be able to fully evaluate the performance of our algorithm in comparison with
 
 We conducted two types of studies to determine the performance of our bound finding algorithm.
 
-
-\begin{wrapfigure}{r}{0.55\textwidth}
-\vspace{-30pt}
-  \begin{center}
-    \includegraphics[width=0.52\textwidth]{Figures/count}
-  \end{center}
-  \caption{Depiction of the final design of our structure retrieval system.}
-\label{fig:boundcount}
-\end{wrapfigure}
-
-
 First and the most intuitive one is the comparison of amount of boundaries detected. If an algorithm returns a smaller amount of segments it means that most probably its detection system is not sensitive enough - it merges some of bounds into bigger ones. And vice versa - if the algorithm returns more boundaries than the ground truth, it means it picked on song segments that differ in a less obvious way and, hence, its output is too granular.
 
 
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | } \hline 
-Song  								& Ground	& checkerboard 		&  NMF 		& Ours \\ \hline \hline
-The Number of The Beast 	&	17			& 	9  						&  15 		&  20   	\\ \hline
-Rock With You					&	11			&  9			  			&  15 		& 17   	\\ \hline
-Blitzkrieg Bop 					&	14			&  9  						&  14 		& 14   	\\ \hline
-This Land Is Your Land 		&	11			&  9				    		&  12 		& 7    	\\ \hline
-One More Time					&	13			&  9    					&  14 		& 17   	\\ \hline
-Smooth								&	14			&  9  						&  14 		& 16  	\\ \hline
-Crazy In Love					&	17			&  9  						&  13  		& 16   	\\ \hline
-Help!									&	10			&  9		   				&  17 		& 12   	\\ \hline
-Respect								&	12			&  9  						&  14 		& 12  	\\ \hline
-Back In the USSR				&	15			&  9  						&  13		    	& 14		 \\ \hline \hline
-RMSE								&	N/A		& 4.98					&  3.08		& 2.95	 \\ \hline 
+Song  								& Ground	& Foote 	&  Kaiser 	& Ours \\ \hline \hline
+The Number of The Beast 	&	17			& 	9  			&  15 		&  20   	\\ \hline
+Rock With You					&	11			&  9			&  15 		& 17   	\\ \hline
+Blitzkrieg Bop 					&	14			&  9  			&  14 		& 14   	\\ \hline
+This Land Is Your Land 		&	11			&  9			&  12 		& 7    	\\ \hline
+One More Time					&	13			&  9    		&  14 		& 17   	\\ \hline
+Smooth								&	14			&  9  			&  14 		& 16  	\\ \hline
+Crazy In Love					&	17			&  9  			&  13  		& 16   	\\ \hline
+Help!									&	10			&  9		   	&  17 		& 12   	\\ \hline
+Respect								&	12			&  9  			&  14 		& 12  	\\ \hline
+Back In the USSR				&	15			&  9  			&  13		    	& 14		\\ \hline \hline
+RMSE								&	N/A		& 4.98		&  3.08		& 2.95	\\ \hline 
 
 \end{tabular}
-\caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
+\caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer for the checkerboard algorithm (by Foote, \cite{FooteCooper}), NMF based algorithm (by Kaiser, \cite{Sikora}) and ours.}
 \label{table:evalStructureCount}
 \end{center}
 \end{table}
@@ -148,26 +137,25 @@ RMSE								&	N/A		& 4.98					&  3.08		& 2.95	 \\ \hline
 
 The results of our investigation can be seen in Table \ref{table:evalStructureCount}. By calculating the root mean square error for outputs of every algorithm, we noticed that our algorithm has a slightly better performance than the simple non-negative matrix factorisation one. On the other hand, checkerboard designed by Foote and Cooper consistently returned 9 labels, and hence yielding the worst performance.
 
-Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments
+Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments.
 
 If we look at Figure \ref{fig:boundcount}, we can see that in the light of our previous observations, the checkerboard yields a dramatically worse performance than nmf and our algorithm. In contrast, the latter two exhibit the same proportion of over- and under-segmenting.
-
 
 
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | } \hline 
-Song  								& 0.5s 				& 3s						&  deviation \\ \hline \hline
-The Number of The Beast 	&	Foote			& 	Foote  				&  Ours 	\\ \hline
-Rock With You					&	Ours				&  Ours			  		&  Ours\\ \hline
-Blitzkrieg Bop 					&	NMF				&  Ours  				&  Ours 		\\ \hline
+Song  								& 	500ms 			& 3s						&  deviation	\\ \hline \hline
+The Number of The Beast 	&	Foote			& 	Foote  				&  Ours 			\\ \hline
+Rock With You					&	Ours				&  Ours			  		&  Ours			\\ \hline
+Blitzkrieg Bop 					&	Kaiser			&  Ours  				&  Ours 			\\ \hline
 This Land Is Your Land 		&	Ours				&  Foote			  	&  Foote 		\\ \hline
-One More Time					&	Foote			&  Foote    				&  Ours 		\\ \hline
-Smooth								&	Foote			& Foote  				&  Ours 		\\ \hline
+One More Time					&	Foote			&  Foote    				&  Ours 			\\ \hline
+Smooth								&	Foote			&  Foote  				&  Ours 			\\ \hline
 Crazy In Love					&	Ours				&  Ours  				&  Ours  		\\ \hline
-Help!									&	Ours				&  Foote		   		&  Ours 		\\ \hline
-Respect								&	Foote			&  Ours  				&  Ours 		\\ \hline
-Back In the USSR				&	Ours/NMF		&  Ours/NMF  		&  Ours		    	\\ \hline \hline
+Help!									&	Ours				&  Foote		   		&  Ours 			\\ \hline
+Respect								&	Foote			&  Ours  				&  Ours 			\\ \hline
+Back In the USSR				&	Ours/Kaiser	&  Ours/Kaiser 		&  Ours		    	\\ \hline
 
 \end{tabular}
 \caption{Table showing the best performing algorithm in each category for all the songs.}
@@ -176,8 +164,38 @@ Back In the USSR				&	Ours/NMF		&  Ours/NMF  		&  Ours		    	\\ \hline \hline
 \end{table}
 
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-10pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/count}
+  \end{center}
+  \caption{Figure presenting the amount of each type of errors produced by all the evaluated algorithms.}
+\label{fig:boundcount}
+\end{wrapfigure}
+
+Another measurement of success of our boundary retrieval is computation of boundary detection hit-rate. A hit is counted whenever a reference boundary is within a certain window of an estimated boundary. An important thing to note is that each boundary should be matched at most once, otherwise we can get some irrelevant results. For instance, if we are estimating the algorithm with window size 3 seconds, in the ground truth there are two boundaries 6 seconds apart and our algorithm detects only one right in the middle, if we do not exclude the boundary once compared with the first one in the ground truth, the performance of our algorithm will be ranked as much better than it actually was. 
 
 
+In addition to computing the hit-rate for windows of sizes 500ms and 3s, we also computed the median deviations between the reference and estimated boundaries of the song. In particular, we focused on median time from each reference boundary to the closest estimated boundary.
+
+We implemented our evaluation benchmark using Python mir\textunderscore eval library \cite{mireval}.
+Again, to best evaluate performance of our algorithm, we compare the results it yields with results of the checkerboard and NFM based ones. Our findings can be seen in Table \ref{table:evalStructureRank}.
+
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/structurechamps}
+  \end{center}
+  \caption{Chart presenting amount of times every algorithm excelled in each of the categories - hit-rate with window sizes of 500ms and 3s and the median deviation from the ground truth.}
+\label{fig:structurechamps}
+\end{wrapfigure}
+
+As we can see in the Figure \ref{fig:structurechamps}, in the majority of cases, the performance of the algorithm designed by Kaiser falls behind the other two methods. It ranked as first twice when calculating the hit-rate with the window size w=500ms, once for the w=3s and it never excelled in the deviation category. On the other hand, the algorithm designed by Foote and Cooper yields similar overall performance as ours when evaluating hit-rate with w=3 and slightly worse for 500ms. This most probably is caused by the fact that in many cases our algorithm managed to find the segments but was a bit off, not qualifying for the 500s window. However, once the window got increased, its performance improved more than in case of the ``checkerboard'' algorithm. The exact results can be seen in section \ref{sec:segevalapp} in Appendix C. 
+
+In conclusion, we believe that the algorithm for boundary detection we created is suitable for our application and yields performance comparable or exceeding the state-of-the-art creations in its field. 
+
+\subsection{Labelling}
 
 
 \section{Qualitative}
