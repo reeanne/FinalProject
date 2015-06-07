@@ -51,7 +51,7 @@ def parse_ground(file, len):
 	result = open(str(name), 'w+')
 	with open(file) as input:
 		for (i, line) in enumerate(input):
-			if i % 2 == 0 and i <= len:
+			if i % 2 == 0 and i < len:
 				result.write(line)
 		return name
 
@@ -95,5 +95,4 @@ def main():
 
 	evaluate_file(estimation_file, ground_truth_file)
 
-main()
 

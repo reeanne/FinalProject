@@ -362,14 +362,22 @@ def extract_features(path):
     S = librosa.feature.melspectrogram(waveform, sr=sampling_rate, n_fft=frame_size,
                                        hop_length=hop_size, n_mels=n_mels)
 
-    print "Parallel. " 
-    q1, q2 = Queue(), Queue()
+    #print "Parallel. " 
+    #q1, q2 = Queue(), Queue()
 
-    Thread(target=extract_mfcc, args=(q1, S, beats_idx)).start()
-    Thread(target=extract_hpcp, args=(q2, waveform_harmonic, sampling_rate, hop_size, beats_idx)).start() 
+    #Thread(target=extract_mfcc, args=(q1, S, beats_idx)).start()
+    #Thread(target=extract_hpcp, args=(q2, waveform_harmonic, sampling_rate, hop_size, beats_idx)).start() 
 
-    mfcc, bs_mfcc = q1.get()
-    hpcp, bs_hpcp = q2.get()
+    #mfcc, bs_mfcc = q1.get()
+    #hpcp, bs_hpcp = q2.get()
+    hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate,
+                                      hop_length=hop_size).T    
+    bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
+
+    log_S = librosa.logamplitude(S, ref_power=np.max)
+    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=mfcc_coeff).T
+    bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
+
 
     print "Predominant."
     pitch, real_pitch = get_predominant(audio, sampling_rate, len(mfcc))

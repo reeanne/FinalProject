@@ -8,6 +8,12 @@
 
 %----------------------------------------------------------------------------------------
 
+Success of any project or product depends on many factors - the performance, design, innovation and design. Each of the elements it consists of contribute to at least one of them. 
+In this chapter we evaluate our project in attempt to assess its success.
+
+First, we focus on quantitative analysis. We present the results of testing and validating of our neural network for music emotion prediction using fresh and unseen data and contrast them with existing literature. Then we move on to evaluation of the boundary detection system by comparing the performance and accuracy it yields with two other algorithms. Finally, we examine the results of the labelling algorithm.
+
+Last, but not least, we move on to qualitative research. We go over user testing and its outcome, as well as how it was used to further improve our game. 
 
 \section{Quantitative}
 \vspace{10pt}
@@ -23,11 +29,15 @@
 \end{figure}
 
 
-We wanted to use neural networks to calculate valence and arousal ratings of songs using audio features we extract. 
+We designed our neural networks to as means of calculating valence and arousal ratings of songs using audio features we extract. 
 
-We computed the mean error between participant ratings and network-predicted outputs across all segments of all test melodies. The network's performance total RMSE was 0.088954243616 on scale from 0 to 1 or 21.62\%.
-The network predicted at an average accuracy of 78.38\% for all 20 segments. The plot of the expected and predicted values can be seen in Figure \ref{fig:anneval}.
-These results are more promising than ones of Yang and Lin \cite{mood}, where their $R^2$ scored 58.3\% for arousal and 28.1\% for valence.
+To evaluate its performance we have to have a way of telling how successful it is in guessing the values. To achieve this, we activated the network on 21 unseen music tracks that we knew valence and arousal values of and gathered the output network produced for it. Then, we computed the root mean square error between the ground truth ratings and network-predicted outputs across all segments of all the test melodies. The network's performance total RMSE was 0.08895 on scale from 0 to 1 or 9\%. The plot of the expected and predicted values can be seen in Figure \ref{fig:anneval}.
+
+In contrast, in their paper \cite{vempala} Vempala and Russo trained a neural network with 1.14 error on scale 1 to 9, or 14.3\%.
+
+If we look at the two predicted values separately, the coefficient of determination for the arousal reached 59.24\% and 40.34\% for valence.
+
+In comparison, Yang and Lin \cite{mood} achieved a lower success rate, as their $R^2$ scored 58.3\% for arousal and 28.1\% for valence. 
 
 
 \begin{figure}[t]
@@ -145,7 +155,7 @@ If we look at Figure \ref{fig:boundcount}, we can see that in the light of our p
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | } \hline 
-Song  								& 	500ms 			& 3s						&  deviation	\\ \hline \hline
+Song  								& 	500ms 			&  3s						&  deviation	\\ \hline \hline
 The Number of The Beast 	&	Foote			& 	Foote  				&  Ours 			\\ \hline
 Rock With You					&	Ours				&  Ours			  		&  Ours			\\ \hline
 Blitzkrieg Bop 					&	Kaiser			&  Ours  				&  Ours 			\\ \hline
