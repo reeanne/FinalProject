@@ -8,11 +8,11 @@
 
 In this chapter we go over the implementation process of the project. We describe various choices we made, justifying them in the context of our objectives. 
 
-First, we describe our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track, which is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
+First, we describe our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track. The system is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
 
-Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ ===== INSERT ===== to further process the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay.
+Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ post processing to further modify the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay. Thanks to parametrising and applying the sliding median we are able to produce pitch coutours of different difficulty to play.
 
-The next section describes our attempt to automated music segmentation. We investigate the possibility of using two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation to it to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
+The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to it to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
 
 Last, but not least, we talk about the game itself, its architecture, flow of use and design choices made. We describe the algorithm for generating buttons that constitute the main part of the gameplay. We also detail the way we tie in the music analysis performed into the game to make the most of it.
 
@@ -20,7 +20,7 @@ Last, but not least, we talk about the game itself, its architecture, flow of us
 
 \section{Mood Detection}
 
-A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
+A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music \cite{vempala}. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
 
 As we described in Section \ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the moods perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
@@ -31,7 +31,7 @@ Using Essentia library \cite{essentia}, we implemented an extractor to retrieve 
 
 \begin{description}
 
-\item[average loudness] - dynamic range (the ratio between the largest and smallest possible values of the signal) descriptor. It rescales average loudness into the [0,1] interval on a per window basis. The value of 0 corresponds to signals with large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
+\item[average loudness] - describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0, 1] interval on a per window basis - if 0, it meas that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
 
 \item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
 
@@ -41,9 +41,9 @@ Using Essentia library \cite{essentia}, we implemented an extractor to retrieve 
 
 \item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
 
-\item[spectral RMS] (root mean square) - in physics it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. This is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
+\item[spectral RMS] (root mean square) - in Physics, it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. This is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
 
-\item[spectral energy] - the energy E{s} of a continuous-time signal x(t) defined as: 
+\item[spectral energy] - the energy $E_{s}$ of a continuous-time signal $x(t)$ defined as: 
 \begin{equation}
 E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt
 \end{equation}
@@ -54,9 +54,9 @@ There have been some research focusing on relation between spectral energy and s
 \item[mean and derivative of variance of beat loudness] -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
 
 \item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. 
-In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being 'in' a specific key, such as ``in the key of C major or in the key of F\#''. Sometimes the terms 'major' or 'minor' are appended, as 'in the key of A minor' or 'in the key of B major'.
-Broadly speaking the phrase 'in key of C' means that C is music's harmonic centre or tonic (the first degree of the scale, or the root of the scale). 
-The terms 'major' and 'minor' further imply the use of a major scale or a minor scale. Thus the phrase 'in the key of E major' implies a piece of tonal music harmonically centred on the note E and making use of a major scale whose first note, or tonic, is E. 
+In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being ``in'' a specific key, such as \textit{``in the key of C major or in the key of F\#''}. Sometimes the terms 'major' or 'minor' are appended, as \textit{``in the key of A minor''} or \textit{``in the key of B major''}.
+Broadly speaking the phrase ``in key of C'' means that C is music's harmonic centre or tonic (the first degree of the scale, or the root of the scale). 
+The terms ``major'' and ``minor'' further imply the use of a major scale or a minor scale. Thus the phrase \textit{``in the key of E major''} implies a piece of tonal music harmonically centred on the note E and making use of a major scale whose first note, or tonic, is E. 
 We believe that those features can have an impact on both arousal and valence - songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
 
 \item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
@@ -66,6 +66,7 @@ ZCR is defined formally as:
 \begin{equation}
 ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\}}
 \end{equation}
+where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\left\{{A}\right\}}$  yields 1 if $A$ is true, 0 otherwise.
 
 \item[pitch salience of a spectrum] - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value.  Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. We think the value could have an effect on both the valence and arousal as pitch salience is often described as the probability of noticing a tone or clarity or strength of tone sensation.
 
@@ -95,11 +96,11 @@ ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\
 
 In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
-As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figure \ref{fig:bivariateNN}, the rest are included in Appendix A (Chapter \ref{AppendixA}, Section \ref{sec:bivariatediagram}) for reference. 
+As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figured \ref{fig:bivariate-valence} and \ref{fig:bivariate-arousal}, the rest are included in Appendix A, Section \ref{sec:bivariatediagram}) for reference. 
 
-We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience, and both mean and derivative of variance (dvar) of dissonance}. 
+We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience}, and both mean and derivative of variance (dvar) of \textit{dissonance}. 
 
-For \textbf{arousal}, we noticed correlation with \textit{spectral centroid, pitch salience, zero-crossing rate}, both \textit{mean} and \textit{dva}r of  \textit{silence60, spectral energy, mean dissonance} and \textit{dynamic complexity}. 
+For \textbf{arousal}, we noticed correlation with \textit{spectral centroid, pitch salience, zero-crossing rate}, both mean and dvar of  \textit{silence60, spectral energy}, mean \textit{dissonance} and \textit{dynamic complexity}. 
 
 Values of all the features were then normalised between 0 and 1 to prepare them for the neural network training. 
 
@@ -119,36 +120,37 @@ Values of all the features were then normalised between 0 and 1 to prepare them 
 Our goal was to train the network to predict mean participant valence and arousal values for musical excerpts. 
 Our first network implementation was a supervised, feedforward network with backpropagation. 
 The input consisted of normalised values of 8 features:
-\textit{spectral centroid, pitch salience, zero-crossing rate, silence60 mean  and dvar, mean dissonance, dynamic complexity} and \textit{spectral energy}. 
+\textit{spectral centroid, pitch salience, zero-crossing rate, silence60 mean, loudness, mean dissonance, dynamic complexity} and \textit{spectral energy}. 
 The network had two outputs - arousal and valence.
 
 As all the training data was normalised, the input and output values were within a range of 0 to 1. The training set consisted of 50 input and output arrays. Each input array had 8 values, one per audio feature, and its corresponding output array had the two desired arousal and valence values.
 
-The network’s task was to provide the valence and arousal values based on the 13 audio features. The output values fell within a range of 0 to 1. Since desired outputs were average valence/arousal ratings provided by participants on a scale from 1 to 9, the network outputs were rescaled back. The training set consisted of eight input and output arrays. Each input array had 13 values, one for each audio feature, and its corresponding output array had the two desired arousal and valence values. The connection weights from input to the hidden nodes and from hidden nodes to the output ones were initialised to random numbers. 
+The network’s task was to provide the valence and arousal values based on the 8 audio features. The output values fell within a range of 0 to 1. Since desired outputs were average valence/arousal ratings provided by participants on a scale from 1 to 9 inclusive, the network outputs were rescaled back. The training set consisted of eight input and output arrays. Each input array had 8 values, one for each audio feature, and its corresponding output array had the two desired arousal and valence values. The connection weights from input to the hidden nodes and from hidden nodes to the output ones were initialised to random numbers. 
 
 The network was built, trained, and tested using the pyBrain python library for neural network implementation. 
 
+Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
+
 We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
 
-Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
 \begin{table}
 \begin{center}
 \begin{tabular}{| c | l | l | l | l |} \hline 
   No. of Nodes & RMSE 1 & RMSE 2 & result 1 & result 2  \\ \hline \hline
-  1 &  0.0727638005274 & 0.0740582536152  & 0.0998088934575 & 0.0978822145006 \\ \hline
-  2 &  0.071796654024 & 0.0709793303052 & 0.113046836083 & 0.112405435125 \\ \hline
-  3 & 0.0722212571658 & 0.0733605257262 &  0.155412522783 & 0.0948392717258 \\ \hline
-  4 &   0.0702013899702 & 0.0699921976435 &  0.102602437509 & 0.115373051966 \\ \hline
-  5 &  0.0659433293266 &  0.0693361162261 &  0.116558760273  & 0.10423200269\\ \hline
-  6 & 	 0.0722427034758 & 0.0751383013205 &  0.142248432275  &  0.118843096333  \\ \hline
-  7 &  0.0698701385354  & 0.0678483277007  & 0.088954243616 & 0.103537259056 \\ \hline
-  8 &   0.0692459138916 &  0.066424019477 & 0.131412928439 & 0.136098090028 \\ \hline
-  9 &   0.0676910853628 &  0.0707274913708 & 0.128139548772 & 0.104231713578\\ \hline
- 10 & 0.0684398705278 & 0.0673887116962 & 0.140505458102 & 0.175156506583\\ \hline
- 15 & 0.0671656450239 & 0.0673141803371 & 0.116563143115  &  0.139265837027\\ \hline
- 20 & 0.0737978227013 &  0.0720620813131 & 0.160424096589 & 0.136210925296\\ \hline
- 50 & 0.0669456166054 &   0.0694139442297 & 0.164132829293 & 0.171603556123\\ \hline
+  1 & 0.0727638 &  0.0740583  & 0.0998089  & 0.0978822   	\\ \hline
+  2 & 0.0717966 &  0.0709793  & 0.1130468  & 0.1124054    	\\ \hline
+  3 & 0.0722213 &  0.0733605  & 0.1554125  & 0.0948397   	\\ \hline
+  4 & 0.0702014 &  0.0699922  & 0.1026024  & 0.1153731  	\\ \hline
+  5 & 0.0659433 &  0.0693361  & 0.1165588  & 0.1042320		\\ \hline
+  6 & 0.0722427 &  0.0751383  & 0.1422484  & 0.1188432		\\ \hline
+  7 & 0.0698701 &  0.0678483  & 0.0889542  & 0.1035373		\\ \hline
+  8 & 0.0692459 &  0.0664240  & 0.1314129  & 0.1360981		\\ \hline
+  9 & 0.0676911 &  0.0707275  & 0.1281395  & 0.1042317		\\ \hline
+ 10 & 0.0684399 & 0.0673887  & 0.1405055  & 0.1751565		\\ \hline
+ 15 & 0.0671656 & 0.0673142  & 0.1165631  & 0.1392658		\\ \hline
+ 20 & 0.0737978 & 0.0720621  & 0.1604241  & 0.1362109		\\ \hline
+ 50 & 0.0669456 & 0.0694139  & 0.1641328  & 0.1716036		\\ \hline
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer.}
 \label{table:rsmetable}
@@ -169,22 +171,22 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 \begin{center}
 \begin{tabular} {| c | l | l |} \hline
  Learning Rate & RMSE & result RMSE \\  \hline \hline
- 0.3 & 0.0707970888752 & 0.14578838717 \\ \hline
- 0.25 & 0.0699336891245 & 0.163193322998 \\ \hline
- 0.2 &  0.0667986974361 & 0.15521882498 \\ \hline
- 0.15 & 0.0724218948598 & 0.104971086068 \\ \hline
- 0.1 & 0.0684257582616 & 0.100719004205 \\ \hline
- 0.05 & 0.0695957657331 & 0.0979349713899 \\ \hline
- 0.01 & 0.0689460348924 & 0.090954243616 \\ \hline
- 0.005 & 0.0724023992534 & 0.130733683966 \\ \hline
- 0.001 &  0.079664786995 & 0.112619882406 \\ \hline
+ 0.3 		& 0.070797 	& 0.145788	\\ \hline
+ 0.25 	& 0.069934  	& 0.163193	\\ \hline
+ 0.2 		&  0.066799	& 0.155219	\\ \hline
+ 0.15		& 0.072422	& 0.104971	\\ \hline
+ 0.1 		& 0.068426	& 0.100719	\\ \hline
+ 0.05 	& 0.069596	& 0.097935	\\ \hline
+ 0.01 	& 0.068946	& 0.090954	\\ \hline
+ 0.005 	& 0.072402	& 0.130734	\\ \hline
+ 0.001 	&  0.079665	& 0.112620	\\ \hline
 \end{tabular}
 \caption{Table showing the root mean square error for training the network for given learning rate parameter value.}
 \label{table:learningrate}
 \end{center}
 \end{table}
 
-Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. Training parameter that controls the size of weight and bias changes in learning of the training algorithm. In a standard backpropagation, too low a learning rate makes the network learn very slowly,whereas a learning rate that is too high makes the weights and objective function diverge, so there is no learning at all. 
+Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. Learning rate is essentially a training parameter that controls the size of weight and bias changes in learning of the training algorithm. In a standard backpropagation, too low a learning rate makes the network learn very slowly,whereas a learning rate that is too high makes the weights and objective function diverge, so there is no learning at all. 
 
 We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
 
@@ -208,7 +210,7 @@ As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two diffe
 
 \subsection{Accuracy}
 
-Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this purpose, we ran both melody extraction methods agains the songs considered the best \cite{toplists}.
+Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this purpose, we ran both melody extraction methods against the most popular songs of different genres commonly considered the best \cite{toplists}.
 
 To generate the ground truth, we used midi versions of files, created with separable channels so that the main melody is easily extracted. As a first step, we computed the voicing recall (the fraction of voiced frames in the ground truth reference indicated as voiced in the estimation) and false alarm rates (the fraction of unvoiced frames in the ground truth reference indicated as voiced in the estimation).
 Our findings are shown in Table \ref{table:voicedunvoiced}.
@@ -228,9 +230,9 @@ Satisfaction				& 0.997		& 0.948		& 0.778			& 0.583		\\	\hline
 \end{center}
 \end{table}
 
-As we can see from the Table \ref{table:voicedunvoiced}, although initially the recall rate of Durrieu's implementation looked promising, the rate of the false alarms makes us think that the algorithm, in fact, does not handle the filtering  out of the unvoiced frames and detects the $f_{0}$ of the main melody forcefully. In total, Durrieu exhibited an average of 98.28\% recall when it comes to detecting the voiced frames but at the same time, it suffered from an average of 84.46\% false positives. On the other hand, Salamon's solution did have a higher miss rate, but at the same time, its false alarm rate never exceeded 0.6. Still, we believe that an average of 70\% recall with 47.6\% false positive rate is an impressive achievement for Salamon.
+As we can see from the Table \ref{table:voicedunvoiced}, although initially the recall rate of Durrieu's implementation looked promising, the rate of the false alarms makes us think that the algorithm, in fact, does not handle the filtering out of the unvoiced frames too well and detects the $f_{0}$ of the main melody forcefully. In total, Durrieu exhibited an average of 98.28\% recall when it comes to detecting the voiced frames but at the same time, it suffered from an average of 84.46\% false positives. On the other hand, Salamon's solution did have a higher miss rate, but at the same time, its false alarm rate never exceeded 0.6. Still, we believe that an average of 70\% recall with 47.6\% false positive rate is an impressive achievement for Salamon.
 
-Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms have by analysing the main melody for vocal features such as vibratos, are underutilised. 
+Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms may have by analysing the main melody for vocal features such as vibratos, as it is described in case of Salamon's algorithm, are underutilised. 
 
 In addition to this, we analysed the accuracy of pitch prediction for each of the algorithms. 
 To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table \ref{table:melodypitchchroma}, performance of each of the algorithms varies gravely depending on the track. The average pitch prediction for Durrieu was  17.8\%, whereas Salamon exhibited an average prediction of 24\%. We found those numbers a bit disappointing, however, we suspected that a big part of the error was caused by the octave error, which are not so important in our case. That is why we also calculated the raw chroma accuracy, where all the pitches are mapped onto one octave. In this case, Salamon's performance increased to 48\%, whereas Durrieu showed an improvement from 17.8\% to 34.84\%.
@@ -256,7 +258,7 @@ Satisfaction				& 0.086		& 0.343		& 0.071			& 0.527		\\	\hline
 
 \subsection{Performance}
 
-Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song he will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
+Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song they will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
 
 \begin{figure}[h]
 	\centering
@@ -315,7 +317,7 @@ Most smoothing algorithms are based on the ``shift and multiply" technique, in w
                 \includegraphics[width=\textwidth]{Figures/smoothing_1001_true}
                 \vspace{20pt}
         \end{subfigure}
-    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry'' with additional introduction of false positives (left) and not (right), using the rectangular smooth with m = 1001.}
+    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry'' with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m = 1001$.}
 	\label{fig:excludezeros}
 \end{figure}
 
@@ -330,7 +332,7 @@ Most smoothing algorithms are based on the ``shift and multiply" technique, in w
                 \includegraphics[width=\textwidth]{Figures/median_100_limit}
                 \vspace{20pt}
         \end{subfigure}
-    \caption{The pitch contours of the input (left) and created by applying the sliding median with window size w = 100 to the estimated main melody of ``Johnny B. Goode'' by Chuck Berry' .}
+    \caption{The pitch contours of the input (left) and created by applying the sliding median with window size $w = 100$ to the estimated main melody of ``Johnny B. Goode'' by Chuck Berry' .}
 	\label{fig:sliding_input}
 \end{figure}
 
@@ -342,9 +344,7 @@ The simplest smoothing algorithm is the rectangular or unweighted sliding-averag
 for $j = 2$ to $n-1$, where $S_{j}$ the $j$th point in the smoothed signal, $Y_{j}$ the $j$th point in the original signal, and n is the total number of points in the signal. 
 
 
-
-
-The results of applying the rectangular sliding average smooth can be seen in Figure \ref{fig:rectangular}. As we can see, even for a window size of 101, which actually is not big when compared to the length of the whole song (in case of this example is over 50,000 frames), the zero values (so the unvoiced frames) drag down the pitch values around them. This is a desirable outcome when dealing with the outliers that were falsely detected as voiced, but introduces more error into correctly detected frames that start the note (so for instancce, the first note after a pause).
+The results of applying the rectangular sliding average smooth can be seen in Figure \ref{fig:rectangular}. As we can see, even for a window size of 101, which actually is not big when compared to the length of the whole song (in case of this example is over 50,000 frames), the zero values (so the unvoiced frames) drag down the pitch values around them. This is a desirable outcome when dealing with the outliers that were falsely detected as voiced, but introduces more error into correctly detected frames that start the note (so for instance, the first note after a pause).
 
 \begin{figure}
 		\vspace{-17pt}
@@ -368,7 +368,7 @@ For 1D signals, the most obvious window is just the first few preceding and foll
 
 The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure \ref{fig:slidingpitch}. On the other hand, comparison of the results for the different window sizes can be seen in Figure \ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
 
-An important thing in our application is that we do want to preserve our zero values in our smoothed pitch countours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure \ref{fig:excludezeros}.
+An important thing in our application is that we do want to preserve our zero values in our smoothed pitch coutours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure \ref{fig:excludezeros}.
 
 
 \section{Structure Retrieval}
@@ -490,7 +490,7 @@ As the next step, we applied a sliding median filter of size h is run against ea
 
 By filtering features across time, we retained the most prominent chromas within the h-size window and removed smaller artefacts, which are irrelevant in our context. The Figure \ref{fig:slidingchroma} presents the chromagram after applying the sliding median filter.
 
-We then proceeded to compute the Self Similarity Matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a N x N symmetric matrix D, such that D(i, j) contains said distance. In particular, D(i, j) stores the same value ad D(j, i), and for every i D(i, i) is equal to 0.
+We then proceeded to compute the Self Similarity Matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a $N \times N$ symmetric matrix $D$, such that $D(i, j)$ contains said distance. In particular, $D(i, j)$ stores the same value as $D(j, i)$, and for every $i$ $D(i, i)$ is equal to 0.
 
 We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: Euclidean, Manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
 As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
@@ -559,16 +559,16 @@ The result of this process can be seen in Figure \ref{fig:synMFCC}.
   \begin{center}
     \includegraphics[width=0.45\textwidth]{Figures/NMF}
   \end{center}
-  \caption{Illustration of approximate non-negative matrix factorization: the matrix X is represented by the two smaller matrices W and H.}
+  \caption{Illustration of approximate non-negative matrix factorization: the matrix $X$ is represented by the two smaller matrices $W$ and $H$.}
 \label{fig:NMF}
 \end{wrapfigure}
 
 We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorization (NMF) could be useful in our situation.
 
-In NMF, the $N \times N$ self similarity matrix $X$ was approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where \textit{k} is the rank of the composition. This can be described as $X \approx WH$. The \textit{j}th column of $W$ can be viewed as the vector template for the \textit{i}th segment type. The \textit{j}th column of $H$ describes the intensities of the \textit{k}th segment types for the \textit{j}th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
+In NMF, the $N \times N$ self similarity matrix $X$ was approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $i$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
 
-However, in data mining, sometimes it can be beneficial to ensure X to contain meaningful “cluster centroids”, i.e., to restrict W to be convex combinations of data points.
-C-NMF adds a constrain to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^{T}$,... ,  $\boldsymbol{w}_{k}^{T}$),  such that its columns  $\boldsymbol{w}^{T}$  are, in fact,  convex combinations of the features of $X$:
+However, in data mining, sometimes it can be beneficial to ensure $X$ to contain meaningful “cluster centroids”, i.e., to restrict $W$ to be convex combinations of data points.
+C-NMF adds a constraint to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^{T}$,... ,  $\boldsymbol{w}_{k}^{T}$),  such that its columns  $\boldsymbol{w}^{T}$  are, in fact,  convex combinations of the features of $X$:
 
 \begin{equation}
 \boldsymbol{w}_{j}^{T} = \boldsymbol{x}_{1}^{T}f_{1j} + \boldsymbol{x}_{2}^{T}f_{2j} + ... + \boldsymbol{x}_{N}^{T}f_{Nj}  \hspace{45pt}   j \in [1 : k]
@@ -579,7 +579,7 @@ $f_{ij} \geq 0,  f_{ij} = 1 $
 
 This results in $W = XF$, where $F \in \mathbb{R}^{N \times k}$, which makes the rows $\boldsymbol{f}_{i}$ interpretable as weighted cluster centroids. The decomposition matrices $R_{j}$, are obtained as follows:  $R_{j} =  \boldsymbol{w}^{T}_{j}\boldsymbol{h}_{j}$, where $j \in [1 : k]$. Finally, C-NMF can be formally characterised as: $X \approx XFH$.
 
-In C-NMF, the matrix W is a set of convex combinations of the rows of the input matrix X, which contrasts with NMF, where no such constraint exists. This means that, each row $x_{i}$ represents similarity of the time frame i with the rest of the time frames, storing information about the time frae i across the entire song.
+In C-NMF, the matrix $W$ is a set of convex combinations of the rows of the input matrix $X$, which contrasts with NMF, where no such constraint exists. This means that, each row $x_{i}$ represents similarity of the time frame $i$ with the rest of the time frames, storing information about the time frame $i$ across the entire song.
 
 By computing the C-NMF we separate basic structural parts. In the next section, we describe how the factorization via C-NMF relates to structure and show how we can use that result for music structure discovery. 
 
@@ -606,7 +606,7 @@ Apart from this, another important benefit of C-NMF over NMF is that matrices $F
         \label{fig:CNMFbeatles}
 \end{figure}
  
-In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank k = 2 can be seen in Figure \ref{fig:CNMFbeatles}.
+In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank $k = 2$ can be seen in Figure \ref{fig:CNMFbeatles}.
 
 \subsubsection*{Pure C-NMF Approach}
 \label{sec:finalBounds}
@@ -638,21 +638,21 @@ This method, although quite simple, produced a neat and quite accurate output, w
                 \caption{The k value is too big - little improvement in average distance.}
                 \label{fig:overfitting}
         \end{subfigure}
-          \caption{Diagrams depicting impact of the k value on the clustering result \cite{kcluster}.}
+          \caption{Diagrams depicting impact of the $k$ value on the clustering result \cite{kcluster}.}
         \label{fig:ssmdistance}
 \end{figure}
 
 Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
 
-K-means clustering is considered one of the simplest unsupervised learning algorithms that can solve the well know clustering problem. It follows a simple and easy way of classifying a given data set through a certain number of clusters (assume k clusters).
+K-means clustering is considered one of the simplest unsupervised learning algorithms that can solve the well know clustering problem. It follows a simple and easy way of classifying a given data set through a certain number of clusters (assume $k$ clusters).
 
-The main idea  is to define k centres, one for each cluster. Much care should be put into their placement, as different location of centres causes different result. This is why the most intuitive solution is to put them as far apart as possible. The next step is to take one point after another from the data set and associate it with the nearest centre, 
+The main idea  is to define $k$ centres, one for each cluster. Much care should be put into their placement, as different location of centres causes different result. This is why the most intuitive solution is to put them as far apart as possible. The next step is to take one point after another from the data set and associate it with the nearest centre, 
 
-When all the points have been assigned to some centre, k new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new center. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
+When all the points have been assigned to some centre, $k$ new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new center. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
 
-Those two phases are repeated in a loop. As a result, we may notice that the k centers change their location step by step until no more changes are done, and the algorithm converges. 
+Those two phases are repeated in a loop. As a result, we may notice that the $k$ centers change their location step by step until no more changes are done, and the algorithm converges. 
 
-We ran k-means clustering with k = 2 to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of k = 2 allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
+We ran k-means clustering with $k = 2$ to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of $k = 2$ allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
 
 \vspace{10pt}
 
@@ -662,7 +662,7 @@ We ran k-means clustering with k = 2 to each one of the C-NMF decomposition matr
 In our structure retrieval, we investigated different ways of labelling of the segments.
 
 First approach built directly on our way of segmenting the song.
-Similarly to when attempting to find boundaries between segments, we decomposed our self similarity matrix X with rank increased. This allowed further differentiation between structures, for instance, if certain part of a song was thought of as a chorus, but it is different enough to get separated in a C-NMF of a higher rank.
+Similarly to when attempting to find boundaries between segments, we decomposed our self similarity matrix $X$ with rank increased. This allowed further differentiation between structures, for instance, if certain part of a song was thought of as a chorus, but it is different enough to get separated in a C-NMF of a higher rank.
 
 Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$, as described in Section \ref{sec:finalBounds}. This way, we computed initial clustering for each beat frame. To synchronise labels calculated in such way, we assigned a numerical label which occurred within each of the interval between two segment to them.
 
