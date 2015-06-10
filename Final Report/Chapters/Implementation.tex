@@ -747,6 +747,16 @@ Core Data is the standard way to persist and manage data in both iPhone and Mac 
 
 Core Data describes data with a high level data model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. 
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/CollectionView}
+  \end{center}
+  \caption{Screenshot of the game in the song selection menu.}
+\label{fig:spngselection}
+\end{wrapfigure}
+
+
 Core Data allows data organised by the relational entity–attribute model to be serialised into XML, binary, or SQLite stores.
 
 Core Data is also a persistent technology, in that it can persist the state of the model objects to disk. But the important takeaway is that Core Data is much more than just a framework to load and save data - it is also about working with the data while it is in memory.
@@ -765,6 +775,10 @@ The quick game is essentially an ability of playing one of the predefined levels
 
 Once the user has created an account or chosen an existing one, they can either follow the level creation or level loading option. If they choose to create a new level, they have to select a file from their hard drive they would like to use as the base for their level. Otherwise, they go to the window, where they can select a level and either play it or remove it from their catalogue.
 
+To design the song selection view, we made use of the NSCollectionView, which allows to display objects in a grid. Each view in the grid is represented by a NSCollectionViewItem object, which manages the loading of the view's content.
+
+Each element in our collection view contains the name of the level, the artwork of the song it was based on extracted from the ID3 tags of the file, the maximum amount of the points scored and the stars awarded for the score. The design of the song selection menu can be seen in Figure \ref{fig:songselection}
+
 \vspace{10pt}
 
 \subsection{Level Description}
@@ -774,6 +788,7 @@ Once we move on to playing a game, the \verb|GameViewController| unpacks the \ve
 Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
 
 In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
+
 
 The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
 

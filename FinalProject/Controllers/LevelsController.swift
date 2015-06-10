@@ -139,7 +139,12 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
                 currentSongArtwork = NSImage(data: d)!;
             } else if (item.keySpace == AVMetadataKeySpaceiTunes) {
                 println("iTunes song - your album retrieval failed.")
+                println("")
+                println("")
+                println("")
+                println("")
             } else {
+                println("else")
                 currentSongArtwork = NSImage(byReferencingFile: "play.png")!
             }
         }
