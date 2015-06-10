@@ -32,11 +32,13 @@ We designed our neural networks to as means of calculating valence and arousal r
 
 To evaluate its performance we have to have a way of telling how successful it is in guessing the values. To achieve this, we activated the network on 21 unseen music tracks that we knew valence and arousal values of and gathered the output network produced for it. Then, we computed the root mean square error between the ground truth ratings and network-predicted outputs across all segments of all the test melodies. The network's performance total RMSE was 0.08895 on scale from 0 to 1 or 9\%. The plot of the expected and predicted values can be seen in Figure \ref{fig:anneval}.
 
-In contrast, in their paper \cite{vempala} Vempala and Russo trained a neural network with 1.14 error on scale 1 to 9, or 14.3\%.
+In contrast, in their paper \cite{vempala} Vempala and Russo trained a neural network with 1.14 error on scale 1 to 9, or 14.3\%. The better performance could be caused by the more suited choice of features or simply because we trained our network on a bigger data set.
 
-If we look at the two predicted values separately, the coefficient of determination for the arousal reached 59.24\% and 40.34\% for valence.
+If we look at the two predicted values separately, the coefficient of determination for the arousal reached 59.24\% and 40.34\% for valence for our network.
 
-In comparison, Yang and Lin \cite{mood} achieved a lower success rate, as their $R^2$ scored 58.3\% for arousal and 28.1\% for valence. 
+In comparison, Yang and Lin \cite{mood} achieved a lower success rate, as their $R^2$ scored 58.3\% for arousal and 28.1\% for valence. This might be because of a different set of features chosen or the neural network was simply better for calculating the relationship between the set of features and the mood value of the song.
+
+The RMSE our network exhibited was 9\%/ This means that the overall accuracy of the network can be estimated at the level of 91\%. This is a result comparable even to classification solutions to the problem, for example proposed by Liu, Yang, Wu, Chen \cite{moodclass}, where at the overall performance the network reached 78.97\%.
 
 
 \begin{figure}[t]
@@ -83,37 +85,32 @@ Results from the static network indicate that a network can be trained to identi
 \end{center}
 \end{table}
 
-
+\vspace{20pt}
 
 \section{Boundary Detection}
 
 The first towards the evaluation of the segmentation algorithm was to gather the ground truth data to test against. To remove bias caused by personal preferences in music, we sought external sources for help in selection of the tracks. This is why we consulted the top charts created by music magazines and online portals such as Rolling Stone, Billboard, Gibson etc. The full list can be found in \cite{toplists}.
 
-Once we have retrieved the lists with the most popular songs across genres, we selected one song per top list based on our familiarity. Although this might introduced some sort of personal preference into the dataset, it also allowed us to more intuitively create the ground truth data, as the familiarity with a song makes the manual labelling more obvious. For instance, in “Blitzkrieg Bop” by The Ramones, the bridge is repeates as often as verse and chorus, which is bound to introduce confusion to a person who hears the song for the first time and is asked to segment and label it.
+Once we have retrieved the lists with the most popular songs across genres, we selected one song per top list based on our familiarity. Although this might introduced some sort of personal preference into the dataset, it also allowed us to more intuitively create the ground truth data, as the familiarity with a song makes the manual labelling more obvious and precise. For instance, in “Blitzkrieg Bop” by The Ramones, the bridge is repeates as often as verse and chorus, which is bound to introduce confusion to a person who hears the song for the first time and is asked to segment and label it.
 
 In totall, we manually labelled 10 songs:
 \vspace{-10pt}
 \begin{description}
 \itemsep0em 
 \item[“The Number of The Beast”] by Iron Maiden (Metal)
-\item[“Rock With You”] by Michael Jackson (Soul/R\& B)
+\item[“Rock With You”] by Michael Jackson (Soul/R\&B)
 \item[“Blitzkrieg Bop”] by The Ramones (Punk Rock)
 \item[“This Land is Your Land“] by Woody Guthrie (Folk)
 \item[“One More Time”] by Daft Punk (Dance)
 \item[“Smooth”] by Santana (featuring Rob Thomas) (Pop)
 \item[ “Crazy in Love”] by Beyonce (featuring Jay-Z) (Pop / Rap)
 \item["Help!"] by The Beatles (Rock)
-\item["Respect"] by Aretha Franklin (R\& B)
+\item["Respect"] by Aretha Franklin (R\&B)
 \item["Back in the USSR"] by The Beatles (Rock)
 \end{description}
 
-For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data, we averages each bound to create ground truth with reference boundaries and labels.
+For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data, we averaged each bound to create ground truth with reference boundaries and labels.
 
-To be able to fully evaluate the performance of our algorithm in comparison with state-of-the-art solutions already existing, we also gathered data produced by two other algorithms. The first one, described by Foote and Cooper \cite{FooteCooper}, is a classic approach applying a "“checkerboard” kernel over the diagonal of a self similarity-matrix (SSM). The other one is an approach published by Kaiser and Sikora \cite{Sikora}, with use of non-negative matrix factorisation on only one feature. 
-
-We conducted two types of studies to determine the performance of our bound finding algorithm.
-
-First and the most intuitive one is the comparison of amount of boundaries detected. If an algorithm returns a smaller amount of segments it means that most probably its detection system is not sensitive enough - it merges some of bounds into bigger ones. And vice versa - if the algorithm returns more boundaries than the ground truth, it means it picked on song segments that differ in a less obvious way and, hence, its output is too granular.
 
 
 \begin{table}
@@ -133,17 +130,31 @@ Back In the USSR				&	15			&  9  			&  13		    	& 14		\\ \hline \hline
 RMSE								&	N/A		& 4.98		&  3.08		& 2.95	\\ \hline 
 
 \end{tabular}
-\caption{Table showing the root mean square error for training the network for given number of nodes in the hidden layer for the checkerboard algorithm (by Foote, \cite{FooteCooper}), NMF based algorithm (by Kaiser, \cite{Sikora}) and ours.}
+\caption{Table presenting an amount of segments in each song according to the ground truth and estimated by the checkerboard algorithm (by Foote, \cite{FooteCooper}), NMF based algorithm (by Kaiser, \cite{Sikora}) and ours.}
 \label{table:evalStructureCount}
 \end{center}
 \end{table}
 
+To be able to fully evaluate the performance of our algorithm in comparison with state-of-the-art solutions already existing, we also gathered data produced by another two algorithms. The first one, described by Foote and Cooper \cite{FooteCooper}, is a classic approach applying a "“checkerboard” kernel over the diagonal of a self similarity-matrix (SSM). The other one is an approach published by Kaiser and Sikora \cite{Sikora}, with use of non-negative matrix factorisation on only one feature. 
+
+We conducted two types of studies to determine the performance of our bound finding algorithm.
+
+
+First and the most intuitive one is the comparison of amount of boundaries detected. If an algorithm returns a smaller amount of segments it means that most probably its detection system is not sensitive enough - it merges some of bounds into bigger ones. And vice versa - if the algorithm returns more boundaries than the ground truth, it means it picked on song segments that differ in a less obvious way and, hence, its output is too granular.
+
+
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-10pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/count}
+  \end{center}
+  \caption{Figure presenting the amount of each type of errors produced by all the evaluated algorithms.}
+\label{fig:boundcount}
+\end{wrapfigure}
 
 The results of our investigation can be seen in Table \ref{table:evalStructureCount}. By calculating the root mean square error for outputs of every algorithm, we noticed that our algorithm has a slightly better performance than the simple non-negative matrix factorisation one. On the other hand, checkerboard designed by Foote and Cooper consistently returned 9 labels, and hence yielding the worst performance.
 
-Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments.
-
-If we look at Figure \ref{fig:boundcount}, we can see that in the light of our previous observations, the checkerboard yields a dramatically worse performance than nmf and our algorithm. In contrast, the latter two exhibit the same proportion of over- and under-segmenting.
 
 
 \begin{table}
@@ -168,23 +179,13 @@ Back In the USSR				&	Ours/Kaiser	&  Ours/Kaiser 		&  Ours		    	\\ \hline
 \end{table}
 
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-10pt}
-  \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/count}
-  \end{center}
-  \caption{Figure presenting the amount of each type of errors produced by all the evaluated algorithms.}
-\label{fig:boundcount}
-\end{wrapfigure}
+Apart from observing the RMSE of the boundary number, we reasoned about the distribution of the results. In particular, we believe that the situation when the algorithm is over-segmenting, returning more bounds than there are in the ground truth, is better than the one when the structure retrieval system is not sensitive enough and merges boundaries that do not belong together. This is especially true in case of our application, where if more boundaries are returned, the mood detection becomes more accurate at expense of efficiency. On the other hand, with every lost bound we lose precision in the mood detection in two neighbouring segments.
+
+
+If we look at Figure \ref{fig:boundcount}, we can see that in the light of our previous observations, the checkerboard yields a dramatically worse performance than nmf and our algorithm. In contrast, the latter two exhibit the same proportion of over- and under-segmenting.
+
 
 Another measurement of success of our boundary retrieval is computation of boundary detection hit-rate. A hit is counted whenever a reference boundary is within a certain window of an estimated boundary. An important thing to note is that each boundary should be matched at most once, otherwise we can get some irrelevant results. For instance, if we are estimating the algorithm with window size 3 seconds, in the ground truth there are two boundaries 6 seconds apart and our algorithm detects only one right in the middle, if we do not exclude the boundary once compared with the first one in the ground truth, the performance of our algorithm will be ranked as much better than it actually was. 
-
-
-In addition to computing the hit-rate for windows of sizes 500ms and 3s, we also computed the median deviations between the reference and estimated boundaries of the song. In particular, we focused on median time from each reference boundary to the closest estimated boundary.
-
-We implemented our evaluation benchmark using Python mir\textunderscore eval library \cite{mireval}.
-Again, to best evaluate performance of our algorithm, we compare the results it yields with results of the checkerboard and NFM based ones. Our findings can be seen in Table \ref{table:evalStructureRank}.
-
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-30pt}
@@ -195,12 +196,22 @@ Again, to best evaluate performance of our algorithm, we compare the results it 
 \label{fig:structurechamps}
 \end{wrapfigure}
 
-As we can see in the Figure \ref{fig:structurechamps}, in the majority of cases, the performance of the algorithm designed by Kaiser falls behind the other two methods. It ranked as first twice when calculating the hit-rate with the window size w=500ms, once for the w=3s and it never excelled in the deviation category. On the other hand, the algorithm designed by Foote and Cooper yields similar overall performance as ours when evaluating hit-rate with w=3 and slightly worse for 500ms. This most probably is caused by the fact that in many cases our algorithm managed to find the segments but was a bit off, not qualifying for the 500s window. However, once the window got increased, its performance improved more than in case of the ``checkerboard'' algorithm. The exact results can be seen in section \ref{sec:segevalapp} in Appendix C. 
+
+In addition to computing the hit-rate for windows of sizes 500ms and 3s, we also computed the median deviations between the reference and estimated boundaries of the song. In particular, we focused on median time from each reference boundary to the closest estimated boundary.
+
+We implemented our evaluation benchmark using Python \textit{mir\textunderscore eval} library \cite{mireval}.
+Again, to best evaluate performance of our algorithm, we compare the results it yields with results of the checkerboard and NFM based ones. Our findings can be seen in Table \ref{table:evalStructureRank}.
+
+
+As we can see in the Figure \ref{fig:structurechamps}, in the majority of cases, the performance of the algorithm designed by Kaiser falls behind the other two methods. It ranked as first twice when calculating the hit-rate with the window size $w=500ms$, once for the $w=3s$ and it never excelled in the deviation category. On the other hand, the algorithm designed by Foote and Cooper yields similar overall performance as ours when evaluating hit-rate with $w=3$ and slightly worse for 500ms. This most probably is caused by the fact that in many cases our algorithm managed to find the segments but was a bit off, not qualifying for the 500s window. However, once the window got increased, its performance improved more than in case of the ``checkerboard'' algorithm. The exact results can be seen in section \ref{sec:segevalapp} in Appendix C. 
 
 In conclusion, we believe that the algorithm for boundary detection we created is suitable for our application and yields performance comparable or exceeding the state-of-the-art creations in its field. 
 
+\vspace{20pt}
+
 \section{Labelling}
 
+\vspace{20pt}
 
 \section{Questionnaires}
 Questionnaires are one of the most common and popular tools to gather data from a large number of people. They generally consist of a limited number of questions that ask participants to rate the effectiveness of various aspects of the activity. The questions should focus on the key points we are trying to evaluate. 

@@ -6,13 +6,13 @@
 
 \lhead{Chapter 5. \emph{Design \& Implementation}} 
 
-In this chapter we go over the implementation process of the project. We describe various choices we made, justifying them in the context of our objectives. 
+In this chapter we go over the design and implementation process of the project. We describe various choices we made, justifying them in the context of our objectives. 
 
 First, we describe our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track. The system is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
 
 Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ post processing to further modify the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay. Thanks to parametrising and applying the sliding median we are able to produce pitch coutours of different difficulty to play.
 
-The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to it to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
+The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
 
 Last, but not least, we talk about the game itself, its architecture, flow of use and design choices made. We describe the algorithm for generating buttons that constitute the main part of the gameplay. We also detail the way we tie in the music analysis performed into the game to make the most of it.
 
@@ -22,26 +22,26 @@ Last, but not least, we talk about the game itself, its architecture, flow of us
 
 A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music \cite{vempala}. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
 
-As we described in Section \ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the moods perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
+As we described in Section \ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the mood perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
 \vspace{10pt}
 
 \subsection{Choice of Features}
-Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song, which we expected to have certain impact on the perceived mood of a musical piece:
+Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song. We chose the features on the impact we expected them to have on the perceived mood of a musical piece:
 
 \begin{description}
 
-\item[average loudness] - describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0, 1] interval on a per window basis - if 0, it meas that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
+\item[average loudness] - describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0, 1] interval on a per window basis - if 0, it means that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
 
-\item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder / more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
+\item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder or more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
 
 \item[dynamic complexity] - is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on both examined values. However, similarly to the loudness level, arousal should be influenced more - as more dynamic songs (excited or angry) are more likely to suffer from loudness changes, whereas more phlegmatic ones (sad or peaceful) tend to keep the same dynamic complexity level.
 
 \item[BPM] - beats per minute value according to detected beats. This feature should be correlated with the arousal level - intuitively, the faster the song, the more energetic it seems. 
 
-\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``center of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
+\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``centre of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
 
-\item[spectral RMS] (root mean square) - in Physics, it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. This is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
+\item[spectral RMS] (root mean square) - in Physics, it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. In audio processing, it is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
 
 \item[spectral energy] - the energy $E_{s}$ of a continuous-time signal $x(t)$ defined as: 
 \begin{equation}
@@ -49,19 +49,19 @@ E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt
 \end{equation}
 
 Signal energy is always equal to the summation across all frequency components of the signal's spectral energy density. 
-There have been some research focusing on relation between spectral energy and singing voice. In particular, in their paper \cite{spectralenergy}, S. Ferguson, D. T. Kenny and D. Cabrera were investigating the relation between the value and the experience of male singers. This makes for an interesting case worth considering in our research.
+There have been some research focusing on relation between spectral energy and singing voice. In particular, in their paper \cite{spectralenergy}, Ferguson, Kenny and Cabrera were investigating the relation between the value and the experience of male singers. This makes for an interesting case worth considering in our research.
 
-\item[mean and derivative of variance of beat loudness] -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal.
+\item[mean and derivative of variance of beat loudness] -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal as loud beats can be found in parts of song with higher energy.
 
 \item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. 
-In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being ``in'' a specific key, such as \textit{``in the key of C major or in the key of F\#''}. Sometimes the terms 'major' or 'minor' are appended, as \textit{``in the key of A minor''} or \textit{``in the key of B major''}.
+In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being ``in'' a specific key, such as \textit{``in the key of C major or in the key of F\#''}. Sometimes the terms ``major'' or ``minor'' are appended, as \textit{``in the key of A minor''} or \textit{``in the key of B major''}.
 Broadly speaking the phrase ``in key of C'' means that C is music's harmonic centre or tonic (the first degree of the scale, or the root of the scale). 
 The terms ``major'' and ``minor'' further imply the use of a major scale or a minor scale. Thus the phrase \textit{``in the key of E major''} implies a piece of tonal music harmonically centred on the note E and making use of a major scale whose first note, or tonic, is E. 
 We believe that those features can have an impact on both arousal and valence - songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
 
 \item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
 
-\item[means of zero-crossing rate] - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds. We believe it could be related to the arousal value. Music has a fairly normal distribution of frames with lower and higher zero-crossing rates. Speech however displays a much more skewed distribution. This could have an impact on songs where the vocals are quite rapid and energetic, for example rap music, and therefore might have a significant impact on mood recognition in our system.
+\item[mean ZCR] (zero-crossing rate) - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds. We believe it could be related to the arousal value. Music has a fairly normal distribution of frames with lower and higher zero-crossing rates. Speech however displays a much more skewed distribution. This could have an impact on songs where the vocals are quite rapid and energetic, for example rap music, and therefore might have a significant impact on mood recognition in our system.
 ZCR is defined formally as: 
 \begin{equation}
 ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\}}
@@ -76,7 +76,7 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 
 \begin{figure}[h]
 	\centering
-   \includegraphics[width=0.6\textwidth]{Figures/spectralcentroid-valence}
+   \includegraphics[width=0.7\textwidth]{Figures/spectralcentroid-valence}
 \caption{A graph representing a correlation between spectral centroid and valence values.}
 \label{fig:bivariate-valence}
 \end{figure}
@@ -84,7 +84,7 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 
 \begin{figure}[h]
 	\centering
-   \includegraphics[width=0.6\textwidth]{Figures/zerocrossing-arousal}
+   \includegraphics[width=0.7\textwidth]{Figures/zerocrossing-arousal}
  \caption{A graph representing a correlation between zero-crossing rate and arousal values.}
 \label{fig:bivariate-arousal}
 \end{figure}
@@ -117,17 +117,18 @@ Values of all the features were then normalised between 0 and 1 to prepare them 
 
 \subsection{Neural Network for Mood Prediction}
 
-Our goal was to train the network to predict mean participant valence and arousal values for musical excerpts. 
-Our first network implementation was a supervised, feedforward network with backpropagation. 
+Our goal was to train the network to predict mean participant valence and arousal values for musical excerpts.
+ 
+Our network implementation was a supervised, feedforward network with backpropagation. 
 The input consisted of normalised values of 8 features:
 \textit{spectral centroid, pitch salience, zero-crossing rate, silence60 mean, loudness, mean dissonance, dynamic complexity} and \textit{spectral energy}. 
 The network had two outputs - arousal and valence.
 
 As all the training data was normalised, the input and output values were within a range of 0 to 1. The training set consisted of 50 input and output arrays. Each input array had 8 values, one per audio feature, and its corresponding output array had the two desired arousal and valence values.
 
-The network’s task was to provide the valence and arousal values based on the 8 audio features. The output values fell within a range of 0 to 1. Since desired outputs were average valence/arousal ratings provided by participants on a scale from 1 to 9 inclusive, the network outputs were rescaled back. The training set consisted of eight input and output arrays. Each input array had 8 values, one for each audio feature, and its corresponding output array had the two desired arousal and valence values. The connection weights from input to the hidden nodes and from hidden nodes to the output ones were initialised to random numbers. 
+The network’s task was to provide the valence and arousal values based on the 8 audio features. The output values fell within a range of 0 to 1. Since desired outputs were average valence/arousal ratings provided by participants on a scale from 0 to 10 inclusive, the network outputs were rescaled back. The training set consisted of 50 input and output arrays. The connection weights from input to the hidden nodes and from hidden nodes to the output ones were initialised to random numbers. 
 
-The network was built, trained, and tested using the pyBrain python library for neural network implementation. 
+The network was built, trained, and tested using the PyBrain \cite{pybrain} Python library for neural network implementation. 
 
 Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
@@ -164,7 +165,7 @@ We trained our network for 1000 epochs with many different sizes of the hidden l
 \caption{Data presented in Table \ref{table:rsmetable}, plotted on a diagram.}
 \end{figure}
 
-As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values - so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that although for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
+As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values -- so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that although for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
 To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
 
 \begin{table}
@@ -203,7 +204,7 @@ In the end, we came up with the network which can be seen on Figure \ref{fig:fin
 
 \section{Main Melody Retrieval}
 
-As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two different algorithms for main melody extraction. The first one, implementing the source separation based approach, was designed by Durrieu \cite{durrieu}, and the other one, using the salience approach, by Salamon and G\'{o}mez \cite{salamon}. In this section, we evaluate the performance of each of the algorithms in light of usefulness in our project. Furthermore, we present a way of post-processing of the chosen algorithm to further smooth out the estimated pitches of the main melody estimated.
+As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two different algorithms for main melody extraction. The first one, implementing the source separation based approach, was designed by Durrieu \cite{durrieu}, and the other one, using the salience approach, by Salamon and G\'{o}mez \cite{salamon}. In this section, we evaluate the performance of each of the algorithms in light of usefulness in our project. Furthermore, we present a way of postprocessing of the chosen algorithm to further smooth out the estimated pitches of the main melody estimated.
 
 \vspace{10pt}
 
@@ -212,7 +213,7 @@ As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two diffe
 
 Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this purpose, we ran both melody extraction methods against the most popular songs of different genres commonly considered the best \cite{toplists}.
 
-To generate the ground truth, we used midi versions of files, created with separable channels so that the main melody is easily extracted. As a first step, we computed the voicing recall (the fraction of voiced frames in the ground truth reference indicated as voiced in the estimation) and false alarm rates (the fraction of unvoiced frames in the ground truth reference indicated as voiced in the estimation).
+To generate the ground truth, we used MIDI versions of files, created with separable channels so that the main melody is easily extracted. As a first step, we computed the voicing recall (the fraction of voiced frames in the ground truth reference indicated as voiced in the estimation) and false alarm rates (the fraction of unvoiced frames in the ground truth reference indicated as voiced in the estimation).
 Our findings are shown in Table \ref{table:voicedunvoiced}.
 
 \begin{table}
@@ -235,7 +236,7 @@ As we can see from the Table \ref{table:voicedunvoiced}, although initially the 
 Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms may have by analysing the main melody for vocal features such as vibratos, as it is described in case of Salamon's algorithm, are underutilised. 
 
 In addition to this, we analysed the accuracy of pitch prediction for each of the algorithms. 
-To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table \ref{table:melodypitchchroma}, performance of each of the algorithms varies gravely depending on the track. The average pitch prediction for Durrieu was  17.8\%, whereas Salamon exhibited an average prediction of 24\%. We found those numbers a bit disappointing, however, we suspected that a big part of the error was caused by the octave error, which are not so important in our case. That is why we also calculated the raw chroma accuracy, where all the pitches are mapped onto one octave. In this case, Salamon's performance increased to 48\%, whereas Durrieu showed an improvement from 17.8\% to 34.84\%.
+To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table \ref{table:melodypitchchroma}, performance of each of the algorithms varies gravely depending on the track. The average pitch prediction for Durrieu was  17.8\%, whereas Salamon exhibited an average prediction of 24\%. We found those numbers a bit disappointing, however, we suspected that a big part of the error was caused by the octave error, which are not so important in our case, as we are more interested in how the melody changes and as long as there octave jumps are consistent, we do not mind the error introduced. That is why we also calculated the raw chroma accuracy, where all the pitches are mapped onto one octave. In this case, Salamon's performance increased to 48\%, whereas Durrieu showed an improvement from 17.8\% to 34.84\%.
 
 
 \begin{table}
@@ -287,9 +288,9 @@ Satisfaction				& 3m 43s		& 	4h 47m 16s 330ms		& 15s 65ms		\\	\hline
 \vspace{10pt}
 
 
-\subsection{Post Processing}
+\subsection{Postprocessing}
 
-\begin{figure}[b]     
+\begin{figure}[t]     
         \centering
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/input_simple}
@@ -299,15 +300,13 @@ Satisfaction				& 3m 43s		& 	4h 47m 16s 330ms		& 15s 65ms		\\	\hline
                 \includegraphics[width=\textwidth]{Figures/rect_101}
                 \vspace{20pt}
         \end{subfigure}
-    \caption{The pitch contours of the input (left) and created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry with additional introduction of false positives (left) and not (right), using the rectangular smooth with m = 101 (right).}
+    \caption{The pitch contours of the input (left) and created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m=101$ (right).}
 	\label{fig:rectangular}
 \end{figure}
 
 Once we have computed the pitch estimates, we need to post process them to make them more suitable for our application -- we would like to smooth out the pitch contours to avoid sudden spikes. In addition to this, it would be beneficial to be able to control the extent of the smoothing to allow variation in difficulty of the playable song that is going to be generated out of it. 
 
-Most smoothing algorithms are based on the ``shift and multiply" technique, in which a group of adjacent points in the original data are multiplied point-by-point by a set of numbers (coefficients) that defines the smooth shape. The products are added up to become one point of smoothed data, then the set of coefficients is shifted one point down the original data and the process is repeated. 
-
-\begin{figure}[t]
+\begin{figure}[b]
         \centering
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/smoothing_1001_false}
@@ -317,26 +316,30 @@ Most smoothing algorithms are based on the ``shift and multiply" technique, in w
                 \includegraphics[width=\textwidth]{Figures/smoothing_1001_true}
                 \vspace{20pt}
         \end{subfigure}
-    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry'' with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m = 1001$.}
+    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m = 1001$.}
 	\label{fig:excludezeros}
 \end{figure}
 
 
+Most smoothing algorithms are based on the ``shift and multiply" technique, in which a group of adjacent points in the original data are multiplied point-by-point by a set of numbers (coefficients) that defines the smooth shape. The products are added up to become one point of smoothed data, then the set of coefficients is shifted one point down the original data and the process is repeated. 
+
+
+
 \begin{figure}[b]        
         \centering
-        \begin{subfigure}[b]{0.48\textwidth}
+        \begin{subfigure}[b]{0.7\textwidth}
                 \includegraphics[width=\textwidth]{Figures/input_for_median}
                 \vspace{20pt}
         \end{subfigure}
-        \begin{subfigure}[b]{0.48\textwidth}
+        \begin{subfigure}[b]{0.7\textwidth}
                 \includegraphics[width=\textwidth]{Figures/median_100_limit}
                 \vspace{20pt}
         \end{subfigure}
-    \caption{The pitch contours of the input (left) and created by applying the sliding median with window size $w = 100$ to the estimated main melody of ``Johnny B. Goode'' by Chuck Berry' .}
+    \caption{The pitch contours of the input (left) and created by applying the sliding median with window size $w = 100$ to the estimated main melody of ``Johnny B. Goode'' by Chuck Berry.}
 	\label{fig:sliding_input}
 \end{figure}
 
-The simplest smoothing algorithm is the rectangular or unweighted sliding-average smooth; it simply replaces each point in the signal with the average of m adjacent points, where $m$ is a positive integer called the smooth width. For example, for a 3-point smooth ($m = 3$):
+The simplest smoothing algorithm is the rectangular or unweighted sliding-average smooth; it simply replaces each point in the signal with the average of $m$ adjacent points, where $m$ is a positive integer called the smooth width. For example, for a 3-point smooth ($m = 3$):
 \begin{equation}
 	S_{j} = \frac{Y_{j-1} + Y_{j} + Y_{j+1}}{3}
 \end{equation}
@@ -362,13 +365,15 @@ The results of applying the rectangular sliding average smooth can be seen in Fi
 	\label{fig:sliding_comp}
 \end{figure}
 
-Another solution to the problem is to use the sliding median filter. The main idea behind it is to run through the signal entry by entry, replacing each of them with the median of neighboring entries. The pattern of neighbors is called the "window", which slides, entry by entry, over the entire signal. 
+Another solution to the problem is to use the sliding median filter. The main idea behind it is to run through the signal entry by entry, replacing each of them with the median of neighboring entries. The pattern of neighbors is called the ``window", which slides, entry by entry, over the entire signal. 
 
-For 1D signals, the most obvious window is just the first few preceding and following entries, whereas for 2D (or higher-dimensional) signals such as images, more complex window patterns are possible (such as "box" or "cross" patterns). Note that if the window has an odd number of entries, then the median is simple to define: it is just the middle value after all the entries in the window are sorted numerically. For an even number of entries, there is more than one possible median.
+For 1D signals, the most obvious window is just the first few preceding and following entries, whereas for 2D (or higher-dimensional) signals such as images, more complex window patterns are possible (such as ``box" or ``cross" patterns). Note that if the window has an odd number of entries, then the median is simple to define: it is just the middle value after all the entries in the window are sorted numerically. For an even number of entries, there is more than one possible median.
 
-The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure \ref{fig:slidingpitch}. On the other hand, comparison of the results for the different window sizes can be seen in Figure \ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
+The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure \ref{fig:sliding_input}. On the other hand, comparison of the results for the different window sizes can be seen in Figure \ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
 
 An important thing in our application is that we do want to preserve our zero values in our smoothed pitch coutours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure \ref{fig:excludezeros}.
+
+\vspace{20pt}
 
 
 \section{Structure Retrieval}
@@ -389,7 +394,7 @@ The General HPCP feature extraction procedure is summarised as follows:
 \begin{itemize}
 \item Input musical signal.
 \item Do spectral analysis to obtain the frequency components of the music signal.
-\item Use Fourier transform to convert the signal into a spectrogram. (The Fourier transform is a type of time-frequency analysis.)
+\item Use Fourier transform to convert the signal into a spectrogram.
 \item Do frequency filtering. A frequency range of between 100 and 5000 Hz is used.
 \item Do peak detection. Only the local maximum values of the spectrum are considered.
 \item Do reference frequency computation procedure. Estimate the deviation with respect to 440 Hz.
@@ -397,7 +402,7 @@ The General HPCP feature extraction procedure is summarised as follows:
 \item Normalise the feature frame by frame dividing through the maximum value to eliminate dependency on global loudness.
 \end{itemize}
 
-An alternative to using HPCPs as the features to base the algorithm on is \textit{MFCCs}.
+An alternative to using HPCPs as the features to base the algorithm on is \textit{Mel-frequency cepstral coefficients}.
 
 The term ``cepstrum'' refers to the result of taking the Inverse Fourier transform (IFT) of the logarithm of the estimated spectrum of a signal. It can be viewed as information about rate of change in the different spectrum bands.
 
@@ -423,7 +428,7 @@ MFCCs are commonly derived as follows:
 \subsection{Feature Preparation}
 
 In this section, we will describe the process of preparation of the features for improving the performance of the algorithm. For simplicity and clarity, when talking about the features, we will first focus on analysis based on HPCPs, followed by one on MFCCs.
-We decided to investigate both possibilities as they present the track from completely different perspective. For example, the HPCP chroma might fail to distinguish vocal and instrumental parts if the underlying harmonic patterns are exactly the same. On the other hand, when working with MFCCs we expected the opposite behaviour - good performance on parts that are different in terms of timbre.
+We decided to investigate both possibilities as they present the music track from completely different perspective. For example, the HPCP chroma might fail to distinguish vocal and instrumental parts if the underlying harmonic patterns are exactly the same. On the other hand, when working with MFCCs we expected the opposite behaviour - good performance on parts that are different in terms of timbre.
 
 \subsubsection*{Harmonic Pitch Class Profiles}
 
@@ -433,9 +438,7 @@ We decided to investigate both possibilities as they present the track from comp
                 \includegraphics[width=\textwidth]{Figures/hpcp_unsynched_chroma}
                 \caption{Example of a chromagram without any further enhancement. }
                 \label{fig:unchroma}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-          %(or a blank line to force the subfigure onto a new line)
+        \end{subfigure}
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_synched_chroma}
                 \caption{Example of a chromagram after beat-synchronisation.}
@@ -447,7 +450,7 @@ We decided to investigate both possibilities as they present the track from comp
 
 A series of transformations were applied to the data in order to distinguish the different parts of a song more efficiently with preserving the accuracy.
 
-\begin{figure}[b]
+\begin{figure}[t]
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_synched_log_chroma}
@@ -456,7 +459,7 @@ A series of transformations were applied to the data in order to distinguish the
         \end{subfigure}%
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_synched_median_chroma}
-                \caption{Chroma feature after applying sliding median filter of size h=9.}
+                \caption{Chroma feature after applying sliding median filter of size $h=9$.}
                 \label{fig:slidingchroma}
         \end{subfigure}
           \caption{Beat-synchronised chroma created for song ``Help!'' by The Beatles with applied enhancements.}
@@ -464,33 +467,33 @@ A series of transformations were applied to the data in order to distinguish the
 \end{figure}
 
 
-First, we needed to we synchronise our data with the beats detected in the musical track. This process allowed to reduce local variation by summarising (usually taking the mean or a median) frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames. The rationale for doing so is that many features, such as chord labels that occur between two consecutive beats tend to be the same. Thanks to focusing on the values of the features on a per-beat basis, we managed to largely normalise variations in tempo. However, the main advantage of applying the beat-synchronisation was that we managed to reduce the amount of data to analyse, and hence, the size of the matrix, we were operating on.
+First, we needed to we synchronise our data with the beats detected in the musical track. This process allowed to reduce local variation by summarising frame-wise features that occur between two beats, yielding fewer but longer beat-synchronous frames. The rationale for doing so was that many features, such as chord labels that occur between two consecutive beats tend to be the same. Thanks to focusing on the values of the features on a per-beat basis, we managed to largely normalise variations in tempo. However, the main advantage of applying the beat-synchronisation was that we managed to reduce the amount of data to analyse, and hence, the size of the matrix, we were operating on.
 
-This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
-
-Following the beat-synchronisation, we applied log normalisation to the chroma feature. This allowed us to reduce the effect the outliers from the trend would have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure \ref{fig:logchroma}.
-
-As the next step, we applied a sliding median filter of size h is run against each of the beat-synchronous and log-normalised chromagram channels. Thanks to the median filter, we could come up with sharper edges than with a regular mean filter. This became really useful in obtaining section boundary precision.
-
-\begin{figure}
+\begin{figure}[b]
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_unsynched_ssm}
-                \caption{Similarity matrix generated from harmonic pitch class profiles chroma without further enhancement.}
+                \caption{Self-similarity matrix generated from harmonic pitch class profiles chroma without further enhancement.}
                 \label{fig:unSSM}
         \end{subfigure}%
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/log_ssm_synched}
-                \caption{Similarity matrix generated from beat-synchronised harmonic pitch class profiles chroma.}
+                \caption{Self-similarity matrix generated from beat-synchronised harmonic pitch class profiles chroma.}
                 \label{fig:synSSM}
         \end{subfigure}
           \caption{Comparison of SSM generated from unprocessed and enhanced chromas, using correlation distance.}
         \label{fig:ssmcomparison}
 \end{figure}
 
+This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
+
+Following the beat-synchronisation, we applied log normalisation to the chroma feature. This allowed us to reduce the effect the outliers from the trend would have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure \ref{fig:logchroma}.
+
+As the next step, we applied a sliding median filter of size $h$ is run against each of the beat-synchronous and log-normalised chromagram channels. Thanks to the median filter, we could come up with sharper edges than with a regular mean filter. This became really useful in obtaining section boundary precision.
+
 By filtering features across time, we retained the most prominent chromas within the h-size window and removed smaller artefacts, which are irrelevant in our context. The Figure \ref{fig:slidingchroma} presents the chromagram after applying the sliding median filter.
 
-We then proceeded to compute the Self Similarity Matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a $N \times N$ symmetric matrix $D$, such that $D(i, j)$ contains said distance. In particular, $D(i, j)$ stores the same value as $D(j, i)$, and for every $i$ $D(i, i)$ is equal to 0.
+We then proceeded to compute the self-similarity matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a $N \times N$ symmetric matrix $D$, such that $D(i, j)$ contains said distance. In particular, $D(i, j)$ stores the same value as $D(j, i)$, and for every $i$ $D(i, i)$ is equal to 0.
 
 We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: Euclidean, Manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
 As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
@@ -565,7 +568,7 @@ The result of this process can be seen in Figure \ref{fig:synMFCC}.
 
 We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorization (NMF) could be useful in our situation.
 
-In NMF, the $N \times N$ self similarity matrix $X$ was approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $i$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
+In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $i$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
 
 However, in data mining, sometimes it can be beneficial to ensure $X$ to contain meaningful “cluster centroids”, i.e., to restrict $W$ to be convex combinations of data points.
 C-NMF adds a constraint to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^{T}$,... ,  $\boldsymbol{w}_{k}^{T}$),  such that its columns  $\boldsymbol{w}^{T}$  are, in fact,  convex combinations of the features of $X$:
@@ -583,7 +586,7 @@ In C-NMF, the matrix $W$ is a set of convex combinations of the rows of the inpu
 
 By computing the C-NMF we separate basic structural parts. In the next section, we describe how the factorization via C-NMF relates to structure and show how we can use that result for music structure discovery. 
 
-Apart from this, another important benefit of C-NMF over NMF is that matrices $F$ and $G$ become naturally sparse when adding the convex constrain. In case of NMF the $G$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation \cite{Nieto}. 
+Apart from this, another important benefit of C-NMF over NMF is that matrices $W$ and $H$ become naturally sparse when adding the convex constrain. In case of NMF the $H$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation \cite{Nieto}. 
 
 \vspace{10pt}
 
@@ -594,15 +597,15 @@ Apart from this, another important benefit of C-NMF over NMF is that matrices $F
         \centering
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/F}
-                \caption{The cluster matrix W.}
+                \caption{The cluster matrix $W$.}
                 \label{fig:Wmatrix}
         \end{subfigure}%
         \begin{subfigure}[b]{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/G}
-                \caption{The activation matrix H.}
+                \caption{The activation matrix $H$.}
                 \label{fig:Hmatrix}
         \end{subfigure}
-          \caption{The result of C-NMF computed for ``Help!'' by The Beatles with rank k = 3.}
+          \caption{The result of C-NMF computed for ``Help!'' by The Beatles with rank $k = 3$.}
         \label{fig:CNMFbeatles}
 \end{figure}
  
@@ -610,6 +613,9 @@ In this section we will investigate different ways of obtaining section boundari
 
 \subsubsection*{Pure C-NMF Approach}
 \label{sec:finalBounds}
+
+Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
+
 Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
         
 To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the 'types' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
@@ -639,10 +645,8 @@ This method, although quite simple, produced a neat and quite accurate output, w
                 \label{fig:overfitting}
         \end{subfigure}
           \caption{Diagrams depicting impact of the $k$ value on the clustering result \cite{kcluster}.}
-        \label{fig:ssmdistance}
+        \label{fig:kmeansclustering}
 \end{figure}
-
-Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
 
 K-means clustering is considered one of the simplest unsupervised learning algorithms that can solve the well know clustering problem. It follows a simple and easy way of classifying a given data set through a certain number of clusters (assume $k$ clusters).
 
@@ -710,7 +714,7 @@ To make it possible, we first employed our initial labelling algorithm to retrie
 
 Once we have designed the the labelling algorithm, we researched the impact of the choice of feature on the performance of the segmentation. We had noticed that some songs achieved better results when HPCPs were chosen to lead the computation and retrieve the song segmentation whereas the others performed better with MFCCs taken into account. 
 
-To solve the dilemna of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure - the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
+To solve the dilemma of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure - the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
 
 
 
@@ -729,6 +733,8 @@ The game is written mostly in Swift, a multi-paradigm, compiled programming lang
 It was first introduced at Apple's 2014 Worldwide Developers Conference (WWDC). Swift is designed to work with Apple's Cocoa and Cocoa Touch frameworks, building on the best of C and Objective-C, without the constraints of C compatibility. It adopts safe programming patterns and adds modern features to make programming easier, more flexible, and more fun \cite{swiftintro}. 
 
 We chose this language as we wanted to create a game for the OS X platform. In addition to this, the author also had a personal interest in learning the language.
+
+For the music analysis part of the project we used Python. This is because there are many libraries available in this language for both training of artificial neural networks and music analysis. 
 
 \vspace{10pt}
 
@@ -769,11 +775,11 @@ Sprite Kit provides a graphics rendering and animation infrastructure that can b
 
 In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
 
-The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the level.
+The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
 
 The player can at any time pause, stop or replay the game. They can also control the volume of the music and other sounds in the game. 
 
-Upon completion of the level the player presented with their score, shown as stars and a concrete number. The player can later revisit the levels if they want to improve their score. 
+Upon completion of the level the player presented with their score, shown as stars and a concrete number. The player can later revisit the songs if they want to improve their score. 
 
 \vspace{10pt}
 
