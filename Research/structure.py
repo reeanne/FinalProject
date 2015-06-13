@@ -252,15 +252,16 @@ def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterati
 
     # Add first and last boundary
     print "before", bound_indexes
-    bound_times = np.array([0.57, 6.84, 25.23, 46.34, 54.29, 76.38, 96.23, 104.28, 135.35])
+    bound_times = np.array([2.7463264, 16.7186479 , 30.129361, 40.1827672, 53.6922246, 66.1957242, 83.0810031, 96.5534314 , 106.6253522, 123.6032039, 137.2360917, 147.3635562, 147.3635562, 163.2933333])
     print "frames", frames
     bound_indexes = bound_times_to_indexes(bound_times, frames)
     print "after", bound_indexes
     bound_indexes = np.concatenate(([0], bound_indexes, [X.shape[1] - 1]))
 
     bound_indexes = np.asarray(bound_indexes, dtype=int)
-    #labels = compute_labels_simple_vocals(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations)
+    #labels = compute_labels_simple_vocals(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations``
     labels = compute_numeric_labels(X, rank_labels, R_labels, bound_indexes, iterations=iterations)
+    print labels
     labels = numeric_to_vocal_labels(labels, pitch, bound_indexes)
 
     #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
@@ -291,7 +292,7 @@ def remove_empty_segments(times, labels):
 def process_segmentation_level(estimated_indexes, estimated_labels, N, frame_times, dur):
     """ Processes a level of segmentation, and converts it into times. """
 
-    assert estimated_indexes[0] == 0 and estimated_indexes[-1] == N - 1
+    #assert estimated_indexes[0] == 0 and estimated_indexes[-1] == N - 1
     estimates_times = np.concatenate(([0], frame_times[estimated_indexes], [dur])) # Add silences, if needed.
 
     #silence_label = np.max(est_labels) + 1
