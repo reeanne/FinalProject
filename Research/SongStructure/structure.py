@@ -17,6 +17,8 @@ import logging
 import sklearn.cluster
 import operator
 from collections import Counter
+from threading import Thread
+from Queue import Queue
 
 
 def show_matrix(matrix, print_statement):
@@ -88,6 +90,9 @@ def find_label_relation(dictionary, labels):
     most_common = c.most_common(2)
     chorus, verse, intro, outro, intro_outro = None, None, None, None, None
 
+    if len(most_common) < 2:
+        return chorus, verse, intro, outro, intro_outro
+
     if dictionary[most_common[0][0]] > dictionary[most_common[1][0]]:
         chorus = most_common[0][0]
         verse = most_common[1][0]
@@ -143,6 +148,8 @@ def compute_vocal_extent(pitch, interval):
     """ Computes the fraction of frames containing main melody in them. """
 
     nonzero = np.count_nonzero(pitch[interval[0] : interval[1]])
+    if interval[1] - interval[0] == 0:
+        return 0
     return float(nonzero) / (interval[1] - interval[0])
     
 
@@ -302,13 +309,33 @@ def get_predominant(audio, sampling_rate, size):
 
     # Load audio file, apply equal loudness filter, and compute predominant melody.
     audio = EqualLoudness()(audio)
-    pitch, confidence = run_predominant_melody(audio)
+    real_pitch, confidence = run_predominant_melody(audio)
 
+
+    for (i, conf) in enumerate(confidence):
+        if conf < 0:
+            real_pitch[i] = 0;
+
+    pitch = real_pitch[:]
     # Prope the pitches to make the data as small as the other.
     ratio = int(len(pitch) / size)
     pitch = pitch[::ratio]
     pitch = pitch[:-1] if len(pitch) > size else pitch
-    return pitch
+    return pitch, real_pitch
+
+
+def extract_hpcp(queue, waveform_harmonic, sampling_rate, hop_size, beats_idx):
+    hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate,
+                                      hop_length=hop_size).T    
+    bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
+    queue.put((hpcp, bs_hpcp))
+
+
+def extract_mfcc(queue, S, beats_idx, n_mfcc=14, ):
+    log_S = librosa.logamplitude(S, ref_power=np.max)
+    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=n_mfcc).T
+    bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
+    queue.put((mfcc, bs_mfcc))
 
 
 def extract_features(path):
@@ -335,28 +362,31 @@ def extract_features(path):
     S = librosa.feature.melspectrogram(waveform, sr=sampling_rate, n_fft=frame_size,
                                        hop_length=hop_size, n_mels=n_mels)
 
-    print "MFCCs."
+    #print "Parallel. " 
+    #q1, q2 = Queue(), Queue()
+
+    #Thread(target=extract_mfcc, args=(q1, S, beats_idx)).start()
+    #Thread(target=extract_hpcp, args=(q2, waveform_harmonic, sampling_rate, hop_size, beats_idx)).start() 
+
+    #mfcc, bs_mfcc = q1.get()
+    #hpcp, bs_hpcp = q2.get()
+    hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate,
+                                      hop_length=hop_size).T    
+    bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
+
     log_S = librosa.logamplitude(S, ref_power=np.max)
-    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=14).T
-    print len(mfcc)
+    mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=mfcc_coeff).T
+    bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
 
 
     print "Predominant."
-    pitch = get_predominant(audio, sampling_rate, len(mfcc))
+    pitch, real_pitch = get_predominant(audio, sampling_rate, len(mfcc))
+    bs_pitch = librosa.feature.sync(pitch.T, beats_idx, pad=False).flatten()
     print len(pitch)
-
-
-    hpcp = librosa.feature.chroma_cqt(y=waveform_harmonic, sr=sampling_rate,
-                                      hop_length=hop_size).T
-    print len(hpcp)
 
     #show_matrix(hpcp.T, "unsynched hpcp")
     #show_matrix(mfcc.T, "unsynched mfcc")
 
-    print "Beat synchronising."
-    bs_mfcc = librosa.feature.sync(mfcc.T, beats_idx, pad=False).T
-    bs_hpcp = librosa.feature.sync(hpcp.T, beats_idx, pad=False).T
-    bs_pitch = librosa.feature.sync(pitch.T, beats_idx, pad=False).flatten()
 
     #show_matrix(bs_hpcp.T, "synched hpcp")
     #show_matrix(bs_mfcc.T, "synched mfcc")
@@ -365,7 +395,7 @@ def extract_features(path):
     #unsynchSSM = compute_ssm(unsynchSSM)
     #show_matrix(unsynchSSM, "unsynched ssm")
 
-    return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate, bs_pitch
+    return bs_mfcc, bs_hpcp, beats_idx, waveform.shape[0] / sampling_rate, pitch, real_pitch
 
 
 def lognormalise_chroma(C):
@@ -384,18 +414,7 @@ def compute_ssm(X):
     return 1 - D
 
 
-def process_track(path):
-    """ Processes the file to get the section boundaries and labels. """
-    frame_size = 2048
-    hop_size = 512
-    n_mels = 128
-    mfcc_coeff = 14
-    sampling_rate = 11025
-    iterations = 500 
-    H = 20
-
-    # swapped 
-    mfcc, hpcp, beats, dur, pitch = extract_features(path)
+def process_for_feature(queue, hpcp, pitch, iterations, sampling_rate, hop_size, dur, H, frames):
     hpcp = lognormalise_chroma(hpcp)
     #show_matrix(hpcp.T, "ssm synched")
     
@@ -418,12 +437,47 @@ def process_track(path):
   
     # Post process estimations
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
-    frames = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
     est_times, est_labels = process_segmentation_level(est_idxs, est_labels,
                                                        hpcp.shape[0], frames, dur)
+    queue.put((est_times, est_labels))
+
+
+def process_track(path):
+    """ Processes the file to get the section boundaries and labels. """
+    frame_size = 2048
+    hop_size = 512
+    n_mels = 128
+    mfcc_coeff = 14
+    sampling_rate = 11025
+    iterations = 500 
+    H = 20
+
+    mfcc, hpcp, beats, dur, pitch, real_pitch = extract_features(path)
+    q1, q2 = Queue(), Queue()
+    frames = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
+
+
+    Thread(target=process_for_feature, args=(q1, mfcc, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start()
+    Thread(target=process_for_feature, args=(q2, hpcp, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start() 
+
+    mfcc_times, mfcc_labels = q1.get()
+    hpcp_times, hpcp_labels = q2.get()
+
+    print mfcc_times, mfcc_labels
+    print hpcp_times, hpcp_labels
+
+    mfcc_newtimes, mfcc_newlabels = merge_bounds(mfcc_times, mfcc_labels)
+    hpcp_newtimes, hpcp_newlabels = merge_bounds(hpcp_times, hpcp_labels)
+
+    if len(mfcc_newlabels) < len(hpcp_newlabels):
+        est_times, est_labels = hpcp_times, hpcp_labels
+    else:        
+        est_times, est_labels = mfcc_times, mfcc_labels
+
     np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
-    return est_times, est_labels, pitch
+    beat_times = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
+    return est_times, est_labels, real_pitch, beat_times
 
 
 def merge_bounds(bounds, labels):
@@ -433,23 +487,25 @@ def merge_bounds(bounds, labels):
     prevlabel = None
 
     for i in range(1, len(bounds)-1):
-        if prevlabel != labels[i-1] or :
+        if prevlabel != labels[i-1]:
             new_labels.append(labels[i-2])
             new_bounds.append(bounds[i-1])
-        prevlabel = label[i-1]
+        prevlabel = labels[i-1]
 
-    new_bounds.append[bounds[-1]]
-    new_labels.append[labels[-1]]
+    new_bounds.append(bounds[-1])
+    new_labels.append(labels[-1])
     return new_bounds, new_labels
-
 
 
 def main():    
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
-        path = "Help.mp3"
-    bounds, labels, _ = process_track(path)
-
+        path = "SongStructure/Titanic.mp3"
+    bounds, labels, _, _ = process_track(path)
+    print len(bounds)
 
 main()
+
+
+

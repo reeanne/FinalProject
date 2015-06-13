@@ -24,9 +24,26 @@ Last, but not least, we move on to user experience research. We go over user tes
     \centering
 
   \caption{A plot of the expected and predicted .}
-  \label{fig:anneval}
+  \label{fig:finalarousal}
 \end{figure}
 
+
+\begin{figure}[b]
+    \vspace{20pt}
+    \includegraphics[width=0.7\textwidth]{Figures/finalvalence}
+    \centering
+
+  \caption{A plot of the expected and predicted valence.}
+  \label{fig:finalvalence}
+\end{figure}
+
+\begin{figure}[t]
+    \includegraphics[width=0.9\textwidth]{Figures/errors-mood}
+    \centering
+
+  \caption{A plot of the expected and predicted valence.}
+  \label{fig:errors-mood}
+\end{figure}
 
 We designed our neural networks to as means of calculating valence and arousal ratings of songs using audio features we extract. 
 
@@ -38,16 +55,8 @@ If we look at the two predicted values separately, the coefficient of determinat
 
 In comparison, Yang and Lin \cite{mood} achieved a lower success rate, as their $R^2$ scored 58.3\% for arousal and 28.1\% for valence. This might be because of a different set of features chosen or the neural network was simply better for calculating the relationship between the set of features and the mood value of the song.
 
-The RMSE our network exhibited was 9\%/ This means that the overall accuracy of the network can be estimated at the level of 91\%. This is a result comparable even to classification solutions to the problem, for example proposed by Liu, Yang, Wu, Chen \cite{moodclass}, where at the overall performance the network reached 78.97\%.
+The RMSE our network exhibited was 9\%/. This means that we could say the overall accuracy of the network can be estimated at the level of 91\% and the result comparable even to classification solutions to the problem, for example proposed by Liu, Yang, Wu, Chen \cite{moodclass}, where at the overall performance the network reached 78.97\%. However, we believe that comparing regression problem to a classification one does not truly reflect the performance changes as they focus on different tasks. 
 
-
-\begin{figure}[t]
-    \includegraphics[width=0.7\textwidth]{Figures/finalvalence}
-    \centering
-
-  \caption{A plot of the expected and predicted valence.}
-  \label{fig:anneval}
-\end{figure}
 
 
 Results from the static network indicate that a network can be trained to identify statistical consistencies across audio features abstracted from music and satisfactorily predict valence/arousal values that closely match mean participant ratings.
@@ -203,7 +212,7 @@ We implemented our evaluation benchmark using Python \textit{mir\textunderscore 
 Again, to best evaluate performance of our algorithm, we compare the results it yields with results of the checkerboard and NFM based ones. Our findings can be seen in Table \ref{table:evalStructureRank}.
 
 
-As we can see in the Figure \ref{fig:structurechamps}, in the majority of cases, the performance of the algorithm designed by Kaiser falls behind the other two methods. It ranked as first twice when calculating the hit-rate with the window size $w=500ms$, once for the $w=3s$ and it never excelled in the deviation category. On the other hand, the algorithm designed by Foote and Cooper yields similar overall performance as ours when evaluating hit-rate with $w=3$ and slightly worse for 500ms. This most probably is caused by the fact that in many cases our algorithm managed to find the segments but was a bit off, not qualifying for the 500s window. However, once the window got increased, its performance improved more than in case of the ``checkerboard'' algorithm. The exact results can be seen in section \ref{sec:segevalapp} in Appendix C. 
+As we can see in the Figure \ref{fig:structurechamps}, in the majority of cases, the performance of the algorithm designed by Kaiser falls behind the other two methods. It ranked as first twice when calculating the hit-rate with the window size $w=500ms$, once for the $w=3s$ and it never excelled in the deviation category. On the other hand, the algorithm designed by Foote and Cooper yields similar overall performance as ours when evaluating hit-rate with $w=3$ and slightly worse for 500ms. This most probably is caused by the fact that in many cases our algorithm managed to find the segments but was a bit off, not qualifying for the 500s window. However, once the window got increased, its performance improved more than in case of the ``checkerboard'' algorithm. The exact results can be seen in Section \ref{sec:segevalapp} in Appendix C. 
 
 In conclusion, we believe that the algorithm for boundary detection we created is suitable for our application and yields performance comparable or exceeding the state-of-the-art creations in its field. 
 
@@ -211,9 +220,14 @@ In conclusion, we believe that the algorithm for boundary detection we created i
 
 \section{Labelling}
 
+To evaluate the effectiveness of our novel labelling algorithm, we evaluated its performance on the same ten songs we used when assessing our boundary detection. As we found no other algorithm attempting what he have, we unfortunately cannot compare its final performance against any other existing solution. 
+
+However, we are able to split our algorithm into two sections - the numerical labelling and structural labelling. The numerical labelling has been attempted by others before, so we can compare our accuracy with other existing solutions. As we are focused on the labelling process alone, we modified each of the algorithms to accept boundary times from the ground truth as an argument, to avoid bias caused by inaccurate boundary detection.
+
 \vspace{20pt}
 
 \section{Questionnaires}
+
 Questionnaires are one of the most common and popular tools to gather data from a large number of people. They generally consist of a limited number of questions that ask participants to rate the effectiveness of various aspects of the activity. The questions should focus on the key points we are trying to evaluate. 
 
 Questionnaires tend to be short in order to reduce the amount of time respondents need to complete them, and therefore increase the response rate. 

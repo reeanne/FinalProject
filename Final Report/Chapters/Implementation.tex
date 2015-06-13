@@ -96,7 +96,7 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 
 In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
-As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figured \ref{fig:bivariate-valence} and \ref{fig:bivariate-arousal}, the rest are included in Appendix A, Section \ref{sec:bivariatediagram}) for reference. 
+As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figured \ref{fig:bivariate-valence} and \ref{fig:bivariate-arousal}, the rest are included in Section \ref{sec:bivariatediagram}, Appendix A, for reference. 
 
 We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience}, and both mean and derivative of variance (dvar) of \textit{dissonance}. 
 
@@ -104,7 +104,7 @@ For \textbf{arousal}, we noticed correlation with \textit{spectral centroid, pit
 
 Values of all the features were then normalised between 0 and 1 to prepare them for the neural network training. 
 
-\begin{wrapfigure}{l}{0.5\textwidth}
+\begin{wrapfigure}{l}{0.8\textwidth}
   \vspace{-30pt}
   \begin{center}
     \includegraphics[width=0.5\textwidth]{Figures/myANN}
@@ -257,16 +257,18 @@ Satisfaction				& 0.086		& 0.343		& 0.071			& 0.527		\\	\hline
 \vspace{10pt}
 
 
-\subsection{Performance}
-
-Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song they will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
-
 \begin{figure}[h]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/Johnny}
 \caption{Pitch contours of the ground truth (blue), Durrieu (green) and Salamon (red) for ``Johnny B. Goode'' by Chuck Berry.}
 \label{fig:jonny}
 \end{figure}
+
+
+\subsection{Performance}
+
+Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song they will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
+
 
 \vspace{20pt}
 
@@ -290,7 +292,7 @@ Satisfaction				& 3m 43s		& 	4h 47m 16s 330ms		& 15s 65ms		\\	\hline
 
 \subsection{Postprocessing}
 
-\begin{figure}[t]     
+\begin{figure}[b]     
         \centering
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/input_simple}
@@ -434,12 +436,12 @@ We decided to investigate both possibilities as they present the music track fro
 
 \begin{figure}
         \centering
-        \begin{subfigure}[b]{0.47\textwidth}
+        \begin{subfigure}{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_unsynched_chroma}
                 \caption{Example of a chromagram without any further enhancement. }
                 \label{fig:unchroma}
         \end{subfigure}
-        \begin{subfigure}[b]{0.47\textwidth}
+        \begin{subfigure}{0.47\textwidth}
                 \includegraphics[width=\textwidth]{Figures/hpcp_synched_chroma}
                 \caption{Example of a chromagram after beat-synchronisation.}
                 \label{fig:synchroma}
@@ -548,7 +550,7 @@ Similarly to the case of Harmonic Pitch Class Profiles, we started the preparati
 
 Next, we had to determine whether log normalisation improved the clarity of the SSM. As we can see in Figure \ref{fig:MFCCcomparison}, the use of log normalisation could decrease the amount of segments found, as more similar points are exposed.
 
-Finally, we computed the SSM. Again, we investigated the possibility of generating it using Euclidean, Manhattan and cosine distances. The diagrams presenting our findings can be seen in Appendix B (\ref{AppendixB}). Similarly to when we were working with HPCPs, the correlation distance gave us the most contrasted, sharper images. 
+Finally, we computed the SSM. Again, we investigated the possibility of generating it using Euclidean, Manhattan and cosine distances. The diagrams presenting our findings can be seen in Section \ref{sec:mfccappen}, Appendix B. Similarly to when we were working with HPCPs, the correlation distance gave us the most contrasted, sharper images. 
 
 The result of this process can be seen in Figure \ref{fig:synMFCC}.
 
@@ -677,7 +679,11 @@ Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$, a
 \label{fig:numericsimple}
 \end{figure}
 
-However, having gathered data about the main melody of the song earlier on, we could use it to more accurately predict the labels for each of the song segments, producing labels that easy to understand to a person. In attempt to do so, we synchronise the array of pitches with the beats to get beat synchronised features which we could with ease refer to once we have the boundary frames. 
+However, ideally in our application we would like to be able to tell the player what segment he is currently in and make them as clear and easy to understand as possible. As we could not find literature where this was attempted, we had to investigate various ways of achieving this ourselves. 
+
+Having gathered data about the main melody of the song earlier on, we could use it to more accurately predict the labels for each of the song segments, producing labels that easy to understand to a person. 
+
+In attempt to do so, we synchronise the array of pitches with the beats to get beat synchronised features which we could with ease refer to once we have the boundary frames. 
 
 \begin{figure}[h]
 	\centering
@@ -690,8 +696,6 @@ First intuition we had was to investigate the amount of silent frames occurring 
 
 A visualisation of our segmentation and labelling using only vocal/instrumental heuristics which can be seen on Figure \ref{fig:vocalsimple}. The diagram makes it evident that our boundary finding works quite well. As we can see, each beginning of the chorus is detected with high accuracy. Moreover, the beginning and the end of the intro and outro parts are predicted really well. In addition to this, the segmentation process manages to detect the silence segments in the beginning and end of track. However, our clustering algorithm detects the end of the chorus too early, absorbing a part of it into the verse that follows.
 
-However, this way alone, we lose the distinction between the vocal parts, for instance, between the verse and the chorus. We could implement a system of heuristics to assign labels like chorus or verse, but unfortunately there is no straightforward way of doing so as the song structures differ greatly across the popular music. For instance, many songs drop the verse-chorus structure to start with a chorus, like ``She Loves You'' by The Beatles.
-
 \begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-30pt}
   \begin{center}
@@ -701,6 +705,7 @@ However, this way alone, we lose the distinction between the vocal parts, for in
 \label{fig:NMF}
 \end{wrapfigure}
 
+However, this way alone, we lose the distinction between the vocal parts, for instance, between the verse and the chorus. We could implement a system of heuristics to assign labels like chorus or verse, but unfortunately there is no straightforward way of doing so as the song structures differ greatly across the popular music. For instance, many songs drop the verse-chorus structure to start with a chorus, like ``She Loves You'' by The Beatles.
 
 Our final approach was to merge the two approaches mentioned earlier into one algorithm. Ideally, we wanted to preserve the variation in the vocal parts, as it was presented in the first approach where multiple parts were classified with the same class, while being able to tell when the main melody of is present, and when it is not. Moverover, we had to find a solution to the problem of determining which segments contain chorus, which ones represent the verse and which should be classified otherwise.
 
@@ -717,12 +722,7 @@ Once we have designed the the labelling algorithm, we researched the impact of t
 To solve the dilemma of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure - the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
 
 
-
-
-
 \vspace{20pt}
-
-
 
 
 \section{The Game}
@@ -748,14 +748,12 @@ Core Data is the standard way to persist and manage data in both iPhone and Mac 
 Core Data describes data with a high level data model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-30pt}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{Figures/CollectionView}
+    \includegraphics[width=0.45\textwidth]{Figures/CollectionView}
   \end{center}
   \caption{Screenshot of the game in the song selection menu.}
-\label{fig:spngselection}
+\label{fig:songselection}
 \end{wrapfigure}
-
 
 Core Data allows data organised by the relational entity–attribute model to be serialised into XML, binary, or SQLite stores.
 
@@ -775,20 +773,27 @@ The quick game is essentially an ability of playing one of the predefined levels
 
 Once the user has created an account or chosen an existing one, they can either follow the level creation or level loading option. If they choose to create a new level, they have to select a file from their hard drive they would like to use as the base for their level. Otherwise, they go to the window, where they can select a level and either play it or remove it from their catalogue.
 
-To design the song selection view, we made use of the NSCollectionView, which allows to display objects in a grid. Each view in the grid is represented by a NSCollectionViewItem object, which manages the loading of the view's content.
+To design the song selection view, we made use of the \verb|NSCollectionView|, which allows to display objects in a grid. Each view in the grid is represented by a \verb|NSCollectionViewItem| object, which manages the loading of the view's content.
 
 Each element in our collection view contains the name of the level, the artwork of the song it was based on extracted from the ID3 tags of the file, the maximum amount of the points scored and the stars awarded for the score. The design of the song selection menu can be seen in Figure \ref{fig:songselection}
 
 \vspace{10pt}
 
-\subsection{Level Description}
+\subsection{Song Description}
 
 Once we move on to playing a game, the \verb|GameViewController| unpacks the \verb|GameScene| - an object representing a scene of content in Sprite Kit.
+
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{Figures/FullGame}
+  \end{center}
+  \caption{Screenshot of the game in the middle of playing a song.}
+\label{fig:overallgamescreen}
+\end{wrapfigure}
 
 Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
 
 In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
-
 
 The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
 
@@ -802,26 +807,61 @@ Upon completion of the level the player presented with their score, shown as sta
 
 The main part of the gameplay relies on the user pressing buttons that line up on the screen. As this is a music game, there are various ways of making the process more intuitive and hence attractive to potential players. 
 
-One of the possibilities is to use the main melody of the song to determine which buttons to issue for the player by tying in the melody extraction.
-
-
-...
-
-Having processed the list of pitches in such way, we have prepared the ground for the buttons generation.
+One of the possibilities is to use the main melody of the song to determine which buttons to issue for the player by tying in the melody extraction. In particular, by creating a mapping between the pitches and the buttons that need to be pressed that would somehow be similar to the way people play the musical instruments would be useful.
 
 The main idea of the game is to mimic the playing an instrument on the computer keyboard. For this purpose we looked to 2 most popular instruments - guitar and piano for inspiration. 
 
-When playing the piano, we are presented with a set of keys. 
+
+When playing the piano, we are presented with a set of keys. The further to the right we press the key, the higher the note played. And likewise, if we press some key to the left, the pitch we hear is of lower frequency. 
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{Figures/NotesComing}
+  \end{center}
+  \caption{Screenshot presenting different types of notes approaching.}
+\label{fig:notetypes}
+\end{wrapfigure}
+
+A similar, but slightly modified rule applies to the guitar. It is still true that jumping one way from one string to another increases the fundamental frequency heard and decreases it if we move back. However, another way of "going up a tone" is to go up a fret (i.e. closer to the sound hole). When we play the guitar, going up a certain amount of frets of on one string might let us play higher notes on it than other string whose fundamental note is much higher. 
+
+This inspired us to design our notes system in a round robin fashion. If the fundamental frequency of the frame we are about to play is higher than the one we just played, the note should appear to the right of it, if lower then to the left, and if the fundamental frequencies are the same, the button should appear at the same relative position in the $x$ axis. 
+
+However, if we need to move the note higher but we have hit the limit given by the difficulty of the song, we generate the position in a round-robin fashion, inspired by 'going up a few frets' as it is a case with the guitar.
+
+Another interesting feature to work on was the length of the notes. To increase the difficulty, every time we detect a longer note - i.e. a repeated notes of the same frequency, instead of adding a button per note, we make the note longer, as it can be seen in Figure \ref{fig:notetypes}.
 
 \vspace{10pt}
 
-\subsection{Introduction of The Song Segmentation}
+\subsection{Introduction of the Song Segmentation}
+
+One of the features that clearly distinguishes this project from other rhythm based games, apart from using the estimated main melody to generate the gameplay, is the use of automated music track segmentation. We aimed to use it to guide the user through the song - to indicate similar elements of the song or simply let the users know how far along in the song he is. 
+
+To achieve that, we dedicated a part of the screen to indicate the user of their progress within a song. Every time the player moves on to the next segment of the song, its label shows in the bottom left screen.
 
 \vspace{10pt}
 
 \subsection{Impact of the Mood on the Level}
 
-\vspace{20pt}
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-10pt}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{Figures/sparkChange}
+  \end{center}
+  \caption{Screenshot showind the song at the beginning of the musical track, when the main melody is about to play, with a mood completely different from the one depicted in Figure \ref{fig:notetypes}.}
+\label{fig:notetypes}
+\end{wrapfigure}
 
 
-\section{Main Section 2}
+
+Once we have implemented and introduced the song segmentation, it was time to create the environment that would be affected by the mood in the song.
+
+One of the features of music which can indicate the changes in emotions in a song can be the beats. If the beats are fast, more frequent, the song sounds more energetic, whereas a phlegmatic song will have softer, slower beats. 
+
+To aid the players with the game, we introduced ``frets'' coming down the screen together with the notes. They allow the user to ``place'' the note within the tact, aiding him to ace it. Due to possible variation in beat intervals, in implementing this feature we had to make use of timers that constantly check the time between the two next beats. This caused some problems when implementing the pause in the game, but they were overcome by storing the state of the timers once the pause is hit and recreating the timer once the game is resumed with it. 
+
+Now we are ready to use our neural network for the mood detection. For every segment detected by our system, we extract the features we found had the biggest impact on the mood perceived and activate our network on them. 
+
+Finding a way of making the arousal and valence values have an impact on the surroundings in the game proved to be an interesting challenge in terms of usability. This is why we came up with a system where when the user creates a level, he can choose one of the two options -- subtler and more evident mood projection. In the subtle version, the user is presented with a set of particles or sparks that float around in the background. The spark's behaviour is triggered by the beat frequency, the more frequent they are, the more dynamic the moves. On the other hand, the size of the particle set as well as the colour are adjusted based the arousal and valence colour.
+
+However, if the user opts for the second option, they are presented with much more evident changes. Apart from the particle set moving around, they can now observe the changes in the whole colour scheme of the game. This makes the influence of the mood much more evident, however it might distract, or even confuse some of the users, especially the beginners. That is why we decided to make this feature adjustable and leave it up to the user to include it or not based on their confidence in their own skills. 
+
