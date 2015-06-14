@@ -17,6 +17,8 @@
                 <outlet property="mainCreateUserButton" destination="1Nx-WW-8Wl" id="0Pi-kn-WPI"/>
                 <outlet property="mainQuickGameButton" destination="msd-yT-3cQ" id="5Bb-Hg-OXa"/>
                 <outlet property="mainQuitGameButton" destination="MSO-YT-w0T" id="ArT-4i-lZN"/>
+                <outlet property="moodColourLabel" destination="e1q-vN-n7Q" id="eel-3S-n8w"/>
+                <outlet property="moodLevel" destination="YwM-2w-wlG" id="G6e-wZ-m2p"/>
                 <outlet property="newLevelCreateLevelButton" destination="Py0-B5-J2E" id="vMS-WG-yLt"/>
                 <outlet property="newLevelFilePath" destination="Mz8-1f-70p" id="q54-On-Utw"/>
                 <outlet property="newLevelUploadFile" destination="Cuu-vx-LXB" id="5iH-vD-hdz"/>
@@ -36,158 +38,158 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <button verticalHuggingPriority="750" id="msd-yT-3cQ">
-                    <rect key="frame" x="340" y="271" width="176" height="32"/>
+                    <rect key="frame" x="334" y="271" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Quick Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hOY-OC-gig">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="mainQuickGamePressed:" target="-2" id="Wzd-aC-F3D"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="C8l-gf-sD1" userLabel="Choose User">
-                    <rect key="frame" x="340" y="221" width="176" height="32"/>
+                    <rect key="frame" x="334" y="221" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Choose a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="htQ-hl-fjT">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="mainChooseUserButtonPressed:" target="-2" id="mYJ-Y4-xPL"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="1Nx-WW-8Wl" userLabel="Create User">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="334" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Create a User " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QOy-ep-AY7">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="mainCreateUserButtonPressed:" target="-2" id="X9c-NW-2Rv"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="MSO-YT-w0T">
-                    <rect key="frame" x="340" y="115" width="176" height="32"/>
+                    <rect key="frame" x="334" y="115" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lnG-WJ-mnA">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="mainQuitGameButtonPressed:" target="-2" id="Ica-Kk-L3C"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="Kwm-FZ-2WP">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="334" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Create" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="76E-Ux-S94">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="userCreateUserButtonPressed:" target="-2" id="5vk-xv-1op"/>
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" id="4gX-Ar-6ak">
-                    <rect key="frame" x="346" y="279" width="164" height="22"/>
+                    <rect key="frame" x="334" y="271" width="195" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="User Name" id="k3A-yS-MeU">
-                        <font key="font" metaFont="system"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="User Name" id="k3A-yS-MeU">
+                        <font key="font" metaFont="system" size="15"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" id="5d9-XZ-fEY" userLabel="Create Song">
-                    <rect key="frame" x="340" y="223" width="176" height="32"/>
+                    <rect key="frame" x="334" y="221" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Upload Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="urK-ay-OrB">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="loggedCreateLevelButtonPressed:" target="-2" id="b9k-14-4DQ"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="2kw-RR-wIB" userLabel="Load Song">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="334" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Load Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9q1-VO-Ryp">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="loggedLoadLevelButtonPressed:" target="-2" id="8JE-Ah-qdL"/>
                     </connections>
                 </button>
                 <popUpButton verticalHuggingPriority="750" id="W0f-jh-jbM">
-                    <rect key="frame" x="344" y="277" width="169" height="26"/>
+                    <rect key="frame" x="338" y="271" width="195" height="26"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="0Id-ZK-RKv">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" size="15" name=".HelveticaNeueDeskInterface-Regular"/>
                         <menu key="menu" id="U1G-tN-uJQ"/>
                     </popUpButtonCell>
                 </popUpButton>
                 <button verticalHuggingPriority="750" id="bZp-7D-5Tc" userLabel="Delete Song">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="340" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Delete Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vbU-LB-vnQ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="levelDeleteLevelButtonPressed:" target="-2" id="DTU-ys-lQH"/>
                     </connections>
                 </button>
                 <popUpButton verticalHuggingPriority="750" id="YcG-fg-KBH">
-                    <rect key="frame" x="344" y="278" width="169" height="26"/>
+                    <rect key="frame" x="338" y="271" width="195" height="26"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="push" alternateTitle="Popup choose" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="odM-ml-qS0">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" size="15" name=".HelveticaNeueDeskInterface-Regular"/>
                         <menu key="menu" id="DJ0-DZ-PE0"/>
                     </popUpButtonCell>
                 </popUpButton>
                 <button verticalHuggingPriority="750" id="0hV-zj-fKu">
-                    <rect key="frame" x="340" y="223" width="176" height="32"/>
+                    <rect key="frame" x="334" y="221" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Choose User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="G1B-Nd-d2p">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="userChooseUserButtonPressed:" target="-2" id="wGp-Wz-4to"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="sbr-rI-aXG">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="334" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Delete User" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oyd-kr-hct">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="userDeleteUserButtonPressed:" target="-2" id="dvc-To-Bvo"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="Cuu-vx-LXB" userLabel="Upload File">
-                    <rect key="frame" x="340" y="274" width="176" height="32"/>
+                    <rect key="frame" x="334" y="271" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Upload File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sdy-q9-dfs">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="newLevelUoadLevelPressed:" target="-2" id="Euy-aP-2oX"/>
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" id="Mz8-1f-70p" userLabel="File Path">
-                    <rect key="frame" x="346" y="229" width="164" height="22"/>
+                    <rect key="frame" x="340" y="221" width="195" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="GAg-mI-9yc">
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -197,33 +199,33 @@
                     </connections>
                 </textField>
                 <button verticalHuggingPriority="750" id="Py0-B5-J2E" userLabel="Create Song">
-                    <rect key="frame" x="340" y="170" width="176" height="32"/>
+                    <rect key="frame" x="334" y="170" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Create Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jrR-5m-KGh">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="newLevelCreateLevelSubmit:" target="-2" id="nTw-jY-ciO"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="hWw-qs-x5j">
-                    <rect key="frame" x="340" y="115" width="176" height="32"/>
+                    <rect key="frame" x="334" y="115" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Back" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="31c-A9-BL9">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="backButtonPressed:" target="-2" id="gHz-Dj-Qu4"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" id="Qfa-Qs-zMP" userLabel="Play Song">
-                    <rect key="frame" x="340" y="222" width="176" height="32"/>
+                    <rect key="frame" x="334" y="222" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Play Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nse-hy-uoq">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="system" size="15"/>
                     </buttonCell>
                     <connections>
                         <action selector="levelPlayLevelButtonPressed:" target="-2" id="qmN-i5-ZCc"/>
@@ -249,6 +251,26 @@
                     <rect key="frame" x="420" y="377" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                 </progressIndicator>
+                <segmentedControl verticalHuggingPriority="750" id="YwM-2w-wlG">
+                    <rect key="frame" x="450" y="320" width="75" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="m5H-yy-BEB">
+                        <font key="font" metaFont="system" size="15"/>
+                        <segments>
+                            <segment label="Off" width="34"/>
+                            <segment label="On" width="34" selected="YES" tag="1"/>
+                        </segments>
+                    </segmentedCell>
+                </segmentedControl>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="e1q-vN-n7Q">
+                    <rect key="frame" x="338" y="314" width="115" height="36"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Colour changes:" placeholderString="ColourLabel" id="uYC-p2-Hnv">
+                        <font key="font" metaFont="system" size="14"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
             </subviews>
             <point key="canvasLocation" x="63" y="364"/>
         </visualEffectView>

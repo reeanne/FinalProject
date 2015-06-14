@@ -295,6 +295,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         println("Printing score");
     }
 
+    
+    func getColorFadeActionFrom(col1: SKColor, col2: SKColor, node: SKNode) -> SKAction {
+        var r1: CGFloat = col1.redComponent;
+        var r2: CGFloat = col2.redComponent;
+        var g1: CGFloat = col1.greenComponent;
+        var g2: CGFloat = col2.greenComponent;
+        var b1: CGFloat = col1.blueComponent;
+        var b2: CGFloat = col2.blueComponent;
+        var a1: CGFloat = col1.alphaComponent;
+        var a2: CGFloat = col2.alphaComponent;
+        var timeToRun: Double = 0.3
+    
+        return SKAction.customActionWithDuration(timeToRun, actionBlock:
+            {(node: SKNode!, elapsedTime: CGFloat) in
+                
+                var fraction: CGFloat = elapsedTime / CGFloat(timeToRun);
+                
+                var col3: SKColor = NSColor(red: self.lerp(r1, b: r2,fraction: fraction), green: self.lerp(g1, b: g2,fraction: fraction),
+                                            blue: self.lerp(b1, b: b2,fraction: fraction), alpha: self.lerp(a1, b: a2,fraction: fraction));
+                var shapeNode: SKShapeNode = node as! SKShapeNode;
+                shapeNode.fillColor = col3;
+                shapeNode.strokeColor = col3;
+            });
+    
+    }
+    
+    func lerp(a: CGFloat, b: CGFloat, fraction: CGFloat) -> CGFloat {
+        return (b-a)*fraction + a;
+    }
 
 
     func removeButtonPressed(colour: Colour) {

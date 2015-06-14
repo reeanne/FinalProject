@@ -40,6 +40,9 @@ class MenuController: NSViewController {
     
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
     
+    @IBOutlet weak var moodColourLabel: NSTextField!
+    @IBOutlet weak var moodLevel: NSSegmentedControl!
+    
     var player: AVAudioPlayer = AVAudioPlayer();
     var managedObjectContext: NSManagedObjectContext! = nil;
 
@@ -48,6 +51,7 @@ class MenuController: NSViewController {
     var appDelegate: AppDelegate! = nil;
 
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
@@ -478,6 +482,8 @@ class MenuController: NSViewController {
         newLevelUploadFile.hidden = !value;
         newLevelCreateLevelButton.hidden = !value;
         backButton.hidden = !value;
+        moodColourLabel.hidden = !value;
+        moodLevel.hidden = !value;
     }
     
     
