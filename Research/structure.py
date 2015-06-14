@@ -251,25 +251,28 @@ def get_segmentation(X, pitch, rank, median_size, rank_labels, R_labels, iterati
             break
 
     # Add first and last boundary
-    print "before", bound_indexes
-    bound_times = np.array([2.7463264, 16.7186479 , 30.129361, 40.1827672, 53.6922246, 66.1957242, 83.0810031, 96.5534314 , 106.6253522, 123.6032039, 137.2360917, 147.3635562, 147.3635562, 163.2933333])
-    print "frames", frames
-    bound_indexes = bound_times_to_indexes(bound_times, frames)
-    print "after", bound_indexes
+    #print "before", bound_indexes
+    #bound_times = np.array([2.7463264, 16.7186479 , 30.129361, 40.1827672, 53.6922246, 66.1957242, 83.0810031, 96.5534314 , 106.6253522, 123.6032039, 137.2360917, 147.3635562, 147.3635562, 163.2933333])
+    #print "frames", frames
+    #bound_indexes = bound_times_to_indexes(bound_times, frames)
+    #print "after", bound_indexes
     bound_indexes = np.concatenate(([0], bound_indexes, [X.shape[1] - 1]))
 
     bound_indexes = np.asarray(bound_indexes, dtype=int)
     #labels = compute_labels_simple_vocals(X, pitch, rank_labels, R_labels, bound_idxs, iterations=iterations``
-    labels = compute_numeric_labels(X, rank_labels, R_labels, bound_indexes, iterations=iterations)
-    print labels
-    labels = numeric_to_vocal_labels(labels, pitch, bound_indexes)
+    labels_numeric = compute_numeric_labels(X, rank_labels, R_labels, bound_indexes, iterations=iterations)
+    labels = numeric_to_vocal_labels(labels_numeric, pitch, bound_indexes)
+
+    silence_label = np.max(labels_numeric) + 1
+    labels_numeric = np.concatenate(([silence_label], labels_numeric, [silence_label]))
+    print labels_numeric
 
     #plt.imshow(G[:, np.newaxis], interpolation="nearest", aspect="auto")
     #for b in bound_idxs:
     #    plt.axvline(b, linewidth=2.0, color="k")
     #plt.show()
 
-    return bound_indexes, labels
+    return bound_indexes, labels, labels_numeric
 
 
 def intervals_to_times(intervals):
@@ -451,7 +454,7 @@ def process_for_feature(queue, hpcp, pitch, iterations, sampling_rate, hop_size,
         #show_matrix(hpcp.T, "SSM")
 
         print "Segmentation."
-        est_idxs, est_labels = get_segmentation(hpcp.T, pitch, 2, 16, 4, 16, iterations=iterations)
+        est_idxs, est_labels, numeric = get_segmentation(hpcp.T, pitch, 2, 16, 4, 16, iterations=iterations)
         est_idxs = np.unique(np.asarray(est_idxs, dtype=int))
     else:
         # The track is too short. We will only output the first and last
@@ -463,7 +466,7 @@ def process_for_feature(queue, hpcp, pitch, iterations, sampling_rate, hop_size,
     est_idxs, est_labels = postprocess(est_idxs, est_labels)
     est_times, est_labels = process_segmentation_level(est_idxs, est_labels,
                                                        hpcp.shape[0], frames, dur)
-    queue.put((est_times, est_labels))
+    queue.put((est_times, est_labels, numeric))
 
 
 def process_track(path):
@@ -485,8 +488,8 @@ def process_track(path):
     Thread(target=process_for_feature, args=(q1, mfcc, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start()
     Thread(target=process_for_feature, args=(q2, hpcp, pitch, iterations, sampling_rate, hop_size, dur, H, frames)).start() 
 
-    mfcc_times, mfcc_labels = q1.get()
-    hpcp_times, hpcp_labels = q2.get()
+    mfcc_times, mfcc_labels, mfcc_numeric = q1.get()
+    hpcp_times, hpcp_labels, hpcp_numeric = q2.get()
 
     print mfcc_times, mfcc_labels
     print hpcp_times, hpcp_labels
@@ -495,14 +498,14 @@ def process_track(path):
     hpcp_newtimes, hpcp_newlabels = merge_bounds(hpcp_times, hpcp_labels)
 
     if len(mfcc_newlabels) < len(hpcp_newlabels):
-        est_times, est_labels = hpcp_times, hpcp_labels
+        est_times, est_labels, numeric = hpcp_times, hpcp_labels, hpcp_numeric
     else:        
-        est_times, est_labels = mfcc_times, mfcc_labels
+        est_times, est_labels, numeric = mfcc_times, mfcc_labels, mfcc_numeric
 
     np.savetxt(sys.stdout, est_times, '%5.2f')
     print est_times, est_labels
     beat_times = librosa.frames_to_time(beats, sr=sampling_rate, hop_length=hop_size)
-    return est_times, est_labels, real_pitch, beat_times
+    return est_times, est_labels, real_pitch, beat_times, numeric
 
 
 def merge_bounds(bounds, labels):
@@ -527,10 +530,10 @@ def main():
         path = sys.argv[1]
     else:
         path = "SongStructure/Titanic.mp3"
-    bounds, labels, _, _ = process_track(path)
+    bounds, labels, _, _, numeric = process_track(path)
+    print numeric
     print len(bounds)
 
-main()
 
 
 

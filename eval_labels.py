@@ -1,4 +1,4 @@
-import structure
+#import structure
 import mir_eval
 import sys
 
@@ -10,8 +10,8 @@ def evaluate():
     #comparison = sys.argv[2]
     comparison = sys.argv[1]
     #bounds, labels, pitch, beat_times = structure.process_track(file)
-    bounds = [ 0.0, 3.25079365, 8.45206349, 11.70285714, 29.58222222, 41.9352381, 49.73714286, 70.86730159, 82.24507937, 90.04698413, 111.22358277, 122.97287982, 130.49614512, 134.09333333]
-    labels = [5, 2, 4, 1, 3, 0, 1, 3, 0, 1, 3, 0, 5]
+    bounds = [ 0.00000000e+00, 1.85759637e-01, 1.42570522e+01, 2.51239909e+01, 3.15791383e+01, 3.43655329e+01, 4.50931519e+01, 9.08364626e+01, 1.17400091e+02, 1.69459229e+02, 2.19521451e+02, 2.42880726e+02, 2.86441361e+02, 2.90226667e+02]
+    labels = [5, 1, 3, 4, 3, 1, 3, 2, 3, 2, 3, 4, 5]
     boundaries = zip(bounds[:-1], bounds[1:])
 
 
@@ -33,7 +33,7 @@ def evaluate():
                                                   est_labels,
                                                   t_min=0,
                                                   t_max=ref_intervals.max())
-     precision, recall, f = mir_eval.structure.pairwise(ref_intervals,
+     precision, recall, f = mir_eval.segment.pairwise(ref_intervals,
                                                        ref_labels,
                                                        est_intervals,
                                                        est_labels)

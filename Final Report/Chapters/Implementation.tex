@@ -74,7 +74,14 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 
 \end{description}
 
-\begin{figure}[h]
+\newpage
+\vspace{10pt}
+
+
+\subsection{Correlation Between Features and Mood Perception}
+
+
+\begin{figure}[b]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/spectralcentroid-valence}
 \caption{A graph representing a correlation between spectral centroid and valence values.}
@@ -82,17 +89,13 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[b]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/zerocrossing-arousal}
  \caption{A graph representing a correlation between zero-crossing rate and arousal values.}
 \label{fig:bivariate-arousal}
 \end{figure}
 
-
-\vspace{10pt}
-
-\subsection{Correlation Between Features and Mood Perception}
 
 In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
@@ -721,9 +724,8 @@ Once we have designed the the labelling algorithm, we researched the impact of t
 
 To solve the dilemma of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure - the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
 
-
 \vspace{20pt}
-
+\newpage
 
 \section{The Game}
 
@@ -747,14 +749,6 @@ Core Data is the standard way to persist and manage data in both iPhone and Mac 
 
 Core Data describes data with a high level data model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. 
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-  \begin{center}
-    \includegraphics[width=0.45\textwidth]{Figures/CollectionView}
-  \end{center}
-  \caption{Screenshot of the game in the song selection menu.}
-\label{fig:songselection}
-\end{wrapfigure}
-
 Core Data allows data organised by the relational entity–attribute model to be serialised into XML, binary, or SQLite stores.
 
 Core Data is also a persistent technology, in that it can persist the state of the model objects to disk. But the important takeaway is that Core Data is much more than just a framework to load and save data - it is also about working with the data while it is in memory.
@@ -771,6 +765,15 @@ Although not usually adopted in OS X games, we decided to follow the Model-View-
 When first facing the menu, the user has an option of creating an account, logging in as a user or playing a quick game, not requiring any user data. 
 The quick game is essentially an ability of playing one of the predefined levels, without a choice of creating a new one.
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{Figures/CollectionView}
+  \end{center}
+  \caption{Screenshot of the game in the song selection menu.}
+\label{fig:songselection}
+\end{wrapfigure}
+
+
 Once the user has created an account or chosen an existing one, they can either follow the level creation or level loading option. If they choose to create a new level, they have to select a file from their hard drive they would like to use as the base for their level. Otherwise, they go to the window, where they can select a level and either play it or remove it from their catalogue.
 
 To design the song selection view, we made use of the \verb|NSCollectionView|, which allows to display objects in a grid. Each view in the grid is represented by a \verb|NSCollectionViewItem| object, which manages the loading of the view's content.
@@ -781,7 +784,12 @@ Each element in our collection view contains the name of the level, the artwork 
 
 \subsection{Song Description}
 
-Once we move on to playing a game, the \verb|GameViewController| unpacks the \verb|GameScene| - an object representing a scene of content in Sprite Kit.
+Once we move on to playing a game, the \verb|GameViewController|~unpacks the \verb|GameScene| -- an object representing a scene of content in Sprite Kit.
+
+Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
+
+In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
+
 
 \begin{wrapfigure}{l}{0.5\textwidth}
   \begin{center}
@@ -790,10 +798,6 @@ Once we move on to playing a game, the \verb|GameViewController| unpacks the \ve
   \caption{Screenshot of the game in the middle of playing a song.}
 \label{fig:overallgamescreen}
 \end{wrapfigure}
-
-Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
-
-In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium difficulty uses the blue button in addition to those three, and Hard and Expert use all five buttons.
 
 The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
 
@@ -839,6 +843,7 @@ One of the features that clearly distinguishes this project from other rhythm ba
 To achieve that, we dedicated a part of the screen to indicate the user of their progress within a song. Every time the player moves on to the next segment of the song, its label shows in the bottom left screen.
 
 \vspace{10pt}
+\newpage
 
 \subsection{Impact of the Mood on the Level}
 
@@ -861,7 +866,22 @@ To aid the players with the game, we introduced ``frets'' coming down the screen
 
 Now we are ready to use our neural network for the mood detection. For every segment detected by our system, we extract the features we found had the biggest impact on the mood perceived and activate our network on them. 
 
+\begin{figure}[b]
+        \centering
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{Figures/screengreen}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{Figures/screenred}
+        \end{subfigure}
+          \caption{Demonstration of the more invasive mood change mode.}
+        \label{fig:moodchangescreen}
+\end{figure}
+
+
 Finding a way of making the arousal and valence values have an impact on the surroundings in the game proved to be an interesting challenge in terms of usability. This is why we came up with a system where when the user creates a level, he can choose one of the two options -- subtler and more evident mood projection. In the subtle version, the user is presented with a set of particles or sparks that float around in the background. The spark's behaviour is triggered by the beat frequency, the more frequent they are, the more dynamic the moves. On the other hand, the size of the particle set as well as the colour are adjusted based the arousal and valence colour.
 
-However, if the user opts for the second option, they are presented with much more evident changes. Apart from the particle set moving around, they can now observe the changes in the whole colour scheme of the game. This makes the influence of the mood much more evident, however it might distract, or even confuse some of the users, especially the beginners. That is why we decided to make this feature adjustable and leave it up to the user to include it or not based on their confidence in their own skills. 
+However, if the user opts for the second option, they are presented with much more evident changes. Apart from the particle set moving around, they can now observe the changes in the whole colour scheme of the game. This makes the influence of the mood much more evident, however it might distract, or even confuse some of the users, especially the beginners. To implement that we needed to implement an SKAction which spreads out the change of colour over time to allow gradual, less invasive changes that will not distract the user to a great extend. In addition to this, should the user find the changes still quite invasive, we opted to make this feature adjustable and leave it up to the user to include it or not based on their confidence in their own skills. 
+
+
 
