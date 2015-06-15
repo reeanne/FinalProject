@@ -6,12 +6,12 @@ def evaluate():
 
 	output_predictions_file = "bound_predictions.lab"
 
-	file = sys.argv[1]
-	comparison = sys.argv[2]
-	#comparison = sys.argv[1]
-	bounds, labels_, pitch, beat_times, labels = structure.process_track(file)
-	#bounds = [   0.0, 0.60371882, 14.90721088, 25.44907029, 32.22929705, 35.38721088, 43.74639456, 89.53614512, 117.63229025, 129.56734694, 136.25469388, 141.96680272, 148.19265306]
-	#labels = [5, 1, 4, 2, 2, 1, 4, 3, 4, 2, 2, 5]
+	#file = sys.argv[1]
+	#comparison = sys.argv[2]
+	comparison = sys.argv[1]
+	#bounds, labels_, pitch, beat_times, labels = structure.process_track(file)
+	bounds = [   0.0, 10.17034014, 14.34993197, 25.21687075, 33.99401361, 51.64117914, 52.47709751, 55.03129252, 90.79002268, 116.51773243, 129.24226757, 134.30421769, 154.3662585, 163.16081633]
+	labels = [5, 4, 4, 4, 1, 3, 3, 2, 2, 0, 4, 2, 5]
 	boundaries = zip(bounds[:-1], bounds[1:])
 	print bounds, labels
 

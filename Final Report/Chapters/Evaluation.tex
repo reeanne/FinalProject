@@ -4,7 +4,8 @@
 
 \label{Chapter6} % For referencing the chapter elsewhere, use \ref{Chapter4} 
 
-\lhead{Chapter 6. \emph{Results \& Evaluation}} % This is for the header on each page - perhaps a shortened title
+\fancyhead[RE,LO]{Chapter 6. \emph{Results \& Evaluation}}
+\fancyhead[LE,RO]{\thepage}
 
 %----------------------------------------------------------------------------------------
 
@@ -98,7 +99,7 @@ Results from the static network indicate that a network can be trained to identi
 
 \section{Boundary Detection}
 
-The first towards the evaluation of the segmentation algorithm was to gather the ground truth data to test against. To remove bias caused by personal preferences in music, we sought external sources for help in selection of the tracks. This is why we consulted the top charts created by music magazines and online portals such as Rolling Stone, Billboard, Gibson etc. The full list can be found in~\cite{toplists}.
+The first towards the evaluation of the segmentation algorithm was to gather the ground truth data to test against. To remove bias caused by personal preferences in music, we sought external sources for help in selection of the tracks. This is why we consulted the top charts created by music magazines and online portals such as Rolling Stone, Billboard, Gibson etc. The full list can be found in Section~\ref{sec:topcharts}, Appendix D.
 
 Once we have retrieved the lists with the most popular songs across genres, we selected one song per top list based on our familiarity. Although this might introduced some sort of personal preference into the dataset, it also allowed us to more intuitively create the ground truth data, as the familiarity with a song makes the manual labelling more obvious and precise. For instance, in ``Blitzkrieg Bop'' by The Ramones, the bridge is repeates as often as verse and chorus, which is bound to introduce confusion to a person who hears the song for the first time and is asked to segment and label it.
 
@@ -217,14 +218,51 @@ In conclusion, we believe that the algorithm for boundary detection we created i
 
 To evaluate the effectiveness of our novel labelling algorithm, we evaluated its performance on the same ten songs we used when assessing our boundary detection. As we found no other algorithm attempting what he have, we unfortunately cannot compare its final performance against any other existing solution. 
 
-However, we are able to split our algorithm into two sections - the numerical labelling and structural labelling. The numerical labelling has been attempted by others before, so we can compare our accuracy with other existing solutions. As we are focused on the labelling process alone, we modified each of the algorithms to accept boundary times from the ground truth as an argument, to avoid bias caused by inaccurate boundary detection.
+However, we are able to split our algorithm into two sections - the numerical labelling and structural labelling. The numerical labelling has been attempted by others before, so we can compare our accuracy with other existing solutions. For this purpose, we chose two different algorithms -- one by Kaiser and Sikora~\cite{Sikora}, which makes use of non-negative matrix factorisation (NMF) and one presented by Nieto and Bello~\cite{Bello}, which makes use of  2D-Fourier Magnitude Coefficients (FMC-2D). The results are presented in Table~\ref{table:labellingnumeric}.
 
-.  .  .
 
-With that in mind, we have to understand that the results of our structure labelling depend heavily on correctness of our numerical labelling. As we saw earlier, our numerical labelling performs comparably or better than existing solutions, but the accuracy is still not satisfactorily high. 
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | } \hline 
+Song  											& 	NMF				&  FMC-2D		&  Ours		\\ \hline \hline
+\textit{The Number of The Beast} 	&	0.429			& 	0.363  			&  0.501	\\ \hline
+\textit{Rock With You}						&	0.452			&  0.379			&  0.423	\\ \hline
+\textit{Blitzkrieg Bop} 						&	0.395			&  0.462  			&  0.661 	\\ \hline
+\textit{This Land Is Your Land} 		&	0.830			&  0.780			&  0.827 	\\ \hline
+\textit{One More Time}					&	0.362			&  0.429    			&  0.391 	\\ \hline
+\textit{Smooth}								&	0.415			&  0.419  			&  0.271 	\\ \hline
+\textit{Crazy In Love}						&	0.368			&  0.420  			&  0.446  	\\ \hline
+\textit{Help!}									&	0.530			&  0.445		   	&  0.609 	\\ \hline
+\textit{Respect}								&	0.446			&  0.556  			&  0.471 	\\ \hline
+\textit{Back In the USSR}				&	0.302			&  0.337 			&  0.348	\\ \hline
+
+\end{tabular}
+\caption{Table showing the performance of the labelling algorithms on each of the music tracks. In particular, we compare performance of our algorithm with the one presented by Kaiser and Sikora (NMF)~\cite{Sikora} and by Nieto and Bello (FMC-2D)~\cite{Bello}.}
+\label{table:labellingnumeric}
+\end{center}
+\end{table}
+
+As we can see, again, our algorithm performs comparably or better than the other two algorithms. There are situations in which the precision is quite low, but usually this means that the song is generally difficult to find bounds and labels in. The overall ``ranking'' of the algorithms can be found in Figure~\ref{fig:labelrank}. It is clear that our algorithm is most often the best performing algorithm. An important thing to notice is that it only once exhibited the worst performance. This happened for the song ``Smooth'' by Santana and we believe this is due our boundary detection not performing its best on this one, as we saw earlier in Table~\ref{table:evalStructureRank}.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.48\textwidth]{Figures/labellingdistribution}
+  \end{center}
+  \caption{Chart presenting amount of times every algorithm scored each place for all the songs in total.}
+\label{fig:labelrank}
+\end{wrapfigure}
+
+Having evaluated the numerical labelling, we moved on to estimation of performance of our structural labelling algorithm. To do so, we modified our algorithm to take the bound times as parameters and find the structural labels based on them. 
+
 To evaluate the accuracy of our algorithm, we calculate the percentage of correctly estimated labels according to the manually labelled ground truth. The results can be seen in Table~\ref{table:labelresults}. 
 
-An interesting thing to note is that the numerical algorithm does not always distingush between an instrumental part and a vocal part that apart from containing the vocals is the same (i.e. the background music is the same), as it was the case for ``The Number of the Beast'' or ``Smooth''. In case of ``This Land Is Your Land'' the bad performance is justified by the specific built of the song -- it does not have a chorus, just a verse repeated over and over again. 
+An interesting thing to note is that the numerical algorithm does not always distinguish between an instrumental part and a vocal part that apart from containing the vocals is the same (i.e. the background music is the same), as it was the case for ``The Number of the Beast'' or ``Smooth''. In case of ``This Land Is Your Land'' the bad performance is justified by the specific built of the song -- it does not have a chorus, just a verse repeated over and over again. 
+
+With that in mind, we have to understand that the results of our structure labelling depend heavily on correctness of our numerical labelling. As we saw earlier, our numerical labelling performs comparably or better than existing solutions, but the accuracy is still not satisfactorily high.
+
+When we compare the results of evaluation of our numerical and structural labelling, we can see that sometimes one performs better than the other. That is because sometimes, when the structural part of our algorithm assigns the ``bridge'' label, it merges two clusters that were otherwise separate, improving the precision of the structural algorithm. At the same time, there are occasions when the same behavious is unwanted, causing the precision to drop. 
+
 
 \begin{table}
 \begin{center}
@@ -247,7 +285,27 @@ Song  											&  Hit		\\ \hline \hline
 \end{center}
 \end{table}
 
-The average accuracy of our algorithm was 66.7\%. Given that the performance of our numerical labelling was +++++....+++++, we believe this is quite a good result and introduction of an algorithm for meaningful structure description could improve the clarity of existing labelling algorithms at a small computational cost. 
+The average accuracy of our algorithm was 66.7\%. Given that the average precision of our numerical labelling was 0.5\%, we believe this is quite a good result and introduction of an algorithm for meaningful structure description could improve the clarity of existing labelling algorithms at a relatively small computational cost, given that we are reusing data already extracted for other parts of our game.
+
+\section{Predominant Melody}
+
+To assess the effectiveness of our smoothing technique, we tested our game on four users aged 20-24. We asked each of them to generate songs of 3 different difficulties based on the same music tracks. This is to allow them to better spot the difference between the sequence of notes generated for each of the difficulty level. When assessing each difficulty, the surveyed were asked to rate the fitness of the difficulty on scale from 1 to 5, where 1 is to easy, 3 is perfect and 5 is too difficult. We also asked the surveyed to rate the variation in the difficulty levels on scale from 1 to 5, where 1 would mean that they are all the same, 3 if they are slightly different and 5 would mean that they are adequately different between one another. 
+
+The results of our investigation can be seen in Table~\ref{table:smoothing}. 
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c | } 																								      \hline 
+\textbf{Difficulty} & \textbf{Average} & \textbf{Stdev} \\ \hline \hline
+Easy 				& 3 					   & 0.816  			   \\ \hline 
+Medium 			& 3.5 			   	   & 0.577		 	   \\ \hline 
+Hard					& 3.5 				   & 0.1  		 	   \\ \hline \hline
+Variation			& 4.75				   & 0.5				   \\ \hline
+\end{tabular}
+\caption{Table presenting the results of the questionnaire evaluating the effectiveness of our smoothing for generating levels of different difficulty.}
+\label{table:smoothing}
+\end{center}
+\end{table}
 
 
 \vspace{20pt}
@@ -373,4 +431,4 @@ They also believed that the structure of the screens was logical and visually pl
 
 Most people believed that the fonts were clear and readable, but a few believed that a small increase in the font size would improve the user experience. 
 
-
+Having gathered the results of the surveys, we introduced some changes to improve our game. As suggested by the respondents, we increased the font size. In addition to this, the decision to add optional mood indication that is more aggressive also came from the surveys. Finally, we made the help for the game clearer and the icon triggering it easier to spot.

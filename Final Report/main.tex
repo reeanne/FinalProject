@@ -25,7 +25,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[11pt, oneside]{Thesis} % The default font size and one-sided printing (no margin offsets)
+\documentclass[11pt, twoside]{Thesis} % The default font size and one-sided printing (no margin offsets)
 
 \graphicspath{{Pictures/}} % Specifies the directory where pictures are stored
 \usepackage{wrapfig}
@@ -35,10 +35,22 @@
 \usepackage{amsmath}
 \captionsetup[subfigure]{margin=0.5cm}
 
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+
+ 
+
 
 \usepackage[square, numbers, comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers' 
 \hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
-\title{\ttitle} % Defines the thesis title - don't touch this
+\title{\ttitle} % Defines the thesis title - don't touch thisco
 
 \usepackage{tocloft}
 
@@ -54,7 +66,7 @@
 % Define the page headers using the FancyHdr package and set up for one-sided printing
 \fancyhead{} % Clears all page headers and footers
 \rhead{\thepage} % Sets the right side header to show the page number
-\lhead{} % Clears the left side page header
+\lhead{\thepage} % Clears the left side page header
 
 \pagestyle{fancy} % Finally, use the "fancy" page style to implement the FancyHdr headers
 
@@ -134,10 +146,10 @@ Dr.\ Robert Chatley
 
 %\input{Chapters/Chapter6} 
 %\input{Chapters/Chapter7} 
-%\input{Appendices/AppendixA}
-%\input{Appendices/AppendixB}
-%\input{Appendices/AppendixC}
-%\input{Appendices/AppendixD}
+\input{Appendices/AppendixA}
+\input{Appendices/AppendixB}
+\input{Appendices/AppendixC}
+\input{Appendices/AppendixD}
 
 
 
