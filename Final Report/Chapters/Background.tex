@@ -105,7 +105,7 @@ In free form music games, the main task of the user is to create content. This f
 
 \section{Case Study -- Guitar Hero}
 
-Guitar Hero is one of the most popular franchises in the history of music games. The first of the series was published in 2005 by RedOctane and Harmonix. In the games, players instrument-shaped game controllers to simulate playing the instruments across numerous rock music songs. It is widely considered a highly entertaining game fully embracing the concept of a rhythm-based music game.
+Guitar Hero is one of the most popular franchises in the history of music games. The first of the series was published in 2005 by RedOctane and Harmonix. In the games, players use instrument-shaped game controllers to simulate playing the instruments across numerous rock music songs. It is widely considered a highly entertaining game fully embracing the concept of a rhythm-based music game.
 
 \vspace{10pt}
 
@@ -113,7 +113,7 @@ Guitar Hero is one of the most popular franchises in the history of music games.
 \subsection*{The Controller}
 
 
-Rather than a typical gamepad, Guitar Hero uses an instrument-shaped controller (guitar in the earlier releases, bass, microphone and drums in more recent ones). Playing the game with the guitar controller simulates playing an actual guitar, except it uses five coloured ``fret buttons'' and a ``strum bar'' instead of frets and strings, and an analogous mapping for the other instruments. They incorporate most of the real life techniques and motions that an instrumentalist would perform on a real instrument.
+Rather than a typical gamepad, Guitar Hero uses an instrument-shaped controller (guitar in the earlier releases, supplemented by bass, microphone and drums in more recent ones). Playing the game with the guitar controller simulates playing an actual guitar, except it uses five coloured ``fret buttons'' and a ``strum bar'' instead of frets and strings, and an analogous mapping for the other instruments. They incorporate most of the real life techniques and motions that an instrumentalist would perform on a real instrument.
 
 \vspace{10pt}
 
@@ -129,9 +129,9 @@ However, there are a couple minor improvements that Harmonix has made to the gen
 
 \subsection*{The Critique}
 
-Without a doubt, Guitar Hero features a great selection of music. However, there will always be tracks missing, regardless of how many versions of Guitar Hero are released. People have different tastes and limiting a game to a set of tracks that everybody is supposed to enjoy is a really hard task. 
+Without a doubt, Guitar Hero features a great selection of music. However, there will always be tracks missing, regardless of how many versions of Guitar Hero are released. People have different tastes and successfully limiting a game to a set of tracks that everybody is supposed to enjoy is a really hard task. 
 
-Some more advanced users familiar with Computer Science attempted to transcribe songs and to create new levels. However, this process was really difficult, consisting of many laborious stages and requiring an additional midi files with separated guitar track. This discouraged an average user from fully making use of game’s capabilities. The producers, seeing the tendency, started releasing the in-app purchases to enable the players to extend their library and thus, keep the users. 
+Some more advanced users familiar with Computer Science attempted to transcribe songs and to create new levels. However, this process is really difficult, consisting of many laborious stages and requiring an additional midi files with separated guitar track. This discouraged an average user from fully making use of game’s capabilities. The producers, seeing the tendency, started releasing the in-app purchases to enable the players to extend their library and thus, keep the users. 
 
 As there is a clear need for custom music extension to the game, implementing a feature of uploading some music preferred by the player would definitely improve user satisfaction. However, this has not been achieved yet as the task itself is quite complex. Moreover, enabling the users to load in some music would deprive the company of their income sources.
 
@@ -271,7 +271,7 @@ In this section we will go over two different approaches to the problem of main 
 
 In polyphonic tracks the main melody can be represented by a specific source/filter model. In case of the leading vocal part, the vocal cords are treated as a source and the voice tract as a linear acoustic filter.
 
-In their paper from 2011~\cite{durrieu}, Durrieu together with Richard, David and Fevotte, presented an algorithm in which they assume that at any given time the music signal observed is a mixture of two elementary signals -- one corresponding to the main source and one to the background music. Therefore, the signal can be represented in an equation $x(t) = v(t) + m(t)$, where $v(t)$ stands for the source of the main melody and $m(t)$ is the background music. Interestingly, this equation also holds for the short time Fourier transform (STFT)  $X$, $V$ and $M$ respectively: $X = V + M$. The models proposed by Durrieu aim at constraining the shapes of these STFT using temporal and spectral constraints. 
+In their paper from 2011~\cite{durrieu}, Durrieu together with Richard, David and Fevotte, presented an algorithm in which they assume that at any given time the music signal observed is a mixture of two elementary signals -- one corresponding to the main source and one to the background music. Therefore, the signal can be represented in an equation $x(t) = v(t) + m(t)$, where $v(t)$ stands for the source of the main melody and $m(t)$ is the background music. Interestingly, this equation also holds for the short-time Fourier transform (STFT)  $X$, $V$ and $M$ respectively: $X = V + M$. The models proposed by Durrieu aim at constraining the shapes of these STFT using temporal and spectral constraints. 
 
 The likelihood of the vocal part $V$ is calculated using two different frameworks. 
 
@@ -279,7 +279,7 @@ The first one uses the source/filter Gaussian scaled mixture model (GSMM).
 
 In short, a Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians. For description of k-means clustering, we refer to Section~\ref{sec:kmeans}.
 
-In this GSMM model the source element refers to the excitation of the vocal folds. This is why it is linked to the fundamental frequency of the sound $f_{\text{0}}$. On the other hand, the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that one possible filter frequency response is considered. It is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
+In this GSMM model, the source element refers to the excitation of the vocal folds. This is why it is linked to the fundamental frequency of the sound $f_{\text{0}}$. On the other hand, the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that one possible filter frequency response is considered. It is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
 \begin{figure}[b]
         \centering
@@ -326,12 +326,12 @@ The authors then parametrise the transitions between the possible main melody wi
   \label{fig:3stepsalience}
 \end{wrapfigure}
 
-This type of approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it. It and can be split into several smaller stages, as seen in Figure~\ref{fig:3stepsalience}. In particular, a method implemented in paper~\cite{salamon} seems to be quite promising.
+This type of approach has been the most popular so far, with majority of algorithms evaluated at MIREX implementing it. It can be split into several smaller stages, as seen in Figure~\ref{fig:3stepsalience}. In particular, a method implemented in paper~\cite{salamon} seems to be quite promising.
 
 Usually in salience based approaches, as a first step some sort of pre-processing is applied to the audio signal to enhance the frequency content where one expects to find the melody. In particular, Salamon and G\'{o}mez apply an equal loudness filter, which enhances the frequencies to which the human ear is more perceptually sensitive, by taking a representative average of the equal loudness curves and filtering the signal by its inverse. 
 
 This stage is followed by a spectral transform — the signal is chopped into time frames and a transform function is applied to obtain a spectral representation of each frame.
-This is achieved by applying the Short-Time Fourier Transform given by:
+This is achieved by applying the short-time Fourier transform given by:
 
 \begin{equation}
 X_{l}(k) = \sum_{n=0}^{M-1} w(n) \times x(n + lH) e^{-j\frac{2 \pi}{N}kn}
@@ -352,7 +352,7 @@ As we can see in Figure~\ref{fig:3stepsalience}, those three steps constitute th
 
 The salience function presented in the paper covers a pitch range of nearly five octaves from 55Hz to 1.76kHz.
 
-After this step, the peaks of the salience function at each frame are potential $f_{0}$s of the main melody. At this point some methods for melody extraction attempt to track the melody. However, Salamon and G\'{o}mez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Then the peaks are grouped into pitch contours -- time and pitch continuous sequences of salience peaks, as shown in Figure~\ref{fig:pitchcontours}.
+After this step, the peaks of the salience function at each frame are potential $f_{0}$s of the main melody. At this point, some methods for melody extraction attempt to track the melody. However, Salamon and G\'{o}mez filter out the non-salient peaks, first by comparing them to the highest peak in the frame and then to a value computed using salience mean and standard deviation of all remaining peaks (in all frames). Then the peaks are grouped into pitch contours -- time and pitch continuous sequences of salience peaks, as shown in Figure~\ref{fig:pitchcontours}.
 
 \begin{figure}
   \begin{center}
@@ -399,7 +399,7 @@ In their paper~\cite{comparison}, authors attempted to compare multiple melody e
 
 \begin{figure}[t]
   \centering
-    \includegraphics[width=\textwidth]{Figures/comparisonall}
+    \includegraphics[width=1.1\textwidth]{Figures/comparisonall}
       \caption{a) Raw pitch accuracy and b) overall accuracy obtained in MIREX by 16 melody extraction algorithms evaluated in~\cite{comparison}. The vertical dashed line separates the algorithms that were only evaluated on some collections (left of the line) from those evaluated on all six collections (right of the line)~\cite{comparison}.}
 \label{fig:comparison}
 \end{figure}
@@ -416,7 +416,7 @@ On the other hand, when it comes to overall accuracy, the performance is lower c
 
 Finally, an important factor in assessment of an algorithm is its complexity. While deriving O-notation is too complex for some of the algorithms, generally it is observed that algorithms involving source separation are significantly more computationally complex than salience based approaches Unfortunately, there is no specific data provided by Salamon and G\'{o}mez [9] or by Durrieu [5] on their algorithms.
 
-In conclusion, we believe the solution proposed by Salamon and G\'{o}mez could be better fitted to the purpose of this project. It outperforms the algorithm created by Durrieu, as seen in Figure~\ref{fig:comparison}, however, this is based only on the data used by MIREX to evaluate the algorithms, which might not align with our needs. In addition to this, as we are developing a game, performance of the algorithm is of crucial importance and even if one algorithm is performing slightly better than the other in terms of accuracy, we would still have to consider the time it would require the user to wait for their playable song to be generated. 
+In conclusion, we believe the solution proposed by Salamon and G\'{o}mez could be better fitted to the purpose of this project. It outperforms the algorithm created by Durrieu, as seen in Figure~\ref{fig:comparison}, however, this is based only on the data used by MIREX to evaluate the algorithms, which might not align with our needs. In addition to this, as we are developing a game, accuracy of the algorithm is of crucial importance and even if one algorithm is performing slightly better than the other in terms of accuracy, we would still have to consider the time it would require the user to wait for their playable song to be generated. 
 
 \newpage
 
@@ -424,7 +424,7 @@ In conclusion, we believe the solution proposed by Salamon and G\'{o}mez could b
 \section{Introduction to Neural Networks}
 \vspace{10pt}
 
-An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A Logical Calculus of the Ideas Imminent in Nervous Activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output~\cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
+An Artificial Neural Network (ANN) is an information processing paradigm that can be thought of as humans' attempt to simulate the brain electronically. Its first conceptual model was developed by Warren S. McCulloch, a neuroscientist, and Walter Pitts, a logician, in 1943. In their paper, ``A Logical Calculus of the Ideas Imminent in Nervous Activity'', they describe the concept of a neuron, a single cell living in a network of cells that receives inputs, processes those inputs, and generates an output~\cite{firstNN}. Their work served as foundation for designing a computational model based on the brain to solve certain kinds of problems.
 
 Neural networks, with their remarkable ability to derive meaning from complicated or imprecise data, can be used to extract patterns and detect trends that are too complex to be noticed by either humans or other computer techniques. Their most common application in computing today is to perform ``easy-for-a-human, difficult-for-a-machine'' tasks, often referred to as pattern recognition. Thanks to being implemented on computers, they have higher computational capabilities than any human being - calculating a cube of 9124 in memory is not straightforward for us, but a computer can come up with an answer almost immediately. On the other hand, thanks to their structure, neural networks can tackle problems not easy to solve by a simple computer running sequential code, like facial recognition or regression analysis.
 
@@ -449,13 +449,13 @@ On the other hand, neural network are ``connectionist'' computational systems. A
 
 Neural networks are made up of many artificial neurons. There are many different ways of connecting them to create a neural network and the number of neurons depends on a task the network is designed for.
 
-An example system depicted in Figure~\ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input into the neuron has its own weight associated with it. A weight is simply a floating point number and modifying it allows us to adjust our network to improve the training outcome. The weights in most neural nets can be both positive and negative, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
+An example system depicted in Figure~\ref{fig:examplennn} has three layers. The first layer has input neurons (marked red) which send data via synapses to the second layer of neurons (colour blue). Each input going into the neuron has its own weight associated with it. A weight is simply a floating point number and modifying it allows us to adjust our network to improve the training outcome. The weights in most neural nets can be both positive and negative, therefore providing excitatory (carrying information) or inhibitory (regulating the activation of excitatory neurons) influences to each input. 
 
 As each input enters the nucleus, it is multiplied by its weight. The nucleus then sums all these new input values which gives us the activation. If the activation is greater than a threshold value, the neuron outputs a signal. If the activation is less than the threshold, the neuron outputs zero. This is typically called a step function.
 
 One type of neural network is called a feedforward network named after the way the neurons in each layer feed their output forward to the next layer until we get the final output from the neural network. 
  
-Each input is sent to every neuron in the hidden layer (marked blue) and then each hidden layer’s neuron’s output is connected to every neuron in the next layer. There can be any number of hidden layers within a feedforward network but one is usually enough to suffice for most problem. There can be any number of neurons in each layer, depending on the problem that is being solved.
+Each input is sent to every neuron in the hidden layer (marked blue) and then each hidden layer’s neuron’s output is connected to every neuron in the next layer. There can be any number of hidden layers within a feedforward network but one is usually enough to suffice for most problems. There can be any number of neurons in each layer, depending on the problem that is being solved.
 
 \vspace{10pt}
 
@@ -508,13 +508,13 @@ Unfortunately, life is filled with situations where we are unable to extract and
 
 A backpropagation network is a network that learns by example. Given the desired input and output data telling the network what we want it to do, it changes its weights so that, when training is finished, it produces the required output for a particular input. Backpropagation networks are ideal for Pattern Recognition and Mapping Tasks.
 
-The algorithm starts by first setting up all the network's weights to be small random number. Next, the input pattern (multiplication by the weights) is applied and the output calculated. This stage is called the \textit{forward pass}. The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated \textit{(expected output -- actual output)}. This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the \textit{reverse pass}. The process is repeated again and again until the error is minimal.
+The algorithm starts by first setting up all the network's weights to be small random numbers. Next, the input pattern (multiplication by the weights) is applied and the output calculated. This stage is called the \textit{forward pass}. The calculation is likely to give an output which is completely different to what we passed in as the expected value, since all the weights are random. The error of each neuron is calculated \textit{(expected output -- actual output)}. This error is then used mathematically to change the weights in such a way that the error will get smaller. In other words, the actual input of each neuron will get closer to its expected output. This  part is called the \textit{reverse pass}. The process is repeated again and again until the error is minimal.
 
-Backpropagation algorithm has some problems associated with it. Perhaps the best known is connected to local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will ``gets stuck'' (because it cannot go uphill) and the error will not decrease further. This is depicted in Figure~\ref{fig:localminima}.
+Backpropagation algorithm has some problems associated with it. Perhaps the best known is connected to local minima. This occurs because the algorithm always changes the weights in such a way as to cause the error to fall. But the error might briefly have to rise as part of a more general fall. If this is the case, the algorithm will ``get stuck'' (because it cannot go uphill) and the error will not decrease further. This is depicted in Figure~\ref{fig:localminima}.
 
 There are are several solutions to this problem. One is very simple and that is to reset the weights to different random numbers and try training again (this can also solve several other problems). Another solution is to add ``momentum'' to the weight change. This means that the weight change this iteration depends not just on the current error, but also on previous changes. For example: 
 \begin{equation}
-W+ = W + Current change + (Change on previous iteration * constant)
+W+ = W + Current\; change + (Change\; on \;previous\; iteration * constant)
 \end{equation}
 
 \vspace{20pt}

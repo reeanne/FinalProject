@@ -14,9 +14,9 @@ Music and games share a fundamental property: both are playable, offering their 
 
 As the quote suggests, both games and music have one thing in common — the act of playing. Just as player’s character might die in an attempt to complete a level, causing him to lose the game, the pianist can fail at the attempt of performing a musical piece. 
 
-Perhaps this analogy inspired programmers to develop a new genre of games - music games, where players interact with music. Possibly the most commonly known franchises in this genre are Guitar Hero, Rock Band and Dance Dance Revolution. In this type of games user has to follow the indicators on the screen telling him which buttons to hit. 
+Perhaps this analogy inspired programmers to develop a new genre of games -- music games, where players interact with music. Possibly the most commonly known franchises in this genre are Guitar Hero, Rock Band and Dance Dance Revolution. In this type of games user has to follow the indicators on the screen telling him which buttons to hit. 
 
-The concept of a music game stormed the industry in 2005, after Guitar Hero was released. The project was soon announced the fastest video game franchise to reach \$1 billion in retail sales in the history of the business, with Guitar Hero III being the first single game to reach \$1 billion~\cite{GHSales}.
+The concept of a music game stormed the industry in 2005, after Guitar Hero was released. The project was soon announced the fastest video game franchise to reach \$1~billion in retail sales in the history of the business, with Guitar Hero III being the first single game to reach \$1~billion~\cite{GHSales}.
 
 However, a limited amount of songs transcribed and adjusted to the gameplay soon caused the popularity of such music video games to decline. Some brave fans of the franchises took it upon themselves to transcribe songs to create new levels. The producers, seeing the tendency, started releasing the in-app purchases to enable the players to extend their library and thus, keep the users. 
 
@@ -24,7 +24,7 @@ There exist some tools that allow users to manually add new songs to those games
 
 This project aims to change the way users look at the music rhythm games. We create a game which allows them to upload any music track they would like and automatically generate a Guitar Hero-like song corresponding to it. 
 
-This is achieved by use of a melody extraction from polyphonic music signals algorithm using pitch contour characterisation. The algorithm consists of four parts - sinusoid extraction, salience function, pitch contour creation and melody selection. In this approach, pitch contours - time continuous sequences of pitch candidates, are grouped using auditory streaming cues. To filter them, a set of contour characteristics, which help distinguish between melodic and non-melodic contours, is defined. This leads to the development of new voicing detection, octave error minimisation and melody selection techniques~\cite{salamon}. Once the pitch of the main melody is estimated, we perform further post-processing to remove the unlikely outliers, as well as adjust the difficulty of the song generated according to our needs.
+This is achieved by use of a melody extraction from polyphonic music signals algorithm using pitch contour characterisation. The algorithm consists of four parts -- sinusoid extraction, salience function, pitch contour creation and melody selection. In this approach, pitch contours -- time continuous sequences of pitch candidates, are grouped using auditory streaming cues. To filter them, a set of contour characteristics, which help distinguish between melodic and non-melodic contours, is defined. This leads to the development of new voicing detection, octave error minimisation and melody selection techniques~\cite{salamon}. Once the pitch of the main melody is estimated, we perform further post-processing to remove the unlikely outliers, as well as adjust the difficulty of the song generated according to our needs.
 
 In this project, we also design and develop an algorithm for mapping the estimated pitches of the main melody to a series of buttons on the screen to create an interesting and challenging game for a user, as no literature describing such problem was found so far.
 
@@ -32,20 +32,20 @@ In addition to this, we attempt to develop a mood extraction system to dynamical
 
 The music emotion recognition problem is tackled by designing and training a neural network to predict listeners’ mean valence and arousal ratings associated with musical pieces. Thanks to training on short excerpts, we can then activate the network on parts of the music track uploaded by the user to be able to accurately extract and visualise the mood changes that exist in it.
 
-Moreover, we implement a system to retrieve segments of the music track. This is achieved by identifying the boundaries between parts and labelling them in a way that is clear and understandable to a user. This way we are able to notify the them of their progress in the gameplay, as well as apply more granularity in the mood detection by predicting the emotion on a per segment basis.
+Moreover, we implement a system to retrieve segments of the music track. This is achieved by identifying the boundaries between parts and labelling them in a way that is clear and understandable to a user. This way we are able to notify them of their progress in the gameplay, as well as apply more granularity in the mood detection by predicting the emotion on a per segment basis.
 
-This is achieved by generating two self-similarity matrices - one for harmonic pitch class profiles and one for Mel-frequency cepstrum coefficients in a song and decomposing them using Convex Non-Negative Matrix Factorisation and using the results to detect boundaries of a song. The bounds are then used to create a novel algorithm that takes the estimated pitches of the main melody into account for labelling the segments of the song defined by them.
+This is achieved by generating two self-similarity matrices -- one for harmonic pitch class profiles and one for Mel-frequency cepstrum coefficients in a song and decomposing them using Convex Non-Negative Matrix Factorisation and using the results to detect boundaries of a song. The bounds are then used to create a novel algorithm that takes the estimated pitches of the main melody into account for labelling the segments of the song defined by them.
 
 With this project we also show that sophisticated academic music analysis techniques can be combined together and applied to real world problems in an efficient and reliable manner. 
 
-Finally the project aims to be more than just a research study of feasibility. The result of successful completion will be an application of sufficient reliability and quality that it can be released to, and used by, untrained computer users. To our knowledge, it is the only computer game allowing people to generate Guitar Hero-like songs that also generates the surroundings tailored to every music track.
+Finally the project aims to be more than just a research study of feasibility. The result of successful completion will be an application of sufficient reliability and quality that it can be released to, and used by, untrained computer users. To our knowledge, it is the only computer game allowing people to generate Guitar Hero-like songs that also generates the surroundings tailored to every music track as well as segments and labels the songs in an easy to understand way.
 
 \section*{Main Contributions}
 
 \begin{enumerate}
 \item Evaluation of two main melody estimation algorithms and design of the postprocessing system for introduction of variation in difficulty of generated playable songs.
 \item Finding musical features related to mood, as well as training a neural network for retrieval of arousal and valence values of the emotions in songs to design a music mood recognition system.
-\item Design and implementation of a structure retrieval system which identifies boundaries in the tracks using Convex non-negative matrix factorisation.
+\item Design and implementation of a structure retrieval system which identifies boundaries in the tracks using Convex Non-negative Matrix Factorisation.
 \item Design and implementation of a novel segments labelling system which produces output in a way that is clear to a human user. To our knowledge it is a first algorithm that tries to achieve that.
 \item Tap Along - a game allowing users to upload a music track of their choice to generate a custom playable song for them using the methods listed above.
 \end{enumerate}

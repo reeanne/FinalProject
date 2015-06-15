@@ -107,16 +107,16 @@ In totall, we manually labelled 10 songs:
 \vspace{-10pt}
 \begin{description}
 \itemsep0em 
-\item[``The Number of The Beast''] by Iron Maiden (Metal)
-\item[``Rock With You''] by Michael Jackson (Soul/R\&B)
-\item[``Blitzkrieg Bop''] by The Ramones (Punk Rock)
-\item[``This Land is Your Land''] by Woody Guthrie (Folk)
-\item[``One More Time''] by Daft Punk (Dance)
-\item[``Smooth''] by Santana (featuring Rob Thomas) (Pop)
-\item[``Crazy in Love''] by Beyonce (featuring Jay-Z) (Pop / Rap)
-\item[``Help!''] by The Beatles (Rock)
-\item[``Respect''] by Aretha Franklin (R\&B)
-\item[``Back in the USSR''] by The Beatles (Rock)
+\item[``The Number of The Beast''] by Iron Maiden [1982] (Metal)
+\item[``Rock With You''] by Michael Jackson [1979] (Soul/R\&B)
+\item[``Blitzkrieg Bop''] by The Ramones [1976] (Punk Rock)
+\item[``This Land is Your Land''] by Woody Guthrie [1940] (Folk)
+\item[``One More Time''] by Daft Punk [2000] (Dance)
+\item[``Smooth''] by Santana (featuring Rob Thomas) [1999] (Pop)
+\item[``Crazy in Love''] by Beyonce (featuring Jay-Z) [2003] (Pop / Rap)
+\item[``Help!''] by The Beatles [1965] (Rock)
+\item[``Respect''] by Aretha Franklin [1967] (R\&B)
+\item[``Back in the U.S.S.R.''] by The Beatles [1968] (Rock)
 \end{description}
 
 For each of the songs, we conducted 5 measurements to manually detect the boundaries. Once we have gathered the data, we averaged each bound to create ground truth with reference boundaries and labels.
@@ -136,7 +136,7 @@ Song  											& Ground	& Foote 	&  Kaiser 	& Ours \\ \hline \hline
 \textit{Crazy In Love}						&	17			&  9  			&  13  		& 16   	\\ \hline
 \textit{Help!}									&	10			&  9		   	&  17 		& 12   	\\ \hline
 \textit{Respect}								&	12			&  9  			&  14 		& 12  	\\ \hline
-\textit{Back In the USSR}				&	15			&  9  			&  13		    	& 14		\\ \hline \hline
+\textit{Back In the U.S.S.R.}				&	15			&  9  			&  13		    	& 14		\\ \hline \hline
 RMSE											&	N/A		& 4.98		&  3.08		& 2.95	\\ \hline 
 
 \end{tabular}
@@ -177,7 +177,7 @@ Song  											& 	500ms 			&  3s						&  deviation	\\ \hline \hline
 \textit{Crazy In Love}						&	Ours				&  Ours  				&  Ours  		\\ \hline
 \textit{Help!}									&	Ours				&  Foote		   		&  Ours 			\\ \hline
 \textit{Respect}								&	Foote			&  Ours  				&  Ours 			\\ \hline
-\textit{Back In the USSR}				&	Ours/Kaiser	&  Ours/Kaiser 		&  Ours		    	\\ \hline
+\textit{Back In the U.S.S.R.}				&	Ours/Kaiser	&  Ours/Kaiser 		&  Ours		    	\\ \hline
 
 \end{tabular}
 \caption{Table showing the best performing algorithm in each category for all the songs.}
@@ -234,7 +234,7 @@ Song  											& 	NMF				&  FMC-2D		&  Ours		\\ \hline \hline
 \textit{Crazy In Love}						&	0.368			&  0.420  			&  0.446  	\\ \hline
 \textit{Help!}									&	0.530			&  0.445		   	&  0.609 	\\ \hline
 \textit{Respect}								&	0.446			&  0.556  			&  0.471 	\\ \hline
-\textit{Back In the USSR}				&	0.302			&  0.337 			&  0.348	\\ \hline
+\textit{Back In the U.S.S.R.}				&	0.302			&  0.337 			&  0.348	\\ \hline
 
 \end{tabular}
 \caption{Table showing the performance of the labelling algorithms on each of the music tracks. In particular, we compare performance of our algorithm with the one presented by Kaiser and Sikora (NMF)~\cite{Sikora} and by Nieto and Bello (FMC-2D)~\cite{Bello}.}
@@ -277,7 +277,7 @@ Song  											&  Hit		\\ \hline \hline
 \textit{Crazy In Love}						&	0.62	\\ \hline
 \textit{Help!}									&	0.80	\\ \hline
 \textit{Respect}								&	0.73	\\ \hline
-\textit{Back In the USSR}				&	0.57	\\ \hline
+\textit{Back In the U.S.S.R.}				&	0.57	\\ \hline
 
 \end{tabular}
 \caption{Table showing the results of evaluation of our structural algorithm.}
@@ -287,11 +287,13 @@ Song  											&  Hit		\\ \hline \hline
 
 The average accuracy of our algorithm was 66.7\%. Given that the average precision of our numerical labelling was 0.5\%, we believe this is quite a good result and introduction of an algorithm for meaningful structure description could improve the clarity of existing labelling algorithms at a relatively small computational cost, given that we are reusing data already extracted for other parts of our game.
 
+\vspace{20pt}
+
 \section{Predominant Melody}
 
 To assess the effectiveness of our smoothing technique, we tested our game on four users aged 20-24. We asked each of them to generate songs of 3 different difficulties based on the same music tracks. This is to allow them to better spot the difference between the sequence of notes generated for each of the difficulty level. When assessing each difficulty, the surveyed were asked to rate the fitness of the difficulty on scale from 1 to 5, where 1 is to easy, 3 is perfect and 5 is too difficult. We also asked the surveyed to rate the variation in the difficulty levels on scale from 1 to 5, where 1 would mean that they are all the same, 3 if they are slightly different and 5 would mean that they are adequately different between one another. 
 
-The results of our investigation can be seen in Table~\ref{table:smoothing}. 
+The results of our investigation can be seen in Table~\ref{table:smoothing}. As we can see, majority of people believed that the difficulty of level was adequate to description. The biggest difference in opinion was caused by level hard, where the standard deviation reached 1. This was caused by one person believing that the hard level was too difficult. However, as majority of people voted it suitable, we personally believe that Hard level is supposed to be hard and decided not to introduce any changes. 
 
 \begin{table}
 \begin{center}
@@ -299,7 +301,7 @@ The results of our investigation can be seen in Table~\ref{table:smoothing}.
 \textbf{Difficulty} & \textbf{Average} & \textbf{Stdev} \\ \hline \hline
 Easy 				& 3 					   & 0.816  			   \\ \hline 
 Medium 			& 3.5 			   	   & 0.577		 	   \\ \hline 
-Hard					& 3.5 				   & 0.1  		 	   \\ \hline \hline
+Hard					& 3.5 				   & 1  		 	  	   \\ \hline \hline
 Variation			& 4.75				   & 0.5				   \\ \hline
 \end{tabular}
 \caption{Table presenting the results of the questionnaire evaluating the effectiveness of our smoothing for generating levels of different difficulty.}
