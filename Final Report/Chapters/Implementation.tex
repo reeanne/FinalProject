@@ -10,11 +10,11 @@
 
 In this chapter we go over the design and implementation process of the project. We describe various choices we made, justifying them in the context of our objectives. 
 
-First, we describe our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track. The system is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
+First, we talk about our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track. The system is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
 
 Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ post processing to further modify the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay. Thanks to parametrising and applying the sliding median we are able to produce pitch coutours of different difficulty to play.
 
-The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song.
+The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song, making use of the information on the estimated main melody.
 
 Last, but not least, we talk about the game itself, its architecture, flow of use and design choices made. We describe the algorithm for generating buttons that constitute the main part of the gameplay. We also detail the way we tie in the music analysis performed into the game to make the most of it.
 
@@ -23,66 +23,64 @@ Last, but not least, we talk about the game itself, its architecture, flow of us
 \section{Mood Detection}
 \vspace{10pt}
 
-A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music \cite{vempala}. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer \cite{Thayer}.
+A common reason for engaging in listening to music is that it is an effective means of conveying and evoking emotions. Although they may be subjective, based in part on the listener’s cultural and musical background or preferences, there are common points in perceived emotion across different listeners based on the characteristics of the music \cite{vempala}. Several studies have attempted to predict emotion conveyed during music listening. In our approach, we decided to represent the emotion connected to the music using a two-dimensional space with valence on the x-axis and arousal on the y-axis, first proposed by R. E. Thayer~\cite{Thayer}.
 
-As we described in Section \ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the mood perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
+As we described in Section~\ref{sec:emotionClass}, there is a relation between valence and arousal values for a musical track and the mood perceived by people. In essence, the high arousal is connected to how energetic the music is, whereas valence refers to how positive (or negative) the emotions in the track are. 
 
 \vspace{10pt}
 
 \subsection{Choice of Features}
-Using Essentia library \cite{essentia}, we implemented an extractor to retrieve certain features from a song. We chose the features on the impact we expected them to have on the perceived mood of a musical piece:
+Using Essentia library~\cite{essentia}, we implemented an extractor to retrieve certain features from a song. We chose the features on the impact we expected them to have on the perceived mood of a musical piece:
 
 \begin{description}
 
-\item[average loudness] - describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0, 1] interval on a per window basis - if 0, it means that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive - sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
+\item[average loudness] -- describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0,~1] interval on a per window basis -- if 0, it means that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive -- sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
 
 \item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder or more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
 
-\item[dynamic complexity] - is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on both examined values. However, similarly to the loudness level, arousal should be influenced more - as more dynamic songs (excited or angry) are more likely to suffer from loudness changes, whereas more phlegmatic ones (sad or peaceful) tend to keep the same dynamic complexity level.
+\item[dynamic complexity] -- is the average absolute deviation from the global loudness level estimate on the dB scale. It is related to the dynamic range and to the amount of fluctuation in loudness present in a recording. We believe this feature would have an impact on both examined values. However, similarly to the loudness level, arousal should be influenced more -- as more dynamic songs (excited or angry) are more likely to suffer from loudness changes, whereas more phlegmatic ones (sad or peaceful) tend to keep the same dynamic complexity level.
 
-\item[BPM] - beats per minute value according to detected beats. This feature should be correlated with the arousal level - intuitively, the faster the song, the more energetic it seems. 
+\item[BPM] -- beats per minute value according to detected beats. This feature should be correlated with the arousal level -- intuitively, the faster the song, the more energetic it seems. 
 
-\item[spectral centroid] - centroid statistics describing the spectral shape. It indicates where the ``centre of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound - an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
+\item[spectral centroid] -- centroid statistics describing the spectral shape. It indicates where the ``centre of mass'' of the spectrum is. Perceptually, it has a robust connection with the impression of ``brightness'' of a sound -- an indication of the amount of high-frequency content in a sound. Timbre researchers consider brightness to be one of the perceptually strongest distinctions between sounds, and formalise it acoustically as an indication of the amount of high-frequency content in a sound \cite{timber}. That is why we believe the spectral centroid might be related to both valence and arousal.
 
-\item[spectral RMS] (root mean square) - in Physics, it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. In audio processing, it is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
+\item[spectral RMS] (root mean square) -- in Physics, it is a value characteristic of a continuously varying quantity, such as a cyclically alternating electric current or a sound. It is obtained by taking the mean of the squares of the instantaneous values during its duration or a cycle. In audio processing, it is linked to the loudness of the sound. This is why we believe that it might have an impact on arousal, but we do not exclude its impact on valence.
 
-\item[spectral energy] - the energy $E_{s}$ of a continuous-time signal $x(t)$ defined as: 
+\item[spectral energy] -- the energy $E_{s}$ of a continuous-time signal $x(t)$ defined as: 
 \begin{equation}
 E{s}  =  \langle x(t), x(t)\rangle =  \int_{-\infty}^{\infty}{|x(t)|^2}dt
 \end{equation}
 
 Signal energy is always equal to the summation across all frequency components of the signal's spectral energy density. 
-There have been some research focusing on relation between spectral energy and singing voice. In particular, in their paper \cite{spectralenergy}, Ferguson, Kenny and Cabrera were investigating the relation between the value and the experience of male singers. This makes for an interesting case worth considering in our research.
+There have been some research focusing on relation between spectral energy and singing voice. In particular, in their paper~\cite{spectralenergy}, Ferguson, Kenny and Cabrera were investigating the relation between the value and the experience of male singers. This makes for an interesting case worth considering in our research.
 
-\item[mean and derivative of variance of beat loudness] -  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal as loud beats can be found in parts of song with higher energy.
+\item[mean and derivative of variance of beat loudness] --  spectral energy computed on beats segments of audio across the whole spectrum, and ratios of energy in 6 frequency bands. We suspect that the low value of the beat loudness could imply a low arousal, as loud beats can be found in parts of song with higher energy.
 
 \item[key and its scale] estimated key and its scale (major or minor) using Temperley’s profile. 
 In music theory, the term key is used in many different and sometimes contradictory ways. A common use is to speak of music as being ``in'' a specific key, such as \textit{``in the key of C major or in the key of F\#''}. Sometimes the terms ``major'' or ``minor'' are appended, as \textit{``in the key of A minor''} or \textit{``in the key of B major''}.
 Broadly speaking the phrase ``in key of C'' means that C is music's harmonic centre or tonic (the first degree of the scale, or the root of the scale). 
 The terms ``major'' and ``minor'' further imply the use of a major scale or a minor scale. Thus the phrase \textit{``in the key of E major''} implies a piece of tonal music harmonically centred on the note E and making use of a major scale whose first note, or tonic, is E. 
-We believe that those features can have an impact on both arousal and valence - songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
+We believe that those features can have an impact on both arousal and valence -- songs performed in minor scale are traditionally connected to being sad, whereas the major scale is usually linked to positive emotions.
 
-\item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music \cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound - emotion relation.
+\item[scale and key of the chords] taken as the most frequent chord, and scale of the progression, whether major or minor. Scale commonly known to have a big influence on our perception on music~\cite{keys}. It seems to be mostly the result of cultural conditioning as when people listen to tunes, they rely heavily on their memory. Such constant stimulus to our musical memory helps to generate expectations of what might come next in a tune or preserve the sound -- emotion relation.
 
-\item[mean ZCR] (zero-crossing rate) - the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds. We believe it could be related to the arousal value. Music has a fairly normal distribution of frames with lower and higher zero-crossing rates. Speech however displays a much more skewed distribution. This could have an impact on songs where the vocals are quite rapid and energetic, for example rap music, and therefore might have a significant impact on mood recognition in our system.
+\item[mean ZCR] (zero-crossing rate) -- the rate of sign-changes along a signal, i.e., the rate at which the signal changes from positive to negative or back. This feature has been used heavily in music information retrieval, being a key feature to classify percussive sounds~\cite{percussive}. We believe it could be related to the arousal value. Music has a fairly normal distribution of frames with lower and higher zero-crossing rates. Speech however displays a much more skewed distribution. This could have an impact on songs where the vocals are quite rapid and energetic, for example rap music, and therefore might have a significant impact on mood recognition in our system.
 ZCR is defined formally as: 
 \begin{equation}
 ZCR = \frac{1}{T-1} \sum_{t=1}^{T-1} {{\mathbb I}\left\{{s_t s_{t-1} < 0}\right\}}
 \end{equation}
 where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\left\{{A}\right\}}$  yields 1 if $A$ is true, 0 otherwise.
 
-\item[pitch salience of a spectrum] - given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value.  Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. We think the value could have an effect on both the valence and arousal as pitch salience is often described as the probability of noticing a tone or clarity or strength of tone sensation.
+\item[pitch salience of a spectrum] -- given by the ratio of the highest auto correlation value of the spectrum to the non-shifted auto correlation value.  Unpitched sounds (non-musical sound effects) and pure tones have an average pitch salience value close to 0 whereas sounds containing several harmonics in the spectrum tend to have a higher value. We think the value could have an effect on both the valence and arousal as pitch salience is often described as the probability of noticing a tone or clarity or strength of tone sensation.
 
 \item[mean and derivative of variance of sensory dissonance] (to distinguish from musical or theoretical dissonance) of an audio signal given its spectral peaks. Sensory dissonance measures perceptual roughness of the sound and is based on the roughness of its spectral peaks. Given the spectral peaks, the algorithm estimates total dissonance by summing up the normalised dissonance values for each pair of peaks. These values are computed using dissonance curves, which define dissonance between two spectral peaks according to their frequency and amplitude relations. Dissonance could be related to low valence.
 
 \end{description}
 
 \newpage
-\vspace{10pt}
-
 
 \subsection{Correlation Between Features and Mood Perception}
-
+\vspace{10pt}
 
 \begin{figure}[b]
 	\centering
@@ -100,9 +98,11 @@ where $s$ is a signal of length $T$ and the indicator function  ${{\mathbb I}\le
 \end{figure}
 
 
-In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library \cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
+In our exploration we decided to base our research on data collected in ``1000 Songs for Emotional Analysis of Music'' music library~\cite{1000songs}, to avoid personal bias in assessing the mood of the song. The songs in the dataset were annotated by more than 300 crowdworkers on Amazon Mechanical Turk. Each song was annotated for arousal and for valence separately.
 
-As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figured \ref{fig:bivariate-valence} and \ref{fig:bivariate-arousal}, the rest are included in Section \ref{sec:bivariatediagram}, Appendix A, for reference. 
+As a first step towards understanding the pattern by which audio features might account for emotion ratings, we conducted correlational analyses between features and mean valence/arousal ratings from the data set. We performed a bivariate correlation analysis with the valence/arousal ratings as the dependent variable, and each of the 22 features as the explanatory variable. Example of the results we achieved can be seen in Figures~\ref{fig:bivariate-valence}~and~\ref{fig:bivariate-arousal}, the rest are included in Section~\ref{sec:bivariatediagram}, Appendix~A, for reference. 
+
+\vspace{20pt}
 
 We found significant correlation between \textbf{valence} and derivative of variance and mean \textit{silence60}, derivative of variance of \textit{silence30, dynamic complexity, spectral centroid, spectral RMS, spectral energy, zero-crossing rate, pitch salience}, and both mean and derivative of variance (dvar) of \textit{dissonance}. 
 
@@ -128,17 +128,17 @@ Our goal was to train the network to predict mean participant valence and arousa
 Our network implementation was a supervised, feedforward network with backpropagation. 
 The input consisted of normalised values of 8 features:
 \textit{spectral centroid, pitch salience, zero-crossing rate, silence60 mean, loudness, mean dissonance, dynamic complexity} and \textit{spectral energy}. 
-The network had two outputs - arousal and valence.
+The network had two outputs -- arousal and valence.
 
 As all the training data was normalised, the input and output values were within a range of 0 to 1. The training set consisted of 50 input and output arrays. Each input array had 8 values, one per audio feature, and its corresponding output array had the two desired arousal and valence values.
 
 The network’s task was to provide the valence and arousal values based on the 8 audio features. The output values fell within a range of 0 to 1. Since desired outputs were average valence/arousal ratings provided by participants on a scale from 0 to 10 inclusive, the network outputs were rescaled back. The training set consisted of 50 input and output arrays. The connection weights from input to the hidden nodes and from hidden nodes to the output ones were initialised to random numbers. 
 
-The network was built, trained, and tested using the PyBrain \cite{pybrain} Python library for neural network implementation. 
+The network was built, trained, and tested using the PyBrain~\cite{pybrain} Python library for neural network implementation. 
 
-Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, conversely, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
+Hidden neurons are the neurons that are neither in the input layer nor the output layer. Using additional layers of hidden neurons enables greater processing power and system flexibility at the cost of additional complexity in the training algorithm. Having too many hidden neurons can be thought of as a system of equations with more equations than there are free variables: the system is over specified and incapable of generalisation. Having too few hidden neurons, on the other hand, can prevent the system from properly fitting the input data, and reduces the robustness of the system.
 
-We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table \ref{table:rsmetable}.
+We trained our network for 1000 epochs with many different sizes of the hidden layer and default values for all the other parameters. The performance based on that can be seen in Table~\ref{table:rsmetable}.
 
 
 \begin{table}
@@ -172,7 +172,7 @@ We trained our network for 1000 epochs with many different sizes of the hidden l
 \end{figure}
 
 As we can see, the optimal solution is the one with 7 nodes in the hidden layer. Although the initial RMSE returned after training is not overall minimum, all the values -- so both the training ones and the ones after the evaluation, are local minimas and one of the minimal values overall. This decision can be justified by the fact that although for some cases we managed to achieve smaller RSME from the training, the network was in fact overfitting, and doing really well for the already known input, but worse for a new one.
-To avoid overfitting the network, we kept the number of hidden units equal to the number of input units. 
+To avoid overfitting the network, we kept the number of hidden units at most equal to the number of input units. 
 
 \begin{table}
 \begin{center}
@@ -195,15 +195,15 @@ To avoid overfitting the network, we kept the number of hidden units equal to th
 
 Having found the optimal number of nodes in the hidden layer, we moved on to find the learning rate parameter. Learning rate is essentially a training parameter that controls the size of weight and bias changes in learning of the training algorithm. In a standard backpropagation, too low a learning rate makes the network learn very slowly,whereas a learning rate that is too high makes the weights and objective function diverge, so there is no learning at all. 
 
-We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table \ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
+We started our search by setting it to 0.3 and reducing it over time. The results we found can be found in Table~\ref{table:learningrate}. As we can see, the optimal solution seems to be learning rate at value 0.001.
 
 
-In the end, we came up with the network which can be seen on Figure \ref{fig:finalnetwork}.
+In the end, we came up with the network which can be seen on Figure~\ref{fig:finalnetwork}.
 
 \begin{figure}[h]
 	\centering
    \includegraphics[width=0.7\textwidth]{Figures/learningrate}
-\caption{Data presented in Table \ref{table:learningrate}, plotted on a diagram.}
+\caption{Data presented in Table~\ref{table:learningrate}, plotted on a diagram.}
 \end{figure}
 
 \vspace{20pt}
@@ -211,7 +211,7 @@ In the end, we came up with the network which can be seen on Figure \ref{fig:fin
 \section{Main Melody Retrieval}
 \vspace{10pt}
 
-As mentioned in Section \ref{sec:mainmelodybackground}, we looked into two different algorithms for main melody extraction. The first one, implementing the source separation based approach, was designed by Durrieu \cite{durrieu}, and the other one, using the salience approach, by Salamon and G\'{o}mez \cite{salamon}. In this section, we evaluate the performance of each of the algorithms in light of usefulness in our project. Furthermore, we present a way of postprocessing of the chosen algorithm to further smooth out the estimated pitches of the main melody estimated.
+As mentioned in Section~\ref{sec:mainmelodybackground}, we looked into two different algorithms for main melody extraction. The first one, implementing the source separation based approach, was designed by Durrieu~\cite{durrieu}, and the other one, using the salience approach, by Salamon and G\'{o}mez~\cite{salamon}. In this section, we evaluate the performance of each of the algorithms in light of usefulness in our project. Furthermore, we present a way of postprocessing of the chosen algorithm to further smooth out the estimated pitches of the main melody estimated.
 
 \vspace{10pt}
 
@@ -233,13 +233,13 @@ Satisfaction				& 0.997		& 0.948		& 0.778			& 0.583		\\	\hline
 \end{center}
 \end{table}
 
-Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this purpose, we ran both melody extraction methods against the most popular songs of different genres commonly considered the best \cite{toplists}.
+Although both of the algorithms were evaluated at some point at the MIREX conference, the data they were tested against does not fully align with our needs. For this reason, we ran both melody extraction methods against the most popular songs of different genres commonly considered the best. The full list can be found in Section~\ref{sec:topcharts}, Appendix~D.
 
 To generate the ground truth, we used MIDI versions of files, created with separable channels so that the main melody is easily extracted. As a first step, we computed the voicing recall (the fraction of voiced frames in the ground truth reference indicated as voiced in the estimation) and false alarm rates (the fraction of unvoiced frames in the ground truth reference indicated as voiced in the estimation).
-Our findings are shown in Table \ref{table:voicedunvoiced}.
+Our findings are shown in Table~\ref{table:voicedunvoiced}.
 
 
-As we can see from the Table \ref{table:voicedunvoiced}, although initially the recall rate of Durrieu's implementation looked promising, the rate of the false alarms makes us think that the algorithm, in fact, does not handle the filtering out of the unvoiced frames too well and detects the $f_{0}$ of the main melody forcefully. In total, Durrieu exhibited an average of 98.28\% recall when it comes to detecting the voiced frames but at the same time, it suffered from an average of 84.46\% false positives. On the other hand, Salamon's solution did have a higher miss rate, but at the same time, its false alarm rate never exceeded 0.6. Still, we believe that an average of 70\% recall with 47.6\% false positive rate is an impressive achievement for Salamon.
+As we can see from the Table~\ref{table:voicedunvoiced}, although initially the recall rate of Durrieu's implementation looked promising, the rate of the false alarms makes us think that the algorithm, in fact, does not handle the filtering out of the unvoiced frames too well and detects the $f_{0}$ of the main melody forcefully. In total, Durrieu exhibited an average of 98.28\% recall when it comes to detecting the voiced frames but at the same time, it suffered from an average of 84.46\% false positives. On the other hand, Salamon's solution did have a higher miss rate, but at the same time, its false alarm rate never exceeded 0.6. Still, we believe that an average of 70\% recall with 47.6\% false positive rate is an impressive achievement for Salamon.
 
 \begin{table}
 \begin{center}
@@ -257,10 +257,10 @@ Satisfaction				& 0.086		& 0.343		& 0.071			& 0.527		\\	\hline
 \end{table}
 
 
-Although the results in the Table \ref{table:voicedunvoiced} are very reliable, they rely on midi files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms may have by analysing the main melody for vocal features such as vibratos, as it is described in case of Salamon's algorithm, are underutilised. 
+Although the results in the Table~\ref{table:voicedunvoiced} are very reliable, they rely on MIDI files that contain the main melody performed by a digital instrument and not a human voice. This means that all the advantage the algorithms may have by analysing the main melody for vocal features such as vibratos, as it is described in case of Salamon's algorithm, are underutilised. 
 
 In addition to this, we analysed the accuracy of pitch prediction for each of the algorithms. 
-To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table \ref{table:melodypitchchroma}, performance of each of the algorithms varies gravely depending on the track. The average pitch prediction for Durrieu was  17.8\%, whereas Salamon exhibited an average prediction of 24\%. We found those numbers a bit disappointing, however, we suspected that a big part of the error was caused by the octave error, which are not so important in our case, as we are more interested in how the melody changes and as long as there octave jumps are consistent, we do not mind the error introduced. That is why we also calculated the raw chroma accuracy, where all the pitches are mapped onto one octave. In this case, Salamon's performance increased to 48\%, whereas Durrieu showed an improvement from 17.8\% to 34.84\%.
+To do so, we computed the fraction of voiced frames in reference file for which the algorithms provided a correct frequency values. As we can see in Table~\ref{table:melodypitchchroma}, performance of each of the algorithms varies gravely depending on the track. The average pitch prediction for Durrieu was  17.8\%, whereas Salamon exhibited an average prediction of 24\%. We found those numbers a bit disappointing, however, we suspected that a big part of the error was caused by the octave error, which is not so important in our case, as we are more interested in how the melody changes and as long as there octave jumps are consistent, we do not mind the error introduced. That is why we also calculated the raw chroma accuracy, where all the pitches are mapped onto one octave. In this case, Salamon's performance increased to 48\%, whereas Durrieu showed an improvement from 17.8\% to 34.84\%.
 
 \begin{figure}[b]
 	\centering
@@ -275,7 +275,7 @@ To do so, we computed the fraction of voiced frames in reference file for which 
 
 \subsection{Performance}
 
-Although in scientific environment not so important, in case of implementing a game, one of the most important criterion in choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song they will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table \ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
+Although in scientific environment not so important, in case of implementing a game, one of the most important criteria for choosing tools is their speed. We cannot imagine any successful game forcing their users to wait long hours between choosing a music track and being able to play the generated song. The user simply cannot be expected to plan a few hours ahead when and what song they will feel like playing. That is why, apart from investigation of the accuracy of the candidate algorithms, we have to take into account their speed. We present the times it took to generate main melody estimated by each of the algorithms for every song in Table~\ref{table:melodytiming}. As we can see, Salamon analyses the songs incomparably faster than Durrieu. In addition to this, it achieves this with higher pitch prediction rate.
 
 
 \vspace{20pt}
@@ -290,7 +290,7 @@ Like a Rolling Stone	& 1m 32s		&	1h 59m 52s 630ms		& 9s 193ms		\\ 	\hline
 Respect						& 2m 35s		&	3h 23m 38s 610ms		& 12s 597ms		\\ 	\hline
 Satisfaction				& 3m 43s		& 	4h 47m 16s 330ms		& 15s 65ms		\\	\hline
 \end{tabular}
-\caption{Table showing the recall and false alarm for each of the algorithms when analysing against ground truth files.}
+\caption{Table showing the time taken by each of the algorithm to process the songs they were evaluated on.}
 \label{table:melodytiming}
 \end{center}
 \end{table}
@@ -354,9 +354,9 @@ The simplest smoothing algorithm is the rectangular or unweighted sliding-averag
 	S_{j} = \frac{Y_{j-1} + Y_{j} + Y_{j+1}}{3}
 \end{equation}
 
-for $j = 2$ to $n-1$, where $S_{j}$ the $j$th point in the smoothed signal, $Y_{j}$ the $j$th point in the original signal, and n is the total number of points in the signal. 
+for $j = 2$ to $n-1$, where $S_{j}$ the $j$th point in the smoothed signal, $Y_{j}$ the $j$th point in the original signal, and $n$ is the total number of points in the signal. 
 
-The results of applying the rectangular sliding average smooth can be seen in Figure \ref{fig:rectangular}. As we can see, even for a window size of 101, which actually is not big when compared to the length of the whole song (in case of this example is over 50,000 frames), the zero values (so the unvoiced frames) drag down the pitch values around them. This is a desirable outcome when dealing with the outliers that were falsely detected as voiced, but introduces more error into correctly detected frames that start the note (so for instance, the first note after a pause).
+The results of applying the rectangular sliding average smooth can be seen in Figure~\ref{fig:rectangular}. As we can see, even for a window size of 101, which actually is not big when compared to the length of the whole song (in case of this example is over 50,000 frames), the zero values (so the unvoiced frames) drag down the pitch values around them. This is a desirable outcome when dealing with the outliers that were falsely detected as voiced, but introduces more error into correctly detected frames that start the note (so for instance, the first note after a pause).
 
 Another smoothing algorithm we found worth exploring was the weighted sliding-average smooth or so called triangular smooth. 
 For a 5-point smooth ($m = 5$):
@@ -387,13 +387,13 @@ The final solution to the problem we tried was to use the sliding median filter.
 
 For 1D signals, the most obvious window is just the first few preceding and following entries, whereas for 2D (or higher-dimensional) signals such as images, more complex window patterns are possible (such as ``box" or ``cross" patterns). Note that if the window has an odd number of entries, then the median is simple to define: it is just the middle value after all the entries in the window are sorted numerically. For an even number of entries, there is more than one possible median.
 
-The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure \ref{fig:sliding_input}. On the other hand, comparison of the results for the different window sizes can be seen in Figure \ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
+The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure~\ref{fig:sliding_input}. On the other hand, comparison of the results for the different window sizes can be seen in Figure~\ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
 
-An important thing in our application is that we do want to preserve our zero values in our smoothed pitch coutours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure \ref{fig:excludezeros}.
+An important thing in our application is that we do want to preserve our zero values in our smoothed pitch coutours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure~\ref{fig:excludezeros}.
 
 \vspace{20pt}
 
-
+\newpage
 \section{Structure Retrieval}
 
 Understanding the structure of music (i.e. localisation of different parts such as intro, verse, chorus, bridge, and outro) is important as it allows us to divide a song into semantically meaningful segments, within which musical characteristics are relatively consistent.
@@ -402,11 +402,13 @@ Understanding the structure of music (i.e. localisation of different parts such 
 
 \subsection{Feature Choice}
 
-To implement a system capable of unsupervised structure recognition, we needed to provide it with some data. We investigated two possible values - \textit{Mel-frequency cepstral coefficients} and \textit{harmonic pitch class profile}.
+To implement a system capable of unsupervised structure recognition, we needed to provide it with some data. We investigated two possible values -- \textit{Mel-frequency cepstral coefficients} and \textit{harmonic pitch class profiles}.
 
-Harmonic pitch class profiles (HPCP) is a vector of features extracted from an audio signal, based on the Pitch Class Profile descriptor. It is an enhanced pitch distribution feature which is described by a sequence of chroma - feature vectors describing tonality measuring the relative intensity of each of the 12 pitch classes of the equal-tempered scale within an analysis frame. 
+Harmonic pitch class profiles (HPCP) is a vector of features extracted from an audio signal, based on the Pitch Class Profile descriptor. In music, a pitch class is a set of all pitches that are a whole number of octaves apart, e.g., the pitch class C consists of the Cs in all octaves. 
 
-HPCP features can be found and used to estimate the key of a piece, to measure similarity between two musical pieces and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise, for example an ambient noise or percussive sounds, independent of timbre and instrumentation and independent of loudness and dynamics.
+HPCP is an enhanced pitch distribution feature which is described by a sequence of chroma -- feature vectors describing tonality measuring the relative intensity of each of the 12 pitch classes of the equal-tempered scale within an analysis frame. 
+
+HPCP features can be found and used to estimate the key of a piece, to measure similarity between two musical pieces and to classify music in terms of composer, genre or mood. The process is related to time-frequency analysis. In general, chroma features are robust to noise, for example an ambient noise or percussive sounds, independent of timbre and instrumentation and independent of loudness and dynamics~\cite{hpcp}.
 
 The General HPCP feature extraction procedure is summarised as follows:
 \begin{itemize}
@@ -430,7 +432,7 @@ The mel-frequency cepstrum (MFC) is a representation of the short-term power spe
 
 MFCCs are perceptually based spectral features originally designed for speech processing applications. Similarly to the pitch decomposition, the frequency bands are positioned logarithmically on the so-called mel scale, which approximates the response of the human auditory system. In the music context, MFCCs have turned out to be useful in capturing timbral characteristics.
 
-MFCCs are derived from a type of cepstral representation of the audio clip. The mel-frequency cepstrum differs from cepstrum by having its frequency bands equally spaced on the mel scale, which approximates the human auditory system's response more closely than the linearly-spaced frequency bands used in the normal cepstrum. This frequency warping can allow for better representation of sound, for example, in audio compression \cite{mfcc}
+MFCCs are derived from a type of cepstral representation of the audio clip. The mel-frequency cepstrum differs from cepstrum by having its frequency bands equally spaced on the mel scale, which approximates the human auditory system's response more closely than the linearly-spaced frequency bands used in the normal cepstrum. This frequency warping can allow for better representation of sound, for example, in audio compression~\cite{mfcc}
 
 MFCCs are commonly derived as follows:
 \begin{itemize}
@@ -446,7 +448,7 @@ MFCCs are commonly derived as follows:
 \subsection{Feature Preparation}
 
 In this section, we will describe the process of preparation of the features for improving the performance of the algorithm. For simplicity and clarity, when talking about the features, we will first focus on analysis based on HPCPs, followed by one on MFCCs.
-We decided to investigate both possibilities as they present the music track from completely different perspective. For example, the HPCP chroma might fail to distinguish vocal and instrumental parts if the underlying harmonic patterns are exactly the same. On the other hand, when working with MFCCs we expected the opposite behaviour - good performance on parts that are different in terms of timbre.
+We decided to investigate both possibilities as they present the music track from completely different perspective. For example, the HPCP chroma might fail to distinguish vocal and instrumental parts if the underlying harmonic patterns are exactly the same. On the other hand, when working with MFCCs we expected the opposite behaviour -- good performance on parts that are different in terms of timbre.
 
 \subsubsection*{Harmonic Pitch Class Profiles}
 
@@ -462,7 +464,7 @@ We decided to investigate both possibilities as they present the music track fro
                 \caption{Example of a chromagram after beat-synchronisation.}
                 \label{fig:synchroma}
         \end{subfigure}
-          \caption{Harmonic pitch class profiles chroma features calculated for a song by The Beatles- ``Help!''.}
+          \caption{Harmonic pitch class profiles chroma features calculated for a song by The Beatles -- ``Help!''.}
         \label{fig:chromacomparison}
 \end{figure}
 
@@ -503,18 +505,18 @@ First, we needed to we synchronise our data with the beats detected in the music
         \label{fig:ssmcomparison}
 \end{figure}
 
-This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure \ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
+This led us to beat-synchronous chromagrams. A diagram of a chromagram after beat synchronisation can be seen in Figure~\ref{fig:synchroma}. As we can see, the size has decreased dramatically, which makes the segmentation process computationally cheaper.
 
-Following the beat-synchronisation, we applied log normalisation to the chroma feature. This allowed us to reduce the effect the outliers from the trend would have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure \ref{fig:logchroma}.
+Following the beat-synchronisation, we applied log normalisation to the chroma feature. This allowed us to reduce the effect the outliers from the trend would have and further improve the contrast between the related and unrelated beat frames. The enhancement achieved by applying log normalisation can be seen in Figure~\ref{fig:logchroma}.
 
-As the next step, we applied a sliding median filter of size $h$ is run against each of the beat-synchronous and log-normalised chromagram channels. Thanks to the median filter, we could come up with sharper edges than with a regular mean filter. This became really useful in obtaining section boundary precision.
+As the next step, we applied a sliding median filter of size $h$ against each of the beat-synchronous and log-normalised chromagram channels. Thanks to the median filter, we could come up with sharper edges than with a regular mean filter. This became really useful in obtaining section boundary precision.
 
-By filtering features across time, we retained the most prominent chromas within the h-size window and removed smaller artefacts, which are irrelevant in our context. The Figure \ref{fig:slidingchroma} presents the chromagram after applying the sliding median filter.
+By filtering features across time, we retained the most prominent chromas within the $h$-size window and removed smaller artefacts, which are irrelevant in our context. The Figure~\ref{fig:slidingchroma} presents the chromagram after applying the sliding median filter.
 
 We then proceeded to compute the self-similarity matrix (SSM) of the pre-filtered beat-synchronous chromagram. The SSM is essentially a pairwise comparison of a given set of features using a specific distance measure between the features of the two beat indices i and j. The result of every such comparison is stored in a $N \times N$ symmetric matrix $D$, such that $D(i, j)$ contains said distance. In particular, $D(i, j)$ stores the same value as $D(j, i)$, and for every $i$ $D(i, i)$ is equal to 0.
 
-We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: Euclidean, Manhattan, correlation and cosine. Our results are presented in Figure \ref{fig:ssmdistance}. 
-As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
+We investigated the influence of the type of the distance calculated on the SSM produced for the enhanced chroma. In our research we looked into four types of distance: Euclidean, Manhattan, correlation and cosine. Our results are presented in Figure~\ref{fig:ssmdistance}. 
+As we can see in Figures~\ref{fig:euclidean} and~\ref{fig:manhattan}, the contrast achieved for SSM produced using Euclidean and Manhattan distances was much weaker. Not only there were fewer blue spots signifying small or no similarity between points, but the amount of points that were significantly similar was also reduced.
 
 
 \begin{figure}[t]
@@ -534,12 +536,12 @@ As we can see in Figures \ref{fig:euclidean} and \ref{fig:manhattan}, the contra
                 \caption{Similarity matrix calculated from harmonic pitch class profiles chroma using cosine distance.}
                 \label{fig:cosine}
         \end{subfigure}
-          \caption{Comparison of SSM computed using different distance formulas. The SSM calculated using correlation distance can be seen in Figure \ref{fig:synSSM}.}
+          \caption{Comparison of SSM computed using different distance formulas. The SSM calculated using correlation distance can be seen in Figure~\ref{fig:synSSM}.}
         \label{fig:ssmdistance}
 \end{figure}
 
 
-When we look at the SSM computed using cosine distance, we can notice that the amount of the similar points increased, more similar to the the one generated using the correlation distance. However, the correlation distance on Figure \ref{fig:synSSM} contains more dark blue spots, implying that it exposes more beats that are, in fact, not similar. This is why, in our design of the structure retrieval of a song we decided to use SSM computed using correlation distance.
+When we look at the SSM computed using cosine distance, we can notice that the amount of the similar points increased, more similar to the the one generated using the correlation distance. However, the correlation distance on Figure~\ref{fig:synSSM} contains more dark blue spots, implying that it exposes more beats that are, in fact, not similar. This is why, in our design of the structure retrieval of a song we decided to use SSM computed using correlation distance.
 
 \vspace{10pt}
 
@@ -564,11 +566,11 @@ When we look at the SSM computed using cosine distance, we can notice that the a
 
 Similarly to the case of Harmonic Pitch Class Profiles, we started the preparation of the features by beat-synchronisation to decrease the size of the data for further analysis. 
 
-Next, we had to determine whether log normalisation improved the clarity of the SSM. As we can see in Figure \ref{fig:MFCCcomparison}, the use of log normalisation could decrease the amount of segments found, as more similar points are exposed.
+Next, we had to determine whether log normalisation improved the clarity of the SSM. As we can see in Figure~\ref{fig:MFCCcomparison}, the use of log normalisation could decrease the amount of segments found, as more similar points are exposed.
 
-Finally, we computed the SSM. Again, we investigated the possibility of generating it using Euclidean, Manhattan and cosine distances. The diagrams presenting our findings can be seen in Section \ref{sec:mfccappen}, Appendix B. Similarly to when we were working with HPCPs, the correlation distance gave us the most contrasted, sharper images. 
+Finally, we computed the SSM. Again, we investigated the possibility of generating it using Euclidean, Manhattan and cosine distances. The diagrams presenting our findings can be seen in Section~\ref{sec:mfccappen}, Appendix~B. Similarly to when we were working with HPCPs, the correlation distance gave us the most contrasted, sharper images. 
 
-The result of this process can be seen in Figure \ref{fig:synMFCC}.
+The result of this process can be seen in Figure~\ref{fig:synMFCC}.
 
 \vspace{10pt}
 
@@ -580,7 +582,7 @@ The result of this process can be seen in Figure \ref{fig:synMFCC}.
   \begin{center}
     \includegraphics[width=0.45\textwidth]{Figures/NMF}
   \end{center}
-  \caption{Illustration of approximate non-negative matrix factorization: the matrix $X$ is represented by the two smaller matrices $W$ and $H$.}
+  \caption{Illustration of approximate non-negative matrix factorization: the matrix $X$ is represented by the two smaller matrices $W$ and~$H$.}
 \label{fig:NMF}
 \end{wrapfigure}
 
@@ -604,7 +606,7 @@ In C-NMF, the matrix $W$ is a set of convex combinations of the rows of the inpu
 
 By computing the C-NMF we separate basic structural parts. In the next section, we describe how the factorization via C-NMF relates to structure and show how we can use that result for music structure discovery. 
 
-Apart from this, another important benefit of C-NMF over NMF is that matrices $W$ and $H$ become naturally sparse when adding the convex constrain. In case of NMF the $H$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation \cite{Nieto}. 
+Apart from this, another important benefit of C-NMF over NMF is that matrices $W$ and $H$ become naturally sparse when adding the convex constrain. In case of NMF the $H$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation~\cite{Nieto}. 
 
 \vspace{10pt}
 
@@ -627,18 +629,18 @@ Apart from this, another important benefit of C-NMF over NMF is that matrices $W
         \label{fig:CNMFbeatles}
 \end{figure}
  
-In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank $k = 2$ can be seen in Figure \ref{fig:CNMFbeatles}.
+In this section we will investigate different ways of obtaining section boundaries from the decomposition matrices obtained from applying C-NMF to the similarity matrix. An example of resulting cluster and activation matrix computed with C-NMF with rank $k = 2$ can be seen in Figure~\ref{fig:CNMFbeatles}.
 
 \subsubsection*{Pure C-NMF Approach}
 \label{sec:finalBounds}
 
 Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
 
-Having applied the C-NMF, we computed, we have generated two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
+Having applied the C-NMF, we computed two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
         
-To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the 'types' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
+To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the ``types'' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
 
-Once we have boundaries, we combine them within a distance window of size h so that boundaries close to each other get merged in their average location.
+Once we have boundaries, we combine them within a distance window of size $h$ so that boundaries close to each other get merged in their average location.
 
 This method, although quite simple, produced a neat and quite accurate output, with a few, but meaningful segments. In the next section we describe an attempt of improving our results that did not yield results we hoped for, and hence was left out in the final implementation.
 
@@ -662,7 +664,7 @@ This method, although quite simple, produced a neat and quite accurate output, w
                 \caption{The k value is too big - little improvement in average distance.}
                 \label{fig:overfitting}
         \end{subfigure}
-          \caption{Diagrams depicting impact of the $k$ value on the clustering result \cite{kcluster}.}
+          \caption{Diagrams depicting impact of the $k$ value on the clustering result~\cite{kcluster}.}
         \label{fig:kmeansclustering}
 \end{figure}
 
@@ -674,7 +676,7 @@ When all the points have been assigned to some centre, $k$ new centroids are cal
 
 Those two phases are repeated in a loop. As a result, we may notice that the $k$ centers change their location step by step until no more changes are done, and the algorithm converges. 
 
-We ran k-means clustering with $k = 2$ to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of $k = 2$ allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high - very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
+We ran k-means clustering with $k = 2$ to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of $k = 2$ allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high -- very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
 
 \vspace{10pt}
 
@@ -686,7 +688,7 @@ In our structure retrieval, we investigated different ways of labelling of the s
 First approach built directly on our way of segmenting the song.
 Similarly to when attempting to find boundaries between segments, we decomposed our self similarity matrix $X$ with rank increased. This allowed further differentiation between structures, for instance, if certain part of a song was thought of as a chorus, but it is different enough to get separated in a C-NMF of a higher rank.
 
-Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$, as described in Section \ref{sec:finalBounds}. This way, we computed initial clustering for each beat frame. To synchronise labels calculated in such way, we assigned a numerical label which occurred within each of the interval between two segment to them.
+Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$, as described in Section~\ref{sec:finalBounds}. This way, we computed initial clustering for each beat frame. To synchronise labels calculated in such way, we assigned a numerical label which occurred within each of the interval between two segment to them.
 
 \begin{figure}[h]
 	\centering
@@ -695,9 +697,9 @@ Once we have decomposed the matrix $X$, we filtered the clustering matrix $W$, a
 \label{fig:numericsimple}
 \end{figure}
 
-However, ideally in our application we would like to be able to tell the player what segment he is currently in and make them as clear and easy to understand as possible. As we could not find literature where this was attempted, we had to investigate various ways of achieving this ourselves. 
+However, ideally in our application we would like to be able to tell the player what segment he is currently in and make it as clear and easy to understand as possible. As we could not find literature where this was attempted, we had to investigate various ways of achieving this ourselves. 
 
-Having gathered data about the main melody of the song earlier on, we could use it to more accurately predict the labels for each of the song segments, producing labels that easy to understand to a person. 
+Having gathered data about the main melody of the song earlier on, we could use it to more accurately predict the labels for each of the song segments, producing labels that are easy to understand to a person. 
 
 In attempt to do so, we synchronise the array of pitches with the beats to get beat synchronised features which we could with ease refer to once we have the boundary frames. 
 
@@ -710,7 +712,6 @@ In attempt to do so, we synchronise the array of pitches with the beats to get b
 
 First intuition we had was to investigate the amount of silent frames occurring in each of the segments. We designed heuristics to decide whether the segment we look at is vocal (majority of the frames contain the main melody), semi-vocal (the same amount of frames that are contain the main melody and not), instrumental (minority of the frames contain the main melody) or silent. 
 
-A visualisation of our segmentation and labelling using only vocal/instrumental heuristics which can be seen on Figure \ref{fig:vocalsimple}. The diagram makes it evident that our boundary finding works quite well. As we can see, each beginning of the chorus is detected with high accuracy. Moreover, the beginning and the end of the intro and outro parts are predicted really well. In addition to this, the segmentation process manages to detect the silence segments in the beginning and end of track. However, our clustering algorithm detects the end of the chorus too early, absorbing a part of it into the verse that follows.
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-30pt}
@@ -721,12 +722,15 @@ A visualisation of our segmentation and labelling using only vocal/instrumental 
 \label{fig:NMF}
 \end{wrapfigure}
 
+A visualisation of our segmentation and labelling using only vocal/instrumental heuristics which can be seen on Figure~\ref{fig:vocalsimple}. The diagram makes it evident that our boundary finding works quite well. As we can see, each beginning of the chorus is detected with high accuracy. Moreover, the beginning and the end of the intro and outro parts are predicted really well. In addition to this, the segmentation process manages to detect the silence segments in the beginning and end of track. However, our clustering algorithm detects the end of the chorus too early, absorbing a part of it into the verse that follows.
+
+
 However, this way alone, we lose the distinction between the vocal parts, for instance, between the verse and the chorus. We could implement a system of heuristics to assign labels like chorus or verse, but unfortunately there is no straightforward way of doing so as the song structures differ greatly across the popular music. For instance, many songs drop the verse-chorus structure to start with a chorus, like ``She Loves You'' by The Beatles.
 
-Our final approach was to merge the two approaches mentioned earlier into one algorithm. Ideally, we wanted to preserve the variation in the vocal parts, as it was presented in the first approach where multiple parts were classified with the same class, while being able to tell when the main melody of is present, and when it is not. Moverover, we had to find a solution to the problem of determining which segments contain chorus, which ones represent the verse and which should be classified otherwise.
+Our final approach was to merge the two approaches mentioned earlier into one algorithm. Ideally, we wanted to preserve the variation in the vocal parts, as it was presented in the first approach where multiple parts were classified with the same class, while being able to tell when the main melody of is present, and when it is not. Moreover, we had to find a solution to the problem of determining which segments contain chorus, which ones represent the verse and which should be classified otherwise.
 
 
-To make it possible, we first employed our initial labelling algorithm to retrieve numerical labels for each of the detected segments. This way we were able to find relationships between different segments. Once we know which segments bear high similarity, we average the amount of percentage of voiced frames per segment. Having done that, we look at the two most repeated segments. The one with the higher average of the voiced frames is labelled as a chorus, and the other one is determined to be a verse. The first segment is labelled an intro if it bears not similarity to other segments. If it is classified the same way the last segment is, we label both if them as "intro/outro". If our algorithm finds another segment similar to any of them, they are marked as the bridge.
+To make it possible, we first employ our initial labelling algorithm to retrieve numerical labels for each of the detected segments. This way we are able to find relationships between different segments. Once we know which segments bear high similarity, we average the amount of percentage of voiced frames per segment. Having done that, we look at the two most repeated segments. The one with the higher average of the voiced frames is labelled as a chorus, and the other one is determined to be a verse. The first segment is labelled an intro if it bears not similarity to other segments. If it is classified the same way the last segment is, we label both if them as``intro/outro''. If our algorithm finds another segment similar to any of them, they are marked as the bridge.
 
 \vspace{10pt}
 
@@ -735,7 +739,7 @@ To make it possible, we first employed our initial labelling algorithm to retrie
 
 Once we have designed the the labelling algorithm, we researched the impact of the choice of feature on the performance of the segmentation. We had noticed that some songs achieved better results when HPCPs were chosen to lead the computation and retrieve the song segmentation whereas the others performed better with MFCCs taken into account. 
 
-To solve the dilemma of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure - the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
+To solve the dilemma of the choice of feature, we implemented a selector, which inspecting the outputs produced using HPCPs and MFCCs, selects the one which is most likely to reflect the structure of the song. It investigates boundaries and labels returned by processing each of the SSMs and looks at their structure -- the length of the silences, length amount of segments detected and how the segments fit into their neighbourhood. Based on those observations, it ranks both outputs based on their likelihood and selects the most likely one. 
 
 \vspace{20pt}
 \newpage
@@ -744,8 +748,8 @@ To solve the dilemma of the choice of feature, we implemented a selector, which 
 
 In this section, we will go over the architecture and the design choices made when planning and implementing our game.
 
-The game is written mostly in Swift, a multi-paradigm, compiled programming language created by Apple Inc. for iOS and OS X development. 
-It was first introduced at Apple's 2014 Worldwide Developers Conference (WWDC). Swift is designed to work with Apple's Cocoa and Cocoa Touch frameworks, building on the best of C and Objective-C, without the constraints of C compatibility. It adopts safe programming patterns and adds modern features to make programming easier, more flexible, and more fun \cite{swiftintro}. 
+The game is written mostly in Swift, a multi-paradigm, compiled programming language created by Apple Inc.\ for iOS and OS X development. 
+It was first introduced at Apple's 2014 Worldwide Developers Conference (WWDC). Swift is designed to work with Apple's Cocoa and Cocoa Touch frameworks, building on the best of C and Objective-C, without the constraints of C compatibility. It adopts safe programming patterns and adds modern features to make programming easier, more flexible, and more fun~\cite{swiftintro}. 
 
 We chose this language as we wanted to create a game for the OS X platform. In addition to this, the author also had a personal interest in learning the language.
 
@@ -760,11 +764,11 @@ The game relies on preserving user's scores and the levels generated by them. We
 
 Core Data is the standard way to persist and manage data in both iPhone and Mac applications. It is an object graph and persistence framework provided by Apple in the Mac OS X and iOS operating systems. 
 
-Core Data describes data with a high level data model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. 
+Core Data describes data with a high level model expressed in terms of entities and their relationships plus fetch requests that retrieve entities meeting specific criteria. Code can retrieve and manipulate this data on a purely object level without having to worry about the details of storage and retrieval. 
 
 Core Data allows data organised by the relational entity–attribute model to be serialised into XML, binary, or SQLite stores.
 
-Core Data is also a persistent technology, in that it can persist the state of the model objects to disk. But the important takeaway is that Core Data is much more than just a framework to load and save data - it is also about working with the data while it is in memory.
+Core Data is also a persistent technology, in that it can persist the state of the model objects to disk. But the important takeaway is that Core Data is much more than just a framework to load and save data -- it is also about working with the data while it is in memory.
 We decided to use Core Data rather than a separate database as our game only needs to store data used by the current user, that will be utilised almost immediately after loading into memory. 
   
 The model might cause some intensive memory usage if we decide to create a big amount of users, however, as it is an offline game that can be played on a personal machine, in contrast to web application, the number of users should remain relatively small.
@@ -773,7 +777,7 @@ The model might cause some intensive memory usage if we decide to create a big a
 
 \subsection{Menu}
 
-Although not usually adopted in OS X games, we decided to follow the Model-View-Controller design pattern in implementing our application. We believe it was a right choice as the complexity of the main menu would have to be then supported throughout the played level. This would not only be a performance strain, but would also cause the code to be messy.
+Although not usually adopted in OS X games, we decided to follow the Model-View-Controller design pattern in implementing our application. We believe it was a right choice as otherwise the complexity of the main menu would have to be then supported throughout the played level. This would not only be a performance strain, but would also cause the code to be messy.
 
 When first facing the menu, the user has an option of creating an account, logging in as a user or playing a quick game, not requiring any user data. 
 The quick game is essentially an ability of playing one of the predefined levels, without a choice of creating a new one.
@@ -791,7 +795,7 @@ Once the user has created an account or chosen an existing one, they can either 
 
 To design the song selection view, we made use of the \verb|NSCollectionView|, which allows to display objects in a grid. Each view in the grid is represented by a \verb|NSCollectionViewItem| object, which manages the loading of the view's content.
 
-Each element in our collection view contains the name of the level, the artwork of the song it was based on extracted from the ID3 tags of the file, the maximum amount of the points scored and the stars awarded for the score. The design of the song selection menu can be seen in Figure \ref{fig:songselection}
+Each element in our collection view contains the name of the level, the artwork of the song it was based on extracted from the ID3 tags of the file, the maximum amount of the points scored and the stars awarded for the score. The design of the song selection menu can be seen in Figure~\ref{fig:songselection}
 
 \vspace{10pt}
 
@@ -799,7 +803,7 @@ Each element in our collection view contains the name of the level, the artwork 
 
 Once we move on to playing a game, the \verb|GameViewController|~unpacks the \verb|GameScene| -- an object representing a scene of content in Sprite Kit.
 
-Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation. \cite{spritekit}. 
+Sprite Kit provides a graphics rendering and animation infrastructure that can be used to animate arbitrary textured images, or sprites. It uses a traditional rendering loop where the contents of each frame are processed before the frame is rendered. Its advantage is that it was developed for Apple hardware, hence it is optimised to render frames of animation efficiently using the graphics hardware. Thanks to this, the positions of sprites can be changed arbitrarily in each frame of animation. Sprite Kit also provides other functionality that is useful for games, including basic sound playback support and physics simulation~\cite{spritekit}. 
 
 In the game scene, there is a set of buttons at the bottom of the screen. Players use the strum bar along with the fret buttons to play notes that scroll down the screen. The Easy difficulty only uses the first three fret buttons, that is, the green, red, and yellow. The Medium and Hard options both use the blue button in addition to those three, but they differ in terms of difficulty understood as frequency and variations of the notes coming up.
 
@@ -812,11 +816,11 @@ In the game scene, there is a set of buttons at the bottom of the screen. Player
 \label{fig:overallgamescreen}
 \end{wrapfigure}
 
-The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, it the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
+The score is calculated based on how many scrolling notes we manage to hit. Every time we hit, the performance bar on the right side of the screen goes up, otherwise it goes down. If it hits the minimum, the player loses. However, if the player manages to keep the performance level at the maximum for an appropriate amount of time, the number of the points scored for the new notes gets doubled until he misses a note or wins the song.
 
 The player can at any time pause, stop or replay the game. They can also control the volume of the music and other sounds in the game. 
 
-Upon completion of the level the player presented with their score, shown as stars and a concrete number. The player can later revisit the songs if they want to improve their score. 
+Upon completion of the level the player is presented with their score, shown as stars and a concrete number. The player can later revisit the songs if they want to improve their score. 
 
 \vspace{10pt}
 
@@ -824,12 +828,12 @@ Upon completion of the level the player presented with their score, shown as sta
 
 The main part of the gameplay relies on the user pressing buttons that line up on the screen. As this is a music game, there are various ways of making the process more intuitive and hence attractive to potential players. 
 
-One of the possibilities is to use the main melody of the song to determine which buttons to issue for the player by tying in the melody extraction. In particular, by creating a mapping between the pitches and the buttons that need to be pressed that would somehow be similar to the way people play the musical instruments would be useful.
+One of the possibilities is to use the main melody of the song to determine which buttons to issue for the player by tying in the melody extraction. In particular, creating a mapping between the pitches and the buttons that need to be pressed that would somehow be similar to the way people play the musical instruments would be useful.
 
-The main idea of the game is to mimic the playing an instrument on the computer keyboard. For this purpose we looked to 2 most popular instruments - guitar and piano for inspiration. 
+The main idea of the game is to mimic the act of playing an instrument on the computer keyboard. For this purpose we looked to 2 most popular instruments - guitar and piano for inspiration. 
 
 
-When playing the piano, we are presented with a set of keys. The further to the right we press the key, the higher the note played. And likewise, if we press some key to the left, the pitch we hear is of lower frequency. 
+When playing the piano, we are presented with a set of keys. The further to the right we press the key, the higher the note played. And conversely, if we press some key to the left, the pitch we hear is of lower frequency. 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
