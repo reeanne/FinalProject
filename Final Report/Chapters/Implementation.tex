@@ -12,7 +12,7 @@ In this chapter we go over the design and implementation process of the project.
 
 First, we talk about our solution to the mood detection problem. We attempt that by trying to determine which musical features are the most correlated to the AV values of the music's emotion. Having found the set of features that have the biggest impact on our perception of the emotions in the song, we train a neural network with data containing chosen features. This way we create a way of determining the arousal and valence values of any musical track. The system is later used in the implementation of our game. In addition to this, by investigating the impact of different parameters, we make sure out network has as good performance and accuracy as possible.
 
-Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ post processing to further modify the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay. Thanks to parametrising and applying the sliding median we are able to produce pitch coutours of different difficulty to play.
+Next, we move on to main melody detection by looking at two algorithms - one using source separation based approach and the other using the salience based approach. We evaluate performance of both of them on data from recent pop culture to determine their performance and fitness in this project. In addition to this, we employ post processing to further modify the output of the chosen algorithm and smooth out the pitch contours, removing outliers that could interfere with the gameplay. Thanks to parametrising and applying the sliding median we are able to produce pitch contours of different difficulty to play.
 
 The next section describes our attempt to design and develop an automated music segmentation system. We investigate two different features -- Mel-frequency cepstral coefficients and harmonic pitch class profiles, to generate a self-similarity matrix and apply the convex non-negative matrix factorisation (C-NMF) to retrieve its decomposition matrices. Using those matrices, we then investigate two different ways of finding boundaries of a musical track. Finally, we describe our process of inventing a novel way of labelling segments of the song, making use of the information on the estimated main melody.
 
@@ -34,7 +34,7 @@ Using Essentia library~\cite{essentia}, we implemented an extractor to retrieve 
 
 \begin{description}
 
-\item[average loudness] -- describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loundness. The values are rescaled into the [0,~1] interval on a per window basis -- if 0, it means that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive -- sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
+\item[average loudness] -- describes dynamic range (the ratio between the largest and smallest possible values of the signal) of loudness. The values are rescaled into the [0,~1] interval on a per window basis -- if 0, it means that the signal exhibits a large dynamic range, 1 corresponds to signal with little dynamic range. This could indicate the level of the arousal, with higher loudness implying higher arousal value. We believe this relation could be quite intuitive -- sad or peaceful songs tend to be quiet whereas excited or angry emotions are usually linked to louder tracks or tracks that vary greatly in loudness.
 
 \item[means and derivatives of variance of rates of silent frames] in a signal for thresholds of 20, 30 and 60db. We believe that the values could influence the arousal levels, as the more and the bigger the silent gaps, the sadder or more peaceful the track seems to be, implying the low arousal value. When examining multiple musical tracks, we noticed that the happier or angrier songs can also have such silent gaps, but they tend to be much shorter and less frequent.
 
@@ -300,7 +300,7 @@ Satisfaction				& 3m 43s		& 	4h 47m 16s 330ms		& 15s 65ms		\\	\hline
 
 \subsection{Postprocessing}
 
-\begin{figure}[b]     
+\begin{figure}[t]     
         \centering
         \begin{subfigure}[b]{0.48\textwidth}
                 \includegraphics[width=\textwidth]{Figures/input_simple}
@@ -318,17 +318,16 @@ Once we have computed the pitch estimates, we need to post process them to make 
 
 \begin{figure}[b]
         \centering
-        \begin{subfigure}[b]{0.48\textwidth}
-                \includegraphics[width=\textwidth]{Figures/smoothing_1001_false}
-                \vspace{20pt}
+ 		\begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/triangular}
         \end{subfigure}
-        \begin{subfigure}[b]{0.48\textwidth}
-                \includegraphics[width=\textwidth]{Figures/smoothing_1001_true}
-                \vspace{20pt}
+        \begin{subfigure}[b]{0.47\textwidth}
+                \includegraphics[width=\textwidth]{Figures/triangular_101}
         \end{subfigure}
-    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m = 1001$.}
-	\label{fig:excludezeros}
+    \caption{The pitch contours created by applying the triangular smooth with window size 3 (left) and 101 (right).}
+	\label{fig:triangular}
 \end{figure}
+
 
 
 Most smoothing algorithms are based on the ``shift and multiply" technique, in which a group of adjacent points in the original data are multiplied point-by-point by a set of numbers (coefficients) that defines the smooth shape. The products are added up to become one point of smoothed data, then the set of coefficients is shifted one point down the original data and the process is repeated. 
@@ -364,7 +363,9 @@ For a 5-point smooth ($m = 5$):
 S_{j} = \frac{Y_{j-2} + 2Y_{j-1} + 3Y_{j} + 2Y_{j+1} + Y_{j+2}}{9}
 \end{equation}
  
-for $j = 3$ to $n-2$, and similarly for other smooth widths. 
+for $j = 3$ to $n-2$, and similarly for other smooth widths. Despite the fact that the triangular smooth provided us with improvement in the over the rectangular smooth, it produced almost the same output for window sizes of 3 and 101, which can be seen on Figure~\ref{fig:triangular}. This suggested that we would not be able to use it to generate songs of different difficulty. That is why we sought another solution.
+
+
 
 
 \begin{figure}
@@ -383,13 +384,27 @@ for $j = 3$ to $n-2$, and similarly for other smooth widths.
 	\label{fig:sliding_comp}
 \end{figure}
 
-The final solution to the problem we tried was to use the sliding median filter. The idea behind it is to run through the signal entry by entry, replacing each of them with the median of neighboring entries. The pattern of neighbors is called the ``window", which slides, entry by entry, over the entire signal. 
+The final solution to the problem we tried was to use the sliding median filter. The idea behind it is to run through the signal entry by entry, replacing each of them with the median of neighbouring entries. The pattern of neighbours is called the ``window", which slides, entry by entry, over the entire signal. 
 
 For 1D signals, the most obvious window is just the first few preceding and following entries, whereas for 2D (or higher-dimensional) signals such as images, more complex window patterns are possible (such as ``box" or ``cross" patterns). Note that if the window has an odd number of entries, then the median is simple to define: it is just the middle value after all the entries in the window are sorted numerically. For an even number of entries, there is more than one possible median.
 
+\begin{figure}[b]
+        \centering
+        \begin{subfigure}[b]{0.48\textwidth}
+                \includegraphics[width=\textwidth]{Figures/smoothing_1001_false}
+                \vspace{20pt}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.48\textwidth}
+                \includegraphics[width=\textwidth]{Figures/smoothing_1001_true}
+                \vspace{20pt}
+        \end{subfigure}
+    \caption{The pitch contours created from smoothing the estimated main melody of ``Johnny B. Goode'' by Chuck Berry with additional introduction of false positives (left) and not (right), using the rectangular smooth with $m = 1001$.}
+	\label{fig:excludezeros}
+\end{figure}
+
 The impact of applying the sliding median of size 100 on the estimated pitches can be seen in Figure~\ref{fig:sliding_input}. On the other hand, comparison of the results for the different window sizes can be seen in Figure~\ref{fig:sliding_comp}. As we can see, applying a bigger window size smooths the contours even more. Although this way the main melody loses some of its elements, like when the voice is quickly vibrating, it can prove useful when generating simpler songs to play, as the changes in the pitch will be less frequent, making the melody less complex and hence, less interaction will be required from the user. 
 
-An important thing in our application is that we do want to preserve our zero values in our smoothed pitch coutours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure~\ref{fig:excludezeros}.
+An important thing in our application is that we do want to preserve our zero values in our smoothed pitch contours. If we fail to do so, we introduce additional false positives in our voicing detection. The visualisation of the problem can be seen in Figure~\ref{fig:excludezeros}.
 
 \vspace{20pt}
 
@@ -582,11 +597,11 @@ The result of this process can be seen in Figure~\ref{fig:synMFCC}.
   \begin{center}
     \includegraphics[width=0.45\textwidth]{Figures/NMF}
   \end{center}
-  \caption{Illustration of approximate non-negative matrix factorization: the matrix $X$ is represented by the two smaller matrices $W$ and~$H$.}
+  \caption{Illustration of approximate non-negative matrix factorisation: the matrix $X$ is represented by the two smaller matrices $W$ and~$H$.}
 \label{fig:NMF}
 \end{wrapfigure}
 
-We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorization (NMF) could be useful in our situation.
+We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorisation (NMF) could be useful in our situation.
 
 In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $i$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
 
@@ -604,7 +619,7 @@ This results in $W = XF$, where $F \in \mathbb{R}^{N \times k}$, which makes the
 
 In C-NMF, the matrix $W$ is a set of convex combinations of the rows of the input matrix $X$, which contrasts with NMF, where no such constraint exists. This means that, each row $x_{i}$ represents similarity of the time frame $i$ with the rest of the time frames, storing information about the time frame $i$ across the entire song.
 
-By computing the C-NMF we separate basic structural parts. In the next section, we describe how the factorization via C-NMF relates to structure and show how we can use that result for music structure discovery. 
+By computing the C-NMF we separate basic structural parts. In the next section, we describe how the factorisation via C-NMF relates to structure and show how we can use that result for music structure discovery. 
 
 Apart from this, another important benefit of C-NMF over NMF is that matrices $W$ and $H$ become naturally sparse when adding the convex constrain. In case of NMF the $H$ does not always become sparse. Thanks to that, when using C-NMF we are more likely to find similar decomposition matrices for the same input than NMF, which is more sensitive to its initialisation~\cite{Nieto}. 
 
@@ -636,7 +651,7 @@ In this section we will investigate different ways of obtaining section boundari
 
 Clustering is an unsupervised classification of patterns, for example observations, data items, or feature vectors, into groups called clusters. The points within each cluster should be similar to each other and dissimilar to points belonging to another cluster. The problem has been addressed in many contexts and by researchers in many disciplines.
 
-Having applied the C-NMF, we computed two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, ie. $X \approx  WH$       
+Having applied the C-NMF, we computed two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, i.e. $X \approx  WH$       
         
 To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the ``types'' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
 
@@ -672,9 +687,9 @@ K-means clustering is considered one of the simplest unsupervised learning algor
 
 The main idea  is to define $k$ centres, one for each cluster. Much care should be put into their placement, as different location of centres causes different result. This is why the most intuitive solution is to put them as far apart as possible. The next step is to take one point after another from the data set and associate it with the nearest centre, 
 
-When all the points have been assigned to some centre, $k$ new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new center. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
+When all the points have been assigned to some centre, $k$ new centroids are calculated as baycentres of the clustering that resulted from the first phase. Once we have calculated the new centroids, a new binding has to be done  between the same data set points and the nearest new centre. Very often this will result in points moving between different clusters. This can be considered second phase of the algorithms. 
 
-Those two phases are repeated in a loop. As a result, we may notice that the $k$ centers change their location step by step until no more changes are done, and the algorithm converges. 
+Those two phases are repeated in a loop. As a result, we may notice that the $k$ centres change their location step by step until no more changes are done, and the algorithm converges. 
 
 We ran k-means clustering with $k = 2$ to each one of the C-NMF decomposition matrices, interpreting them as row-vector features. We efficiently obtained the section boundaries The choice of $k = 2$ allows us to detect boundaries (i.e. there’s a boundary or not), regardless of how the various sections cluster. However, after comparing the output of an this algorithm with a manually created segmentation, we noticed that k-means clustering's performance was not suited for our use. The granularity of the segmentation was too high -- very often it separated parts of verse, or even fractions of seconds. Even after merging values that were close together and getting rid of the smallest segments, the boundaries detected were too granular.
 
@@ -843,13 +858,13 @@ When playing the piano, we are presented with a set of keys. The further to the 
 \label{fig:notetypes}
 \end{wrapfigure}
 
-A similar, but slightly modified rule applies to the guitar. It is still true that jumping one way from one string to another increases the fundamental frequency heard and decreases it if we move back. However, another way of "going up a tone" is to go up a fret (i.e. closer to the sound hole). When we play the guitar, going up a certain amount of frets of on one string might let us play higher notes on it than other string whose fundamental note is much higher. 
+A similar, but slightly modified rule applies to the guitar. It is still true that jumping one way from one string to another increases the fundamental frequency heard and decreases it if we move back. However, another way of ``going up a tone'' is to go up a fret (i.e. closer to the sound hole). When we play the guitar, going up a certain amount of frets of on one string might let us play higher notes on it than other string whose fundamental note is much higher. 
 
 This inspired us to design our notes system in a round robin fashion. If the fundamental frequency of the frame we are about to play is higher than the one we just played, the note should appear to the right of it, if lower then to the left, and if the fundamental frequencies are the same, the button should appear at the same relative position in the $x$ axis. 
 
 However, if we need to move the note higher but we have hit the limit given by the difficulty of the song, we generate the position in a round-robin fashion, inspired by 'going up a few frets' as it is a case with the guitar.
 
-Another interesting feature to work on was the length of the notes. To increase the difficulty, every time we detect a longer note - i.e. a repeated notes of the same frequency, instead of adding a button per note, we make the note longer, as it can be seen in Figure \ref{fig:notetypes}.
+Another interesting feature to work on was the length of the notes. To increase the difficulty, every time we detect a longer note -- i.e. a repeated notes of the same frequency, instead of adding a button per note, we make the note longer, as it can be seen in Figure~\ref{fig:notetypes}.
 
 \vspace{10pt}
 
@@ -869,7 +884,7 @@ To achieve that, we dedicated a part of the screen to indicate the user of their
   \begin{center}
     \includegraphics[width=0.45\textwidth]{Figures/sparkChange}
   \end{center}
-  \caption{Screenshot showind the song at the beginning of the musical track, when the main melody is about to play, with a mood completely different from the one depicted in Figure \ref{fig:notetypes}.}
+  \caption{Screenshot showing the song at the beginning of the musical track, when the main melody is about to play, with a mood completely different from the one depicted in Figure \ref{fig:notetypes}.}
 \label{fig:notetypes}
 \end{wrapfigure}
 
@@ -879,7 +894,7 @@ Once we have implemented and introduced the song segmentation, it was time to cr
 
 One of the features of music which can indicate the changes in emotions in a song can be the beats. If the beats are fast, more frequent, the song sounds more energetic, whereas a phlegmatic song will have softer, slower beats. 
 
-To aid the players with the game, we introduced ``frets'' coming down the screen together with the notes. They allow the user to ``place'' the note within the tact, aiding him to ace it. Due to possible variation in beat intervals, in implementing this feature we had to make use of timers that constantly check the time between the two next beats. This caused some problems when implementing the pause in the game, but they were overcome by storing the state of the timers once the pause is hit and recreating the timer once the game is resumed with it. 
+To aid the players with the game, we introduced ``frets'' coming down the screen together with the notes. They allow the user to ``place'' the note within the tact, aiding them to ace it. Due to possible variation in beat intervals, in implementing this feature we had to make use of timers that constantly check the time between the two next beats. This caused some problems when implementing the pause in the game, but they were overcome by storing the state of the timers once the pause is hit and recreating the timer once the game is resumed with it. 
 
 Now we are ready to use our neural network for the mood detection. For every segment detected by our system, we extract the features we found had the biggest impact on the mood perceived and activate our network on them. 
 
@@ -896,7 +911,7 @@ Now we are ready to use our neural network for the mood detection. For every seg
 \end{figure}
 
 
-Finding a way of making the arousal and valence values have an impact on the surroundings in the game proved to be an interesting challenge in terms of usability. This is why we came up with a system where when the user creates a level, he can choose one of the two options -- subtler and more evident mood projection. In the subtle version, the user is presented with a set of particles or sparks that float around in the background. The spark's behaviour is triggered by the beat frequency, the more frequent they are, the more dynamic the moves. On the other hand, the size of the particle set as well as the colour are adjusted based the arousal and valence colour.
+Finding a way of making the arousal and valence values have an impact on the surroundings in the game proved to be an interesting challenge in terms of usability. This is why we came up with a system where when the user creates a level, he can choose one of the two options -- subtler and more evident mood projection. In the subtle version, the user is presented with a set of particles or sparks that float around in the background. The sparks' behaviour is triggered by the beat frequency, the more frequent they are, the more dynamic the moves. On the other hand, the size of the particle set as well as the colour are adjusted based the arousal and valence colour.
 
 However, if the user opts for the second option, they are presented with much more evident changes. Apart from the particle set moving around, they can now observe the changes in the whole colour scheme of the game. This makes the influence of the mood much more evident, however it might distract, or even confuse some of the users, especially the beginners. To implement that we needed to implement an SKAction which spreads out the change of colour over time to allow gradual, less invasive changes that will not distract the user to a great extend. In addition to this, should the user find the changes still quite invasive, we opted to make this feature adjustable and leave it up to the user to include it or not based on their confidence in their own skills. 
 

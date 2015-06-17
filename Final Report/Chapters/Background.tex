@@ -213,7 +213,7 @@ Mathematically, this is written as:
 \begin{equation}
 \mathbf{STFT}\{x(t)\}(\tau,\omega) \equiv X(\tau, \omega) = \int_{-\infty}^{\infty} x(t) w(t-\tau) e^{-j \omega t} \, dt 
 \end{equation}
-where $w(t)$ is the window function, commonly a Hann window or Gaussian window bell centered around zero, and $x(t)$ is the signal to be transformed. 
+where $w(t)$ is the window function, commonly a Hann window or Gaussian window bell centred around zero, and $x(t)$ is the signal to be transformed. 
 
 The short time Fourier transform of a time-domain signal $y$ is denoted by the matrix $F \times N$, $F$ being the Fourier transform size and $N$ the number of analysis frames.
 
@@ -277,7 +277,7 @@ The likelihood of the vocal part $V$ is calculated using two different framework
 
 The first one uses the source/filter Gaussian scaled mixture model (GSMM). 
 
-In short, a Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians. For description of k-means clustering, we refer to Section~\ref{sec:kmeans}.
+In short, a Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We can think of mixture models as generalising k-means clustering to incorporate information about the covariance structure of the data as well as the centres of the latent Gaussians. For description of k-means clustering, we refer to Section~\ref{sec:kmeans}.
 
 In this GSMM model, the source element refers to the excitation of the vocal folds. This is why it is linked to the fundamental frequency of the sound $f_{\text{0}}$. On the other hand, the filter part is characteristic of the vocal tract shape. This space of possibilities is then discretised so that one possible filter frequency response is considered. It is then used to calculate the likelihood of the vocal part knowing the filter and $f_{\text{0}}$.
 
@@ -660,7 +660,7 @@ Many researchers developed their methods on top of this solution, approaching th
 
 Another approach seen in literature is a variant of the Nearest Neighbour Search (NSS), also known as similarity search or closest point search. NSS is an optimisation problem for finding the closest (or most similar) points. Closeness is typically expressed in terms of a dissimilarity function: the less similar the objects, the larger the function values. Formally, the NSS problem is defined as follows: given a set $S$ of points in a space $M$ and a query point $q \in M$, find the closest point in $S$ to $q$.
 
-Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora~\cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix $V$ is factorised into (usually) two matrices $W$ and $H$, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. The problem is not exactly solvable in general as the problem has been shown to generalize the k-means clustering problem (which is known to be NP-complete). That is why it is commonly approximated numerically~\cite{NMFNP}.
+Finally, a Non-negative Matrix Factorisation (NMF) can be applied to group the segments, as presented by Kaiser and Sikora~\cite{Sikora}. Non-negative matrix approximation is a group of algorithms in multivariate analysis and linear algebra where a matrix $V$ is factorised into (usually) two matrices $W$ and $H$, with the property that all three matrices have no negative elements. This non-negativity makes the resulting matrices easier to inspect. Also, in applications such as processing of audio spectrograms non-negativity is inherent to the data being considered. The problem is not exactly solvable in general as the problem has been shown to generalise the k-means clustering problem (which is known to be NP-complete). That is why it is commonly approximated numerically~\cite{NMFNP}.
 
 Nieto and Jehan~\cite{Nieto} based their approach on the NMF method, extending it by adding a convex constrain that results in weighted cluster centroids, representing the different sections of a musical piece in a more effective manner. 
 

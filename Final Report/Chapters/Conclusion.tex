@@ -11,26 +11,29 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
+
 \section{Conclusion}
 
-Through this project we wanted to develop a game whose gameplay was influenced by the musics. By extracting We wanted do make sure that it would be intuitive and fun to use by all music lovers, regardless of their personal preferences in genres or bands. The successful completion resulted in an application of sufficient reliability and quality that it can be released to, and used by, untrained computer users. To our knowledge, it is the only computer game allowing people to generate Guitar Hero-like levels that also generates the surroundings tailored to every music track.
+Through this project we wanted to develop a game whose gameplay was influenced by the musics. We tried do make sure that it would be intuitive and fun to use by all music lovers, regardless of their personal preferences in genres or bands. The successful completion resulted in an application of sufficient reliability and quality that it can be released to, and used by, untrained computer users. To our knowledge, it is the only computer game allowing people to generate Guitar Hero-like levels that also generates the surroundings and segmentation tailored to every music track.
 
-The project  also demonstrated that the state of the art in music analysis can be reliably and efficiently used in real world systems. The successful incorporation of the melody extraction and the design of the algorithm for mapping the it to a series of buttons on the screen showed that music analysis systems are not just the domain of research. In addition to this, thanks to applying smoothing algorithms we successfully managed to introduce variation in the difficulty of the playable songs generated.
+The project also demonstrated that the state of the art in music analysis can be reliably and efficiently used in real world systems. The successful incorporation of the melody extraction and the design of the algorithm for mapping the it to a series of buttons on the screen showed that music analysis systems are not just the domain of research. In addition to this, thanks to applying smoothing algorithms, we successfully managed to introduce variation in the difficulty of the playable songs generated.
 
-In addition to this, we successfully designed an algorithm for boundary detection that uses both Mel-frequency cepstrum coefficients (MFCCs) and harmonic pitch class profiles (HPCPs) to determine the possible structure bounds in a song that performs comparably or better than existing solutions. Moreover, we proposed a novel method for labelling the extracted song elements in an easy-to-understand way, making use of the estimated main melody pitches. 
+Moreover, we successfully designed an algorithm for boundary detection that uses self-similarity matrices generated for both mel-frequency cepstrum coefficients (MFCCs) and harmonic pitch class profiles (HPCPs) to determine the possible structure bounds in a song that performs comparably or better, depending on the music track, than existing solutions, thanks to using convex non-negative matrix factorisation.
+
+In addition to this, we proposed a novel method for labelling the extracted song elements in an easy-to-understand way, making use of the estimated main melody pitches. Not only did we create a novel algorithm for generation of an understandable labelling of song segments but by doing so, we improved the performance of numerical labelling.
 
 Last, but not least, we developed a mood extraction system to dynamically generate surroundings in the game. By approaching the emotion value as a continuous problem, we successfully trained a neural network to predict the arousal and valence values of the emotion in the music track. In contrast to most of the existing publications, we also tracked the changes in the mood by retrieving its values on a per-segment basis.
 
-In addition to this, the application had many additional features that improve the user experience and make the use flow more intuitive, such as extraction of song information from ID3 tags, management of the levels with preservation of their score for or even bonus points for good performance in the game or ability to change the key assignment when playing the song.
+In addition to this, the application had many additional features that improve the user experience and make the use flow more intuitive, such as extraction of song information from ID3 tags, management of the levels with preservation of their score or even bonus points for good performance in the game or ability to change the key assignment when playing the song.
 
-Overall the project can be considered a great success, achieving all its goals, and contributing new and valuable work to the field of music analysis.
+To our knowledge, it is the only computer game allowing people to generate Guitar Hero-like songs that also generates the surroundings tailored to every music track as well as segments and labels the songs in an easy to understand way. Overall the project can be considered a great success, achieving all its goals, and contributing new and valuable work to the field of music analysis.
 
 \section{Future Work}
 
 Many interesting areas of further work exist for this project. One of the more intuitive ones would be to port our game to mobile devices. First we would focus on migration to iOS, as thanks to use of Swift it should be more straightforward than in case of other devices. 
 
-In addition to this, a further research could be lead to attempt extraction of individual instruments from the musical track. One idea would be to approach that would be to investigate impact of different parameters on the source selection in the main melody extraction. It is possible that certain combination of argument values could allow us to extract the main melody played by different instruments, for example bass or guitar. 
+In addition to this, further research could be lead to attempt extraction of individual instruments from the musical track. One way to approach that would be to investigate impact of different parameters on the source selection in the main melody extraction. It is possible that certain combination of argument values could allow us to extract the main melody played by different instruments, for example bass or guitar. 
 
 Moreover, a thought could be put into implementation of the multiplayer levels. This would most probably require the users to use some other means of controlling the game rather than the keyboard, for example a gamepad. Should the separation of different instrument melodies succeed, we could allow the different players to play different instruments instead of completing the same sequence of notes in parallel.
 
-In addition to this, the game could be extended to make use of Internet connection in exchange of achievements and or created songs. This could be further used to enable multiplayer songs with people all around the world. 
+Last but not least, the game could be extended to make use of Internet connection in exchange of achievements and or created songs. This could be further used to enable multiplayer songs with people all around the world. 

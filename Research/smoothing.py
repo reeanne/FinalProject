@@ -31,6 +31,31 @@ def rectangular_smooth(array, width, skipzeros=True):
 		print "Window width should be an odd number."
 		return []
 
+
+def triangular_smooth(array, width, skipzeros=True):
+	if width % 2 != 0:
+		length = len(array)
+		print "length", length
+		result = [0] * length
+		result[0] = array[0]
+		result[length-1] = array[length-1]
+
+		for i in range(width / 2, length-(width /2 + 1)):
+			if array[i] == 0 and skipzeros:
+				continue
+			suma = array[i]
+			for j in range(1, width/2+1):
+				suma += (width/2 + 2 - j) *(array[i-j] + array[i+j])
+			suma = suma / width
+			result[i] = suma
+		print len(result)
+		return result
+
+	else:
+		print "Window width should be an odd number."
+		return []
+
+
 def plot(array1, array3):
 	y_axis = np.arange(len(array1)).tolist()
 	plt.plot(y_axis, array1, y_axis, array3)
@@ -78,12 +103,13 @@ def main():
 	ref_array = retrieve_array(reference)
 
 	our_arrayfiltered = filterzeros(our_array)
-	new_ours = rectangular_smooth(our_array, 3)
+	new_ours = triangular(our_array, 101)
 
 	#plot(our_array, new_ours)
 	plot2(new_ours)
 	plot2(ref_array)
 	plot2(our_array)
 	
-
 	plot2(filteres) 
+
+main()
