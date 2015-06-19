@@ -11,12 +11,17 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="300" height="300"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
             <value key="minSize" type="size" width="300" height="300"/>
             <value key="maxSize" type="size" width="300" height="300"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0P3-EP-Mni">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                    </customView>
+                </subviews>
             </view>
             <point key="canvasLocation" x="315" y="419"/>
         </window>

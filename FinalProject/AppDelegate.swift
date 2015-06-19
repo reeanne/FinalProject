@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var coverView: NSVisualEffectView!;
     @IBOutlet weak var window: NSWindow!;
     @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!;
+    @IBOutlet weak var avWindow: NSWindow!
     
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
@@ -52,17 +53,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func showMenu() {
+        avWindow.setIsVisible(false);
         menuController = MenuController(nibName: "MenuView", bundle: nil)
         window.contentViewController = menuController;
     }
     
     func playGameWindow() {
-        
+        avWindow.setIsVisible(true);
         gameController = GameController(nibName: "GameView", bundle: nil);
         window.contentViewController = gameController;
     }
     
     func showLevelSelection() {
+        avWindow.setIsVisible(false);
         levelsController = LevelsController(nibName: "ScoreView", bundle: nil);
         window.contentViewController = levelsController;
     }
