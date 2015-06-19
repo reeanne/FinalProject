@@ -42,6 +42,7 @@
 		42F1F79C1ADFFB9F00731127 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F79B1ADFFB9F00731127 /* User.swift */; };
 		42F1F79E1ADFFBA000731127 /* Melody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F79D1ADFFBA000731127 /* Melody.swift */; };
 		42F1F7A21ADFFBA000731127 /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F7A11ADFFBA000731127 /* Level.swift */; };
+		42FC6CC31B343EA90078F26F /* Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42FC6CC21B343EA90078F26F /* Window.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		42F1F79B1ADFFB9F00731127 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = Models/User.swift; sourceTree = "<group>"; };
 		42F1F79D1ADFFBA000731127 /* Melody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Melody.swift; path = Models/Melody.swift; sourceTree = "<group>"; };
 		42F1F7A11ADFFBA000731127 /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Level.swift; path = Models/Level.swift; sourceTree = "<group>"; };
+		42FC6CC21B343EA90078F26F /* Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Window.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				42A67D401A52DCE60094808D /* MainMenu.xib */,
 				42016A921AE1D48C0046FC15 /* GameView.xib */,
 				42016A901AE1D42B0046FC15 /* MenuView.xib */,
+				42FC6CC21B343EA90078F26F /* Window.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				4292DF421AFBDDB1009AC03E /* Snow.sks in Resources */,
 				424CEAE01B15E9FC0030338B /* Credits.rtf in Resources */,
 				4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */,
+				42FC6CC31B343EA90078F26F /* Window.xib in Resources */,
 				425C9CE21B27742600D9B9DC /* ScoreView.xib in Resources */,
 				4292DF401AFBDD93009AC03E /* Smoke.sks in Resources */,
 				4292DF441AFBDDD7009AC03E /* Spark.sks in Resources */,
