@@ -430,9 +430,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     func setupMood() {
         let sparkEmitterPath: String = NSBundle.mainBundle().pathForResource("FireFlies", ofType: "sks")!;
         sparkEmitter = NSKeyedUnarchiver.unarchiveObjectWithFile(sparkEmitterPath) as! SKEmitterNode;
-        
+        updateAVDiagram(0, valence: 0);
         sparkEmitter.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2 - 200)
-        sparkEmitter.name = "sparkEmmitter"
+        sparkEmitter.name = "sparkEmmitter";
         sparkEmitter.zPosition = -1;
         sparkEmitter.targetNode = self;
         sparkEmitter.physicsBody = nil;
@@ -531,8 +531,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
+            updateAVDiagram(level.melody.arousal[moodIndex], valence: level.melody.valence[moodIndex]);
             println("here  " + level.melody.arousal[moodIndex].description + level.melody.valence[moodIndex].description);
-            println(level.melody.boundaries[moodIndex].description +  "    " + songPlayer.currentTime.description);
             moodIndex++;
             moodChangeTimer.invalidate();
             println(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex])
@@ -606,6 +606,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             return true;
         }
         return false;
+    }
+    
+    func updateAVDiagram(arousal: Float, valence: Float) {
+        let downMargin: Float = 9;
+        let upMargin: Float = 264;
+        var arousalCoord: CGFloat = CGFloat((upMargin - downMargin) * arousal + downMargin);
+        var valenceCoord: CGFloat = CGFloat((upMargin - downMargin) * valence + downMargin);
+        appDelegate.avPoint.setFrameOrigin(NSPoint(x: arousalCoord, y: valenceCoord));
     }
 
 

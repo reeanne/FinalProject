@@ -33,8 +33,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var coverView: NSVisualEffectView!;
     @IBOutlet weak var window: NSWindow!;
-    @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!;
     @IBOutlet weak var avWindow: NSWindow!
+    @IBOutlet weak var avPoint: NSImageView!
+
     
     var user: UserObject! = nil;
     var level: LevelObject! = nil;
