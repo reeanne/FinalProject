@@ -10,7 +10,6 @@
                 <outlet property="levelDeleteLevelButton" destination="bZp-7D-5Tc" id="h7u-wc-N6y"/>
                 <outlet property="levelPlayLevelButton" destination="Qfa-Qs-zMP" id="OLW-Bm-iEd"/>
                 <outlet property="levelSelectLevelPopup" destination="W0f-jh-jbM" id="dUy-Zg-1br"/>
-                <outlet property="loadingProgressIndicator" destination="MkU-6s-3l2" id="eDV-d8-Y0l"/>
                 <outlet property="loggedCreateLevelButton" destination="5d9-XZ-fEY" id="I1w-Rk-tzU"/>
                 <outlet property="loggedLoadLevelButton" destination="2kw-RR-wIB" id="qUd-Ak-YQo"/>
                 <outlet property="mainChooseUserButton" destination="C8l-gf-sD1" id="m3l-7K-clR"/>
@@ -19,9 +18,6 @@
                 <outlet property="mainQuitGameButton" destination="MSO-YT-w0T" id="ArT-4i-lZN"/>
                 <outlet property="moodColourLabel" destination="e1q-vN-n7Q" id="eel-3S-n8w"/>
                 <outlet property="moodLevel" destination="YwM-2w-wlG" id="G6e-wZ-m2p"/>
-                <outlet property="newLevelCreateLevelButton" destination="Py0-B5-J2E" id="vMS-WG-yLt"/>
-                <outlet property="newLevelFilePath" destination="Mz8-1f-70p" id="q54-On-Utw"/>
-                <outlet property="newLevelUploadFile" destination="Cuu-vx-LXB" id="5iH-vD-hdz"/>
                 <outlet property="userChooseUserButton" destination="0hV-zj-fKu" id="8z1-DO-H7a"/>
                 <outlet property="userCreateUserButton" destination="Kwm-FZ-2WP" id="YV0-0p-GtP"/>
                 <outlet property="userDeleteUserButton" destination="sbr-rI-aXG" id="ckj-8m-EEA"/>
@@ -174,41 +170,6 @@
                         <action selector="userDeleteUserButtonPressed:" target="-2" id="dvc-To-Bvo"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="Cuu-vx-LXB" userLabel="Upload File">
-                    <rect key="frame" x="334" y="271" width="195" height="32"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Upload File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sdy-q9-dfs">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="15"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="newLevelUoadLevelPressed:" target="-2" id="Euy-aP-2oX"/>
-                    </connections>
-                </button>
-                <textField verticalHuggingPriority="750" id="Mz8-1f-70p" userLabel="File Path">
-                    <rect key="frame" x="340" y="221" width="195" height="22"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="GAg-mI-9yc">
-                        <font key="font" metaFont="system" size="15"/>
-                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                    <accessibility description="File Path"/>
-                    <connections>
-                        <action selector="newLevelFilePathFieldPressed:" target="-2" id="9ce-b4-Vzm"/>
-                    </connections>
-                </textField>
-                <button verticalHuggingPriority="750" id="Py0-B5-J2E" userLabel="Create Song">
-                    <rect key="frame" x="334" y="170" width="195" height="32"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="push" title="Create Song" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jrR-5m-KGh">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="15"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="newLevelCreateLevelSubmit:" target="-2" id="nTw-jY-ciO"/>
-                    </connections>
-                </button>
                 <button verticalHuggingPriority="750" id="hWw-qs-x5j">
                     <rect key="frame" x="334" y="115" width="195" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -247,10 +208,6 @@
                         <font key="font" metaFont="system" size="28"/>
                     </buttonCell>
                 </button>
-                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" id="MkU-6s-3l2">
-                    <rect key="frame" x="420" y="377" width="32" height="32"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                </progressIndicator>
                 <segmentedControl verticalHuggingPriority="750" id="YwM-2w-wlG">
                     <rect key="frame" x="450" y="320" width="75" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>

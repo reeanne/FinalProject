@@ -95,8 +95,8 @@ class LevelsController: NSViewController, NSCollectionViewDelegate {
             var levelData = getLevel(levelName);
             var melodyData = levelData!.melody;
             var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Float], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float], labels: melodyData.labels as [String], boundaries: melodyData.boundaries as [Float]);
-            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
-            var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
+            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject, enhancedMood: levelData!.enhancedMood, difficulty: levelData!.difficulty);
+            appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
             appDelegate.level = levelObject;
             println(melodyData.pitch);
             appDelegate.playGameWindow();

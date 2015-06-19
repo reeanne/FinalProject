@@ -14,9 +14,9 @@ def main():
 
 	median_size = 100
 	if (len(sys.argv) > 3):
-		median_size = sys.argv[3]
+		median_size = int(sys.argv[3])
 
-	bounds, labels, pitch, beat_times = structure.process_track(file)
+	bounds, labels, pitch, beat_times, numeric = structure.process_track(file)
 	#pitch = smoothing.rectangular_smooth(pitch.tolist(), 1001, True)
 	pitch = smoothing.median_filter(pitch, median_size)
 	filtered_bounds, filtered_labels = structure.merge_bounds(bounds, labels)

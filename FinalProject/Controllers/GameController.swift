@@ -15,7 +15,6 @@ import Cocoa
 
 class GameController: NSViewController{
     
-    
     var scene: GameScene!;
     var appDelegate: AppDelegate! = nil;
     

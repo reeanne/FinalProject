@@ -24,9 +24,9 @@ class MelodyObject {
     var labels: [String] = [];
     var boundaries: [Float] = [];
     
-    init(audioURL: NSURL) {
+    init(audioURL: NSURL, difficulty: String) {
         self.audioURL = audioURL;
-        extractFeatures(audioURL);
+        extractFeatures(audioURL, difficulty: difficulty);
     }
     
     init(audioURL: NSURL, pitch: [Int], beats: [Float], arousal: [Float], valence: [Float], labels: [String], boundaries: [Float]) {
@@ -68,11 +68,12 @@ class MelodyObject {
     /**
         Function running external process to retrieve all data for the new song to be generated.
     */
-    func extractFeatures(audioURL: NSURL) {
+    func extractFeatures(audioURL: NSURL, difficulty: String) {
         var task: NSTask = NSTask();
         var outputFile: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/output.json"
         var programPath: String = "/Users/paulinakoch/Documents/Year 4/Project/FinalProject/Research/analyse_song.py";
-        task.arguments = [programPath, audioURL, outputFile];
+        var windowSize = determineWindowSize(difficulty);
+        task.arguments = [programPath, audioURL, outputFile, windowSize.description];
         task.launchPath = "/usr/local/bin/python";
         task.launch();
         task.waitUntilExit();
@@ -114,6 +115,19 @@ class MelodyObject {
             
         } else {
             NSLog("Task failed.");
+        }
+    }
+    
+    func determineWindowSize(difficulty: String) -> Int {
+        switch(difficulty) {
+            case "Easy":
+                return 300;
+            case "Medium":
+                return 300;
+            case "Hard":
+                return 100;
+            default:
+                return 100;
         }
     }
 

@@ -34,12 +34,6 @@ class MenuController: NSViewController {
     @IBOutlet weak var userChooseUserButton: NSButton!
     @IBOutlet weak var userDeleteUserButton: NSButton!
     
-    @IBOutlet weak var newLevelUploadFile: NSButton!
-    @IBOutlet weak var newLevelFilePath: NSTextField!
-    @IBOutlet weak var newLevelCreateLevelButton: NSButton!
-    
-    @IBOutlet weak var loadingProgressIndicator: NSProgressIndicator!
-    
     @IBOutlet weak var moodColourLabel: NSTextField!
     @IBOutlet weak var moodLevel: NSSegmentedControl!
     
@@ -55,7 +49,6 @@ class MenuController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
-        loadingProgressIndicator.hidden = true;
         showCreateCharacterElements(false);
         showChooseLevelButtons(false);
         showSelectUserButtons(false);
@@ -130,13 +123,7 @@ class MenuController: NSViewController {
     /** Logged user main menu **/
     
     @IBAction func loggedCreateLevelButtonPressed(sender: AnyObject) {
-        showMainMenuButtons(false);
-        showCreateCharacterElements(false);
-        showLoggedUserButtons(false);
-        showSelectUserButtons(false);
-        showChooseLevelButtons(false);
-        showLevelLoadButtons(true);
-
+        appDelegate.showLevelCreation();
     }
     
     @IBAction func loggedLoadLevelButtonPressed(sender: AnyObject) {
@@ -163,7 +150,7 @@ class MenuController: NSViewController {
             var levelData = getLevel(levelName!);
             var melodyData = levelData!.melody;
             var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Float], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float], labels: melodyData.labels as [String], boundaries: melodyData.boundaries as [Float]);
-            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject);
+            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject, enhancedMood: levelData!.enhancedMood, difficulty: levelData!.difficulty);
             var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
             appDelegate.level = levelObject;
             println(melodyData.pitch);
@@ -202,36 +189,6 @@ class MenuController: NSViewController {
             deleteUser(username!);
             userSelectUserPopup.removeItemWithTitle(username!);
         }
-    }
-    
-    /** New level **/
-    
-    @IBAction func newLevelUoadLevelPressed(sender: AnyObject) {
-        filePath = openfiledlg("Open file",  message:"Open file");
-        if (filePath != "") {
-            newLevelFilePath.stringValue = getFileName(NSURL.fileURLWithPath(filePath)!);
-        }
-    }
-    
-    @IBAction func newLevelCreateLevelSubmit(sender: AnyObject) {
-        if (newLevelFilePath.stringValue != "" && isFilePlayable(NSURL(fileURLWithPath: filePath)!)) {
-            loadingProgressIndicator.hidden = false;
-            loadingProgressIndicator.startAnimation(self);
-            chooseFile(filePath);
-            loadingProgressIndicator.stopAnimation(self);
-        } else {
-            let alert = NSAlert()
-            alert.messageText = "Warning"
-            alert.addButtonWithTitle("OK")
-            alert.informativeText = "Please make sure that the file you are trying to upload is a music file."
-            var appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate;
-            alert.beginSheetModalForWindow (appDelegate.window, completionHandler: nil )
-
-        }
-    }
-    
-    @IBAction func newLevelFilePathFieldPressed(sender: AnyObject) {
-        // Do nothing.
     }
     
     /** Universal **/
@@ -396,49 +353,6 @@ class MenuController: NSViewController {
         }
     }
     
-    /**
-        A function called upon creation of a new level. It takes a file chosen by the user and generates a level out of it.
-    */
-    func chooseFile(path: String) {
-        let audioURL = NSURL.fileURLWithPath(path);
-        
-        var melody = MelodyObject(audioURL: audioURL!)
-        var currentLevel = LevelObject(levelName: newLevelFilePath.stringValue, melody: melody);
-        
-        userData = getUser(appDelegate.user.username);
-        
-        if let moc = self.managedObjectContext {
-            var melodyData = Melody.createInManagedObjectContext(moc, filePath: path, pitch: melody.pitch, beats: melody.beats, arousal: melody.arousal, valence: melody.valence, labels: melody.labels, boundaries: melody.boundaries);
-            Level.createInManagedObjectContext(moc, name: currentLevel.name, user: userData, melody: melodyData);
-        }
-        
-        appDelegate.level = currentLevel;
-        appDelegate.playGameWindow();
-    }
-
-    /**
-        Opens a dialog window allowing the user to choose a file to open.
-    */
-    func openfiledlg (title: String, message: String) -> String {
-        var myFiledialog: NSOpenPanel = NSOpenPanel();
-        
-        myFiledialog.prompt = "Open";
-        myFiledialog.worksWhenModal = true;
-        myFiledialog.allowsMultipleSelection = false;
-        myFiledialog.canChooseDirectories = false;
-        myFiledialog.resolvesAliases = true;
-        myFiledialog.title = title;
-        myFiledialog.message = message;
-        myFiledialog.runModal();
-        var chosenfile = myFiledialog.URL;
-        if (chosenfile != nil) {
-            var TheFile = chosenfile!.path!;
-            return (TheFile);
-        } else {
-            return ("");
-        }
-    }
-
     
     /******** Button arrangements. ********/
     
@@ -478,9 +392,6 @@ class MenuController: NSViewController {
     }
     
     func showLevelLoadButtons(value: Bool) {
-        newLevelFilePath.hidden = !value;
-        newLevelUploadFile.hidden = !value;
-        newLevelCreateLevelButton.hidden = !value;
         backButton.hidden = !value;
         moodColourLabel.hidden = !value;
         moodLevel.hidden = !value;

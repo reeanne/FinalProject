@@ -85,6 +85,7 @@ def retrieve_array(file):
 			result.append(float(line.strip().split('\t')[1]))
 	return result
 
+
 def median_filter(our_array, window):
 	median_f = filters.median_filter(our_array, window)
 	for i in range(0, len(median_f)):
@@ -112,4 +113,3 @@ def main():
 	
 	plot2(filteres) 
 
-main()

@@ -43,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var menuController: MenuController! = nil;
     var gameController: GameController! = nil;
     var levelsController: LevelsController! = nil;
+    var levelCreationController: LevelCreationController! = nil;
     
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -52,6 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true;
     }
+
     
     func showMenu() {
         avWindow.setIsVisible(false);
@@ -69,6 +71,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         avWindow.setIsVisible(false);
         levelsController = LevelsController(nibName: "ScoreView", bundle: nil);
         window.contentViewController = levelsController;
+    }
+    
+    
+    func showLevelCreation() {
+        avWindow.setIsVisible(false);
+        levelCreationController = LevelCreationController(nibName: "LevelCreation", bundle: nil);
+        window.contentViewController = levelCreationController;
     }
 
     

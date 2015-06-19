@@ -22,6 +22,8 @@
 		426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD71A54D74F006A19A6 /* MelodyObject.swift */; };
 		426CDCDA1A54D7B3006A19A6 /* MusicButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CDCD91A54D7B3006A19A6 /* MusicButton.swift */; };
 		427187BF1B17AC400042A315 /* CollectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427187BE1B17AC400042A315 /* CollectionItem.swift */; };
+		42873C2B1B3484080049FB89 /* LevelCreation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42873C2A1B3484080049FB89 /* LevelCreation.xib */; };
+		42873C2D1B348ED10049FB89 /* LevelCreationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42873C2C1B348ED10049FB89 /* LevelCreationController.swift */; };
 		4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF371AFBDD24009AC03E /* FireFlies.sks */; };
 		4292DF3A1AFBDD24009AC03E /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF381AFBDD24009AC03E /* spark.png */; };
 		4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4292DF3B1AFBDD4F009AC03E /* Magic.sks */; };
@@ -82,6 +84,8 @@
 		426CDCD71A54D74F006A19A6 /* MelodyObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MelodyObject.swift; sourceTree = "<group>"; };
 		426CDCD91A54D7B3006A19A6 /* MusicButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicButton.swift; sourceTree = "<group>"; };
 		427187BE1B17AC400042A315 /* CollectionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
+		42873C2A1B3484080049FB89 /* LevelCreation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LevelCreation.xib; sourceTree = "<group>"; };
+		42873C2C1B348ED10049FB89 /* LevelCreationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelCreationController.swift; sourceTree = "<group>"; };
 		4292DF371AFBDD24009AC03E /* FireFlies.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireFlies.sks; sourceTree = "<group>"; };
 		4292DF381AFBDD24009AC03E /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		4292DF3B1AFBDD4F009AC03E /* Magic.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Magic.sks; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 				425C9CDD1B2773E100D9B9DC /* LevelsController.swift */,
 				42016A871AE19B500046FC15 /* MenuController.swift */,
 				42016A891AE1C0F40046FC15 /* GameController.swift */,
+				42873C2C1B348ED10049FB89 /* LevelCreationController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 				42A67D401A52DCE60094808D /* MainMenu.xib */,
 				42016A921AE1D48C0046FC15 /* GameView.xib */,
 				42016A901AE1D42B0046FC15 /* MenuView.xib */,
+				42873C2A1B3484080049FB89 /* LevelCreation.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -331,6 +337,7 @@
 				42016A931AE1D48C0046FC15 /* GameView.xib in Resources */,
 				4292DF3A1AFBDD24009AC03E /* spark.png in Resources */,
 				42B183511B0F5D70002E1EE3 /* Images.xcassets in Resources */,
+				42873C2B1B3484080049FB89 /* LevelCreation.xib in Resources */,
 				4292DF391AFBDD24009AC03E /* FireFlies.sks in Resources */,
 				4292DF481AFBDDED009AC03E /* bokeh.png in Resources */,
 				42016A911AE1D42B0046FC15 /* MenuView.xib in Resources */,
@@ -352,6 +359,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42873C2D1B348ED10049FB89 /* LevelCreationController.swift in Sources */,
 				423DA0BA1B1A2E4F0054EC15 /* CollectionView.swift in Sources */,
 				42F1F7A21ADFFBA000731127 /* Level.swift in Sources */,
 				426CDCD81A54D74F006A19A6 /* MelodyObject.swift in Sources */,

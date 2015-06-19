@@ -16,11 +16,15 @@ class LevelObject {
     var id: Int64;
     var name: String;
     var melody: MelodyObject;
+    var enhancedMood: Bool;
+    var difficulty: String;
     
-    init(levelName: String, melody: MelodyObject) {
+    init(levelName: String, melody: MelodyObject, enhancedMood: Bool, difficulty: String) {
         CURRENT_ID++;
         self.id = CURRENT_ID;
         self.name = levelName;
         self.melody = melody;
+        self.enhancedMood = enhancedMood;
+        self.difficulty = difficulty;
     }
 }

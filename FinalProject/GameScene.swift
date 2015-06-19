@@ -455,6 +455,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         var index: CGFloat;
         var button: SKSpriteNode;
         var result = [SKSpriteNode]();
+        limit = appDelegate.level.difficulty == "Easy" ? 3 : 4;
         
         for i in 0...limit-1 {
             colour = Colour(rawValue: i)!;
