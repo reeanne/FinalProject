@@ -68,11 +68,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     // Settings.
     var volume: Float = 0;
     
+    var demo: Bool = false;
+    var finalTimer: NSTimer! = nil;
+    var finalWait: NSTimeInterval = 0;
+    
     let managedObjectContext = (NSApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     
     override func didMoveToView(view: SKView) {
         setupScene();
+        var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(2), target: self, selector: Selector("pause"), userInfo: nil, repeats: false)
     }
 
 
@@ -85,7 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     override func mouseDown(theEvent: NSEvent) {
         var nodes = nodesAtPoint(theEvent.locationInNode(self)) as! [SKNode]
         for node in nodes {
-            if (node.name != nil && !node.hidden && !node.parent!.hidden) {
+            if (!demo && node.name != nil && !node.hidden && !node.parent!.hidden) {
                 switch node.name! {
                     case muteButton.name!:
                         mute();
@@ -113,48 +118,58 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
     
     override func keyUp(theEvent: NSEvent) {
-        switch theEvent.keyCode {
-        case 0:
-            var colour = Colour(rawValue: 0);
-            buttons[0].texture = constants.textures[colour!]!["hover"]!;
-            pressedButtons[0] = false;
-        case 1:
-            var colour = Colour(rawValue: 1);
-            buttons[1].texture = constants.textures[colour!]!["hover"]!;
-            pressedButtons[1] = false;
-        case 2:
-            var colour = Colour(rawValue: 2);
-            buttons[2].texture = constants.textures[colour!]!["hover"]!;
-            pressedButtons[2] = false;
-        case 3:
-            var colour = Colour(rawValue: 3);
-            buttons[3].texture = constants.textures[colour!]!["hover"]!;
-            pressedButtons[3] = false;
-        default:
-            break;
+        if (theEvent.keyCode <= UInt16(limit-1)) {
+            switch theEvent.keyCode {
+            case 0:
+                var colour = Colour(rawValue: 0);
+                buttons[0].texture = constants.textures[colour!]!["hover"]!;
+                pressedButtons[0] = false;
+
+            case 1:
+                var colour = Colour(rawValue: 1);
+                buttons[1].texture = constants.textures[colour!]!["hover"]!;
+                pressedButtons[1] = false;
+            case 2:
+                var colour = Colour(rawValue: 2);
+                buttons[2].texture = constants.textures[colour!]!["hover"]!;
+                pressedButtons[2] = false;
+            case 3:
+                var colour = Colour(rawValue: 3);
+                buttons[3].texture = constants.textures[colour!]!["hover"]!;
+                pressedButtons[3] = false;
+            default:
+                break;
+            }
         }
     }
 
 
     override func keyDown(theEvent: NSEvent) {
-        
         switch theEvent.keyCode {
         case 0:
-            var colour = Colour(rawValue: 0);
-            removeButtonPressed(colour!);
-            buttons[0].texture = constants.textures[colour!]!["pressed"]!;
+            if (theEvent.keyCode <= UInt16(limit-1)) {
+                var colour = Colour(rawValue: 0);
+                removeButtonPressed(colour!);
+                buttons[0].texture = constants.textures[colour!]!["pressed"]!;
+            }
         case 1:
-            var colour = Colour(rawValue: 1);
-            removeButtonPressed(colour!);
-            buttons[1].texture = constants.textures[colour!]!["pressed"]!;
+            if (theEvent.keyCode <= UInt16(limit-1)) {
+                var colour = Colour(rawValue: 1);
+                removeButtonPressed(colour!);
+                buttons[1].texture = constants.textures[colour!]!["pressed"]!;
+            }
         case 2:
-            var colour = Colour(rawValue: 2);
-            removeButtonPressed(colour!);
-            buttons[2].texture = constants.textures[colour!]!["pressed"]!;
+            if (theEvent.keyCode <= UInt16(limit-1)) {
+                var colour = Colour(rawValue: 2);
+                removeButtonPressed(colour!);
+                buttons[2].texture = constants.textures[colour!]!["pressed"]!;
+            }
         case 3:
-            var colour = Colour(rawValue: 3);
-            removeButtonPressed(colour!);
-            buttons[3].texture = constants.textures[colour!]!["pressed"]!;
+            if (theEvent.keyCode <= UInt16(limit-1)) {
+                var colour = Colour(rawValue: 3);
+                removeButtonPressed(colour!);
+                buttons[3].texture = constants.textures[colour!]!["pressed"]!;
+            }
         case 12:
             if (self.paused){
                 gameOver();
@@ -292,7 +307,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         songPlayer = nil;
         stopIssuing();
         showScore();
-        println("Printing score");
     }
 
     
@@ -380,17 +394,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         songPlayer = AVAudioPlayer(contentsOfURL: level.melody.audioURL, error: nil);
         songPlayer.delegate = self
         timeInterval = Double(songPlayer.duration) / Double(level.melody.pitch.count);
-        println(timeInterval)
-        println(songPlayer.duration)
-        println(level.melody.pitch.count)
         offsetPresspoint =  0.01 * Double(self.frame.size.height + 0.5 * constants.textures[Colour.Blue]!["normal"]!.size().height);
 
         setupSprites();
         
-               // TODO: Fix quick Game.
-        println(NSTimeInterval(offsetPresspoint))
         songPlayer.prepareToPlay();
-        var timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("spawnFretsandSong"), userInfo: nil, repeats: false);
+        finalTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(offsetPresspoint), target: self, selector: Selector("spawnFretsandSong"), userInfo: nil, repeats: false);
         
         
     }
@@ -398,6 +407,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     func spawnFretsandSong(){
         beatsTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(beats[2] - beats[0]), target: self, selector: Selector("spawnFrets"), userInfo: nil, repeats: false);
         playSong();
+        finalTimer.invalidate();
+        finalTimer = nil;
     }
 
     func playerDidFinishPlaying(note: NSNotification) {
@@ -437,8 +448,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         sparkEmitter.targetNode = self;
         sparkEmitter.physicsBody = nil;
         
-        println(level.melody.boundaries);
-
         moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[1] + Float(offsetPresspoint) - level.melody.boundaries[0]),
             target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         fourIntervals = beats[beatsIndex + 4] - beats[beatsIndex];
@@ -512,6 +521,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         }
     }
     
+    
     func moveSparkle() {
         
         if (beatsIndex + 4 < beats.count) {
@@ -525,7 +535,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
 
 
     func changeMood() {
-        println("CHANGING MOOD hopefully")
         sparkEmitter.particleColorSequence = nil;
         if (moodIndex + 1 < level.melody.arousal.count && moodChangeTimer != nil) {
             sectionLabel.text = level.melody.labels[max(0, moodIndex)]
@@ -533,10 +542,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
             updateAVDiagram(level.melody.arousal[moodIndex], valence: level.melody.valence[moodIndex]);
-            println("here  " + level.melody.arousal[moodIndex].description + level.melody.valence[moodIndex].description);
             moodIndex++;
             moodChangeTimer.invalidate();
-            println(level.melody.boundaries[moodIndex+1] - level.melody.boundaries[moodIndex])
             moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex] - level.melody.boundaries[moodIndex-1]),  // Error.
                 target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
         }
@@ -616,17 +623,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         var valenceCoord: CGFloat = CGFloat((upMargin - downMargin) * valence + downMargin);
         appDelegate.avPoint.setFrameOrigin(NSPoint(x: arousalCoord, y: valenceCoord));
     }
+    
+    func pause() {
+        pause(true);
+    }
 
 
     func pause(pause: Bool) {
+        if (pause && finalTimer != nil && finalWait == 0) {
+            finalWait = finalTimer.fireDate.timeIntervalSinceNow;
+            finalTimer.invalidate();
+        } else if (!pause && finalTimer != nil && finalWait != 0) {
+            finalTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(finalWait), target: self, selector: Selector("spawnFretsandSong"), userInfo: nil, repeats: false);
+            finalWait = 0;
+        }
         
         self.paused = pause;
         if (pause) {
             pauseButton.texture = constants.settings["play"];
             if (songPlayer != nil) {
                 songPlayer.pause();
-                waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
-                beatsTimer.invalidate();
+                if (beatsTimer != nil) {
+                    waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
+                    beatsTimer.invalidate();
+                }
             }
         } else {
             pauseButton.texture = constants.settings["pause"];
@@ -643,19 +663,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     }
     
     func saveScoreData(score: Int, stars: Int) {
-        var fetchRequest = NSFetchRequest(entityName: "Level")
-        fetchRequest.predicate = NSPredicate(format: "(name = %@) AND (owner.username = %@)", level.name, user.username)
-        
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [NSManagedObject] {
-            if fetchResults.count != 0{
-                var managedObject = fetchResults[0]
-                managedObject.setValue(score, forKey: "score")
-                managedObject.setValue(stars, forKey: "stars")
-                managedObjectContext!.save(nil)
+        if (user != nil) {
+            var fetchRequest = NSFetchRequest(entityName: "Level")
+            fetchRequest.predicate = NSPredicate(format: "(name = %@) AND (owner.username = %@)", level.name, user.username)
+            
+            if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [NSManagedObject] {
+                if fetchResults.count != 0{
+                    var managedObject = fetchResults[0]
+                    managedObject.setValue(score, forKey: "score")
+                    managedObject.setValue(stars, forKey: "stars")
+                    managedObjectContext!.save(nil)
+                }
             }
         }
     }
 
+    
     /** 
         Triggered once the song is finished.
     */
@@ -687,7 +710,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             self.appDelegate.showMenu()
             if (self.songPlayer != nil) {
                 self.songPlayer.stop();
-                println ("removing");
                 self.mute();
             }
         })

@@ -75,7 +75,14 @@ class MenuController: NSViewController {
         showLoggedUserButtons(false);
         showLevelLoadButtons(false);
         showSelectUserButtons(false);
-        (NSApplication.sharedApplication().delegate as! AppDelegate).playGameWindow();
+        var levelData = selectRandomLevel();
+        if (levelData != nil) {
+            var melodyData = levelData!.melody;
+            var melodyObject: MelodyObject = MelodyObject(audioURL: NSURL(fileURLWithPath: melodyData.file)!, pitch: melodyData.pitch as [Int], beats: melodyData.beats as [Float], arousal: melodyData.arousal as [Float], valence: melodyData.valence as [Float], labels: melodyData.labels as [String], boundaries: melodyData.boundaries as [Float]);
+            var levelObject: LevelObject = LevelObject(levelName: levelData!.name, melody: melodyObject, enhancedMood: levelData!.enhancedMood, difficulty: levelData!.difficulty);
+            appDelegate.level = levelObject;
+            appDelegate.playGameWindow();
+        }
     }
 
     @IBAction func mainChooseUserButtonPressed(sender: AnyObject) {
@@ -270,6 +277,19 @@ class MenuController: NSViewController {
         return result;
     }
     
+    
+    func selectRandomLevel() -> Level? {
+        let fetchRequest = NSFetchRequest(entityName: "Level")
+        var result: Level! = nil;
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
+            if (fetchResults.count >= 0) {
+                result = fetchResults[Int(arc4random_uniform(UInt32(fetchResults.count)))];
+            }
+        }
+        return result;
+
+    }
+    
     /**
         Retrieves a level with specified name from the Core Data.
     */
@@ -280,7 +300,6 @@ class MenuController: NSViewController {
         fetchRequest.predicate = predicate;
         var result: Level! = nil;
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Level] {
-            println("akdhja")
             println(fetchResults.description);
             if (fetchResults.count > 0) {
                 result = fetchResults[0];

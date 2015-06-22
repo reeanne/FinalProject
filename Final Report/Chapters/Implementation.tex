@@ -603,7 +603,7 @@ The result of this process can be seen in Figure~\ref{fig:synMFCC}.
 
 We can view the SSM as an array of column vectors where each vector corresponds to a window. Suppose we have a set of vector templates. Vectors in the steady regions of a song may be directly found in the set, while vectors in the boundary regions may be approximated by linear combination of vector templates. Making this observation, we believe the Non-negative Matrix Factorisation (NMF) could be useful in our situation.
 
-In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $i$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
+In NMF, the $N \times N$ self similarity matrix $X$ is approximately factorised into product of a $N \times k$ matrix $W$, can be interpreted as a cluster row matrix, and $k \times N$ matrix $H$, composed of the indicators of these clusters, where $k$ is the rank of the composition. This can be described as $X \approx WH$. The $j$th column of $W$ can be viewed as the vector template for the $j$th segment type. The $j$th column of $H$ describes the intensities of the $k$th segment types for the $j$th window. In NMF, both $W$ and $H$ are enforced to be positive (i.e. $X$ must be positive too). We denote a row vector by $\boldsymbol{z}$ and a column one by $\boldsymbol{z}^{T}$.
 
 However, in data mining, sometimes it can be beneficial to ensure $X$ to contain meaningful “cluster centroids”, i.e., to restrict $W$ to be convex combinations of data points.
 C-NMF adds a constraint to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^{T}$,... ,  $\boldsymbol{w}_{k}^{T}$),  such that its columns  $\boldsymbol{w}^{T}$  are, in fact,  convex combinations of the features of $X$:
@@ -613,7 +613,7 @@ C-NMF adds a constraint to $W$ = ($\boldsymbol{w}_{1}^{T}$, $\boldsymbol{w}_{2}^
 \end{equation}
 
 The linear combination is convex if all coefficients $f_{ij}$ are positive and the sum of each set of coefficients  $\boldsymbol{f}^{T}_{j}$ must be 1. Formally, this can be represented as:
-$f_{ij} \geq 0,  f_{ij} = 1 $
+$f_{ij} \geq 0,  \sum\nolimits_{j} f_{ij} = 1 $
 
 This results in $W = XF$, where $F \in \mathbb{R}^{N \times k}$, which makes the rows $\boldsymbol{f}_{i}$ interpretable as weighted cluster centroids. The decomposition matrices $R_{j}$, are obtained as follows:  $R_{j} =  \boldsymbol{w}^{T}_{j}\boldsymbol{h}_{j}$, where $j \in [1 : k]$. Finally, C-NMF can be formally characterised as: $X \approx XFH$.
 
@@ -653,7 +653,7 @@ Clustering is an unsupervised classification of patterns, for example observatio
 
 Having applied the C-NMF, we computed two decomposition matrices - $W$, called the cluster matrix, and $H$, an activation matrix, so that by multiplying them we can recreate the SSM, i.e. $X \approx  WH$       
         
-To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of the its maximum values. Thanks to this simple clustering, we obtain a assignment of each of the frames to one of the ``types'' of segments. By iterating through a matrix generated and such ways and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
+To obtain the boundaries, we filter both the cluster matrix $W$ and the activation matrix $H$. This means that for every row corresponding to a frame in which the beat occurs, we find the indexes of  its maximum values. Thanks to this simple clustering, we obtain an assignment of each of the frames to one of the ``types'' of segments. By iterating through a matrix generated in such way and recording the indexes at which a song changes from one portion to another, we manage to obtain section boundaries in an efficient way. In our implementation, we start the computation with rank $k = 3$ and increase it if not enough bounds were found. This is to avoid overfitting and creating tiny segments, for example, one per verse line.
 
 Once we have boundaries, we combine them within a distance window of size $h$ so that boundaries close to each other get merged in their average location.
 
