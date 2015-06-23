@@ -53,6 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var moodXposition: Float = 1/3;
     var fourIntervals: Float = 0;
     var moodChangeTimer: NSTimer! = nil;
+    var moodChangeResumeTime: NSTimeInterval = 0;
     
     // Collision Categories.
     let noteCategory: UInt32 =  0b001;
@@ -647,15 +648,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
                     waitFor = beatsTimer.fireDate.timeIntervalSinceNow;
                     beatsTimer.invalidate();
                 }
+                if (moodChangeTimer != nil) {
+                    moodChangeResumeTime = moodChangeTimer.fireDate.timeIntervalSinceNow;
+                    moodChangeTimer.invalidate()
+                }
             }
         } else {
             pauseButton.texture = constants.settings["pause"];
             if (songPlayer != nil) {
                 songPlayer.play();
                 if (waitFor != nil) {
-                    var fireNextBeat = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo:    nil, repeats: false);
+                    beatsTimer = NSTimer.scheduledTimerWithTimeInterval(waitFor, target: self, selector: Selector("spawnFrets"), userInfo:    nil, repeats: false);
                 }
                 waitFor = nil;
+                if (moodChangeTimer != nil) {
+                    moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(moodChangeResumeTime, target: self, selector: Selector("changeMood"), userInfo:    nil, repeats: false);
+                }
             }
             
         }

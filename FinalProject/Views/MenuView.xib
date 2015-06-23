@@ -192,7 +192,7 @@
                         <action selector="levelPlayLevelButtonPressed:" target="-2" id="qmN-i5-ZCc"/>
                     </connections>
                 </button>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1Aw-TO-Ovi">
+                <button hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1Aw-TO-Ovi">
                     <rect key="frame" x="824" y="4" width="25" height="25"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sWh-2x-Hfc">
