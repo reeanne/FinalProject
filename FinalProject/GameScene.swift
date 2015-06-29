@@ -40,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     var muteButton: SKSpriteNode! = nil;
     var pauseButton: SKSpriteNode! = nil;
     var sectionLabel: SKLabelNode! = nil;
+    var screen: SKSpriteNode! = nil;
     
     // Beats.
     var beats: [Float]! = nil;
@@ -324,7 +325,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
     
         return SKAction.customActionWithDuration(timeToRun, actionBlock:
             {(node: SKNode!, elapsedTime: CGFloat) in
-                
+
                 var fraction: CGFloat = elapsedTime / CGFloat(timeToRun);
                 
                 var col3: SKColor = NSColor(red: self.lerp(r1, b: r2,fraction: fraction), green: self.lerp(g1, b: g2,fraction: fraction),
@@ -423,12 +424,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         muteButton = self.childNodeWithName("Mute") as! SKSpriteNode;
         settingsButton = self.childNodeWithName("Settings") as! SKSpriteNode;
         pauseButton = self.childNodeWithName("Pause") as! SKSpriteNode;
-        
+        screen = self.childNodeWithName("Screen") as! SKSpriteNode;
+            
         progressBar = ProgressBar(progressBar: self.childNodeWithName("ScoreParent")?.childNodeWithName("ProgressBar") as! SKSpriteNode,
                                   scored: self.childNodeWithName("ScoreParent")?.childNodeWithName("Scored") as! SKLabelNode,
                                   totalScore: self.childNodeWithName("ScoreParent")?.childNodeWithName("TotalScore") as! SKLabelNode,
                                   multiplier: self.childNodeWithName("ScoreParent")?.childNodeWithName("Multiplier") as! SKLabelNode);
-        
+
         showStars(-1);
         buttons = initialiseButtons();
         pressedButtons = [Bool](count: limit, repeatedValue: false);
@@ -534,11 +536,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
         }
     }
 
-
+    
     func changeMood() {
         sparkEmitter.particleColorSequence = nil;
         if (moodIndex + 1 < level.melody.arousal.count && moodChangeTimer != nil) {
             sectionLabel.text = level.melody.labels[max(0, moodIndex)]
+            var color: SKColor = SKColor(red: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))),
+                green: CGFloat(max(0, arc4random_uniform(1))),
+                blue: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))), alpha: 0.7);
             sparkEmitter.particleColor = SKColor(red: CGFloat(max(0, min(1, level.melody.arousal[moodIndex] + 0.2))),
                 green: CGFloat(max(0, arc4random_uniform(1))),
                 blue: CGFloat(max(0, (1 - min(1, (level.melody.valence[moodIndex] + 0.2))))), alpha: 0.7);
@@ -547,6 +552,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
             moodChangeTimer.invalidate();
             moodChangeTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(level.melody.boundaries[moodIndex] - level.melody.boundaries[moodIndex-1]),  // Error.
                 target: self, selector: Selector("changeMood"), userInfo: nil, repeats: false);
+            SKAction.runAction(getColorFadeActionFrom(screen.color, col2: color, node: screen), onChildWithName: "screen");
         }
     }
     

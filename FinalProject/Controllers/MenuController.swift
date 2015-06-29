@@ -13,6 +13,7 @@ import AVFoundation
 
 class MenuController: NSViewController {
     
+    @IBOutlet weak var helpButton: NSButton!
     @IBOutlet weak var mainQuickGameButton: NSButton!
     @IBOutlet weak var mainChooseUserButton: NSButton!
     @IBOutlet weak var mainCreateUserButton: NSButton!
@@ -214,6 +215,10 @@ class MenuController: NSViewController {
         }
     }
 
+    @IBAction func helpPressed(sender: AnyObject) {
+        appDelegate.showHelp();
+        
+    }
 
     
     /****** Helper functions *******/
@@ -412,8 +417,6 @@ class MenuController: NSViewController {
     
     func showLevelLoadButtons(value: Bool) {
         backButton.hidden = !value;
-        moodColourLabel.hidden = !value;
-        moodLevel.hidden = !value;
     }
     
     

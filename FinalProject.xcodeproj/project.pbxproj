@@ -39,6 +39,8 @@
 		42A67D4E1A52DCE60094808D /* FinalProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A67D4D1A52DCE60094808D /* FinalProjectTests.swift */; };
 		42AE097C1B1213670033E830 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AE097B1B1213670033E830 /* ProgressBar.swift */; };
 		42B183511B0F5D70002E1EE3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42B183501B0F5D70002E1EE3 /* Images.xcassets */; };
+		42BF60591B4157A400E3A3A8 /* HelpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42BF60581B4157A400E3A3A8 /* HelpView.xib */; };
+		42BF605B1B4157CE00E3A3A8 /* HelpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF605A1B4157CE00E3A3A8 /* HelpController.swift */; };
 		42EBB4D51A54AB980038845F /* LevelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EBB4D41A54AB980038845F /* LevelObject.swift */; };
 		42F1F7791ADFA4F900731127 /* UserObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F7781ADFA4F900731127 /* UserObject.swift */; };
 		42F1F79C1ADFFB9F00731127 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1F79B1ADFFB9F00731127 /* User.swift */; };
@@ -107,6 +109,8 @@
 		42AE097B1B1213670033E830 /* ProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		42B183501B0F5D70002E1EE3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		42BED63E1ADF1CE400E6F32E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		42BF60581B4157A400E3A3A8 /* HelpView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = HelpView.xib; path = Views/HelpView.xib; sourceTree = "<group>"; };
+		42BF605A1B4157CE00E3A3A8 /* HelpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HelpController.swift; path = Controllers/HelpController.swift; sourceTree = "<group>"; };
 		42EBB4D41A54AB980038845F /* LevelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelObject.swift; sourceTree = "<group>"; };
 		42F1F7781ADFA4F900731127 /* UserObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserObject.swift; sourceTree = "<group>"; };
 		42F1F79B1ADFFB9F00731127 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = Models/User.swift; sourceTree = "<group>"; };
@@ -139,6 +143,7 @@
 				42016A871AE19B500046FC15 /* MenuController.swift */,
 				42016A891AE1C0F40046FC15 /* GameController.swift */,
 				42873C2C1B348ED10049FB89 /* LevelCreationController.swift */,
+				42BF605A1B4157CE00E3A3A8 /* HelpController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -151,6 +156,7 @@
 				42016A921AE1D48C0046FC15 /* GameView.xib */,
 				42016A901AE1D42B0046FC15 /* MenuView.xib */,
 				42873C2A1B3484080049FB89 /* LevelCreation.xib */,
+				42BF60581B4157A400E3A3A8 /* HelpView.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -330,6 +336,7 @@
 				4292DF421AFBDDB1009AC03E /* Snow.sks in Resources */,
 				424CEAE01B15E9FC0030338B /* Credits.rtf in Resources */,
 				4292DF3C1AFBDD4F009AC03E /* Magic.sks in Resources */,
+				42BF60591B4157A400E3A3A8 /* HelpView.xib in Resources */,
 				425C9CE21B27742600D9B9DC /* ScoreView.xib in Resources */,
 				4292DF401AFBDD93009AC03E /* Smoke.sks in Resources */,
 				4292DF441AFBDDD7009AC03E /* Spark.sks in Resources */,
@@ -375,6 +382,7 @@
 				425C9CDE1B2773E100D9B9DC /* LevelsController.swift in Sources */,
 				421728591AF2DC6900AF7A55 /* Constants.swift in Sources */,
 				422A80191B029247006AFDF0 /* FinalProject.xcdatamodeld in Sources */,
+				42BF605B1B4157CE00E3A3A8 /* HelpController.swift in Sources */,
 				42F1F79E1ADFFBA000731127 /* Melody.swift in Sources */,
 				424CEAE21B1738500030338B /* MusicEntry.swift in Sources */,
 				42016A8A1AE1C0F40046FC15 /* GameController.swift in Sources */,

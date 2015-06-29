@@ -13,7 +13,7 @@ import AppKit
 import Cocoa
 
 
-class GameController: NSViewController{
+class GameController: NSViewController {
     
     var scene: GameScene!;
     var appDelegate: AppDelegate! = nil;

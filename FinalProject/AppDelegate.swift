@@ -44,6 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var gameController: GameController! = nil;
     var levelsController: LevelsController! = nil;
     var levelCreationController: LevelCreationController! = nil;
+    var helpController: HelpController! = nil;
     
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -59,6 +60,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         avWindow.setIsVisible(false);
         menuController = MenuController(nibName: "MenuView", bundle: nil)
         window.contentViewController = menuController;
+    }
+    
+    func showHelp() {
+        avWindow.setIsVisible(false);
+        helpController = HelpController(nibName: "HelpView", bundle: nil)
+        window.contentViewController = helpController;
     }
     
     func playGameWindow() {

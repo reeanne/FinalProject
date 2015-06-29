@@ -76,7 +76,7 @@
                 </textField>
                 <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LxO-rw-hms" userLabel="Difficulty">
                     <rect key="frame" x="258" y="311" width="127" height="26"/>
-                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="gHe-on-E8j" userLabel="Difficulty">
+                    <popUpButtonCell key="cell" type="push" title="Medium" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="eII-1J-xaF" id="gHe-on-E8j" userLabel="Difficulty">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="15" name=".HelveticaNeueDeskInterface-Regular"/>
                         <menu key="menu" id="R8V-iS-PcP">
@@ -84,7 +84,7 @@
                                 <menuItem title="Easy" id="CkH-ce-4LY" userLabel="Easy">
                                     <attributedString key="attributedTitle"/>
                                 </menuItem>
-                                <menuItem title="Medium" alternate="YES" id="eII-1J-xaF" userLabel="Medium"/>
+                                <menuItem title="Medium" state="on" id="eII-1J-xaF" userLabel="Medium"/>
                                 <menuItem title="Hard" id="57x-bs-P9o" userLabel="Hard"/>
                             </items>
                         </menu>
